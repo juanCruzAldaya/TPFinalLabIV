@@ -74,18 +74,3 @@ CREATE TABLE direcciones (
     FOREIGN KEY (cliente_id) REFERENCES clientes(id)
 );
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

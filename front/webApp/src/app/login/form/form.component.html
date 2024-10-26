@@ -1,0 +1,60 @@
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="form.component.css">
+   
+
+    <body>
+        
+    
+
+    <div class="container" id="container" #container>
+        <div class="form-container sign-up">
+            <form>
+                <h1>Crear Cuenta</h1>
+                <div class="social-icons">
+                    <a href="#" (click)="onGoogleSignIn()" class="icon"><i class="fa-brands fa-google"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+
+                </div>
+                <span>O usa tu email para registrarte.</span>
+                <input type="email" placeholder="Email">
+                <input type="password" placeholder="Contraseña">
+                <input type="password2" placeholder="Repetir contraseña">
+                <button>Crear Cuenta</button>
+            </form>
+        </div>
+        <div class="form-container sign-in">
+            <form>
+                <h1>Iniciar Sesion</h1>
+                <div class="social-icons">
+                    <a href="#" (click)="onGoogleSignIn()" class="icon"><i class="fa-brands fa-google"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+                 
+                </div>
+                <span>O inicia con tu email.</span>
+                <input type="email" placeholder="Email">
+                <input type="password" placeholder="Contraseña">
+                <a href="#">¿Olvidaste tu contraseña?</a>
+                <button>Iniciar Sesion</button>
+            </form>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-left">
+                    <h1>¿Tenes Cuenta? Inicia Sesion</h1>
+                    <p>Ingresa y encuentra lo que buscas</p>
+                    <button class="hidden" #login id="login">Iniciar Sesion</button>
+                </div>
+                <div class="toggle-panel toggle-right">
+                    <h1>¿No tenes cuenta?</h1>
+                    <p>Registrate facil y rapido</p>
+                    <button class="hidden" #register id="register">Crear Cuenta</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>

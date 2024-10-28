@@ -1,0 +1,16 @@
+.footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 0;
+    background-color: #f8f9fa;
+  }
+  
+  .social-media a {
+    margin-right: 10px;
+    font-size: 1.5em;
+  }
+  
+  .support {
+    text-align: right;
+  }
+  

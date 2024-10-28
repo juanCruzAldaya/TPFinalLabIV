@@ -24,10 +24,6 @@ import { ServiceService } from '../services/service.service';
     NgbModule,
     RouterModule,
 
-    
-   
-    
-    
   ],
   exports: [
     HeaderComponent,

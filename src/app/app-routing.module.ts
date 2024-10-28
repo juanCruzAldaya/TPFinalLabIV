@@ -5,8 +5,8 @@ import {FormComponent} from './login/form/form.component'
 
 
 const routes: Routes = [
-  { path: '', component: FormComponent },
-  { path: 'home', component: HomePageComponent },
+  { path: '', component: HomePageComponent },
+  { path: 'login', component: FormComponent },
 
   // otras rutas
 ];

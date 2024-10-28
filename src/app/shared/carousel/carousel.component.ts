@@ -12,7 +12,6 @@ export class CarouselComponent implements OnInit {
   services: any[] = [];
 
   constructor(private serviceService: ServiceService) { }
-
   ngOnInit(): void {
     this.services = this.serviceService.getServices();
     console.log(this.services); // Verifica el contenido de services

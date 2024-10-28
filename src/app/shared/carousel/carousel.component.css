@@ -1,4 +1,50 @@
-.carousel {
-    margin-bottom: 30px;
+.picsum-img-wrapper {
+  height: 600px; /* Default height */
+  overflow: hidden;
+}
+
+.picsum-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 768px) {
+  .picsum-img-wrapper {
+    height: 300px; /* Adjust height for smaller screens */
   }
-  
+}
+
+@media (max-width: 480px) {
+  .picsum-img-wrapper {
+    height: 200px; /* Adjust height for mobile screens */
+  }
+}
+
+.carousel-caption h3 {
+  font-family: 'Arial', sans-serif; /* Cambia la fuente */
+  font-size: 24px; /* Cambia el tamaño de la fuente */
+  color: #ffffff; /* Cambia el color de la fuente */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Agrega sombra al texto */
+}
+
+.carousel-caption p {
+  font-family: 'Georgia', serif; /* Cambia la fuente */
+  font-size: 18px; /* Cambia el tamaño de la fuente */
+  color: #ecd5d5; /* Cambia el color de la fuente */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Agrega sombra al texto */
+}
+
+.carousel-caption a.btn {
+  font-family: 'Verdana', sans-serif; /* Cambia la fuente */
+  font-size: 15px; /* Cambia el tamaño de la fuente */
+  color: #ffffff; /* Cambia el color de la fuente */
+  background-color: #651277; /* Cambia el color de fondo del botón */
+  border: none; /* Elimina el borde */
+  padding: 10px 20px; /* Ajusta el relleno */
+  text-shadow: none; /* Elimina la sombra del texto */
+}
+
+.carousel-caption a.btn:hover {
+  background-color: #0056b3; /* Cambia el color de fondo al pasar el ratón */
+}

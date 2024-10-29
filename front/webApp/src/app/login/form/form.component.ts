@@ -1,6 +1,6 @@
 import {Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import { AuthService } from '../google-sign-in/google-sign-in.component';
-// import { AuthService } from '../facebook-sign-in/facebook-sign-in.component';
+import { AuthServiceFB } from '../facebook-sign-in/facebook-sign-in.component';
 import { OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -26,7 +26,7 @@ export function matchPasswordsValidator(password: string, confirmPassword: strin
   styleUrl: './form.component.css'
 })
 export class FormComponent implements AfterViewInit, OnInit {
-  constructor(private authService: AuthService, private fb: FormBuilder, private http: HttpClient) { }
+  constructor(private authService: AuthService, private authServiceFB : AuthServiceFB, private fb: FormBuilder, private http: HttpClient) { }
   
 
   @ViewChild('container') container!: ElementRef;
@@ -51,32 +51,41 @@ export class FormComponent implements AfterViewInit, OnInit {
       console.error("Error during sign-in:", error);
     });
   }
-  // onFacebookSignIn(): void {
-  //   this.authService.signInWithFacebook().then(response => {
-  //     console.log('User signed in with Facebook:', response);
-  //   }).catch(error => {
-  //     console.error("Error during Facebook sign-in:", error);
-  //   });
-  // }
+  onFacebookSignIn(): void {
+    this.authServiceFB.signInWithFacebook().then(facebookUser => {
+      console.log('User signed in with Facebook:', facebookUser);
+    }).catch(error => {
+      console.error("Error during Facebook sign-in:", error);
+    });
+  }
 
   userForm!: FormGroup;
+  registerForm!: FormGroup;
 
   ngOnInit(): void {
     this.userForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required]
+    });
+
+    this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
       confirmPassword: ['', Validators.required]
     }, { validator: matchPasswordsValidator('password', 'confirmPassword') });
   }
 
-  
-
-  onSubmit(): void {
+  onSubmitLogin(): void {
     if (this.userForm.valid) {
-      this.http.post('http://localhost:8000/users', this.userForm.value)
-        .subscribe(response => {
-          console.log('User added:', response);
-        });
+      console.log('Login Form Data:', this.userForm.value);
+      // Lógica para iniciar sesión
+    }
+  }
+
+  onSubmitRegister(): void {
+    if (this.registerForm.valid) {
+      console.log('Register Form Data:', this.registerForm.value);
+      // Lógica para registrarse
     }
   }
 

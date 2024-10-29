@@ -12,12 +12,12 @@
         
         <!-- Formulario de Registro -->
         <div class="form-container sign-up">
-            <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+            <form [formGroup]="userForm" (ngSubmit)="onSubmitLogin()">
                 <h1>Crear Cuenta</h1>
                 
                 <div class="social-icons">
                     <a href="#" (click)="onGoogleSignIn()" class="icon"><i class="fa-brands fa-google"></i></a>
-                    <a href="#"                            class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" (click)="onFacebookSignIn()" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
                 </div>
                 
                 <span>O usa tu email para registrarte.</span>
@@ -38,12 +38,12 @@
         
         <!-- Formulario de Inicio de Sesión -->
         <div class="form-container sign-in">
-            <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+            <form [formGroup]="userForm" (ngSubmit)="onSubmitLogin()">
                 <h1>Iniciar Sesión</h1>
                 
                 <div class="social-icons">
                     <a href="#" (click)="onGoogleSignIn()" class="icon"><i class="fa-brands fa-google"></i></a>
-                    <a href="#"                            class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" (click)="onFacebookSignIn()" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
                 </div>
                 
                 <span>O inicia con tu email.</span>

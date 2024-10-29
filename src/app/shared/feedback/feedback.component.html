@@ -1,12 +1,10 @@
-<div class="feedback-section text-center">
-    <h2>Lo que dicen nuestros clientes</h2>
-    <div class="feedback bg-light p-3 rounded mb-3">
-      <p>"Excelente servicio y profesionalidad."</p>
-      <span>- Juan Pérez</span>
-    </div>
-    <div class="feedback bg-light p-3 rounded mb-3">
-      <p>"Muy satisfecho con los resultados."</p>
-      <span>- María López</span>
+<!-- feedback.component.html -->
+<div class="feedback-section">
+  <div class="card" *ngFor="let feedback of feedbacks">
+    <img [src]="feedback.image" class="card-img-top" alt="Customer image">
+    <div class="card-body">
+      <h5 class="card-title">{{ feedback.author }}</h5>
+      <p class="card-text">{{ feedback.message }}</p>
     </div>
   </div>
-  
+</div>

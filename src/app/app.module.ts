@@ -7,7 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FormComponent } from './login/form/form.component';
 import { HomeModule } from './home/home.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-
+import { RouterModule, Routes } from '@angular/router';
 
 
 @NgModule({
@@ -25,6 +25,9 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     NgbModule,
 
     
+  ],
+  exports:[
+    RouterModule
   ],
   
   providers: [],

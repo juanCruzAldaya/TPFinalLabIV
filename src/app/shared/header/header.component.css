@@ -1,4 +1,4 @@
-.navbar {
+ .navbar {
   position: fixed;
   top: 0;
   width: 100%;
@@ -12,11 +12,10 @@
   font-family: 'Montserrat', sans-serif; /* Cambia la fuente */
   font-size: 24px; /* Cambia el tamaño de la fuente */
   font-weight: 700; /* Cambia el grosor de la fuente */
-  color: #333; /* Cambia el color de la fuente */
+   color: #333; /* Cambia el color de la fuente */
 }
 
 .form-inline {
-  display: flex;
   align-items: center;
   margin-left: auto;
 }
@@ -31,4 +30,19 @@
 
 .content {
   margin-top: 70px;
+} 
+.form-control-dark {
+  border-color: var(--bs-gray);
+}
+.form-control-dark:focus {
+  border-color: #fff;
+  box-shadow: 0 0 0 .25rem rgba(255, 255, 255, .25);
+}
+
+.text-small {
+  font-size: 85%;
+}
+
+.dropdown-toggle:not(:focus) {
+  outline: 0;
 }

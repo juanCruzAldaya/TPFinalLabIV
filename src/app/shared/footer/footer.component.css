@@ -1,16 +1,49 @@
+/* footer.component.css */
 .footer {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px 0;
-    background-color: #f8f9fa;
-  }
-  
-  .social-media a {
-    margin-right: 10px;
-    font-size: 1.5em;
-  }
-  
-  .support {
-    text-align: right;
-  }
-  
+  padding: 2rem 0;
+}
+
+.footer h5 {
+  margin-bottom: 1rem;
+}
+
+.footer ul {
+  padding-left: 0;
+  list-style: none;
+}
+
+.footer ul li {
+  margin-bottom: 0.5rem;
+}
+
+.footer ul li a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.footer ul li a:hover {
+  text-decoration: underline;
+}
+
+.footer .list-inline {
+  padding-left: 0;
+  list-style: none;
+}
+
+.footer .list-inline-item {
+  margin-right: 0.5rem;
+}
+
+.footer .list-inline-item a {
+  color: #ffffff;
+  font-size: 1.5rem;
+}
+
+.footer .list-inline-item a:hover {
+  color: #cccccc;
+}
+
+.footer .text-center {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+}

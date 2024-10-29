@@ -1,7 +1,7 @@
-import { Municipality } from "./department";
+import { Department } from "./department";
 
-describe("Municipality", () => {
+describe("Department", () => {
   it("should create an instance", () => {
-    expect(new Municipality()).toBeTruthy();
+    expect(new Department()).toBeTruthy();
   });
 });

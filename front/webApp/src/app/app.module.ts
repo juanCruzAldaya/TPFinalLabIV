@@ -7,12 +7,12 @@ import {HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { FormComponent } from './login/form/form.component';
-import { FormRegisterComponent } from './login/form/form-register/form-register.component';
+import { FormInfoComponent } from './login/form-info/form-info.component';
 @NgModule({
   declarations: [
     AppComponent,
     FormComponent,
-    FormRegisterComponent,
+    FormInfoComponent,
     
    
   ],

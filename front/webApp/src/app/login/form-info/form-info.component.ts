@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
-  selector: 'app-form-register',
-  templateUrl: './form-register.component.html',
-  styleUrl: './form-register.component.css'
+  selector: 'app-form-info',
+  templateUrl: './form-info.component.html',
+  styleUrl: './form-info.component.css'
 })
-export class FormRegisterComponent  {
+export class FormInfoComponent {
   constructor(
     private fb: FormBuilder,
   ){}

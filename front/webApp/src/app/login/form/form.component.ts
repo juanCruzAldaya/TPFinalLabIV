@@ -28,6 +28,7 @@ export function matchPasswordsValidator(password: string, confirmPassword: strin
   styleUrl: './form.component.css'
 })
 export class FormComponent implements  OnInit {
+  router: any;
 
   constructor(
     private authService: AuthService,
@@ -87,6 +88,7 @@ export class FormComponent implements  OnInit {
   onSubmitLogin(): void {
     if (this.userForm.valid) {
         console.log('Login Form Data:', this.userForm.value);
+        this.router.navigate(["/register"])
     }
 }
 
@@ -104,7 +106,4 @@ onSubmitRegister() {
     })
   }
 }
-
-
-
 }

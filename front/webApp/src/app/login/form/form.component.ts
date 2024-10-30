@@ -1,9 +1,11 @@
-import {Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import {Component, ElementRef, ViewChild } from '@angular/core';
 import { AuthService } from '../google-sign-in/google-sign-in.component';
 import { AuthServiceFB } from '../facebook-sign-in/facebook-sign-in.component';
 import { OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { Route } from '@angular/router';
+import { LoginServices } from '../services/loginServices.service';
 
 
 export function matchPasswordsValidator(password: string, confirmPassword: string): ValidatorFn {
@@ -25,24 +27,30 @@ export function matchPasswordsValidator(password: string, confirmPassword: strin
   templateUrl: './form.component.html',
   styleUrl: './form.component.css'
 })
-export class FormComponent implements AfterViewInit, OnInit {
-  constructor(private authService: AuthService, private authServiceFB : AuthServiceFB, private fb: FormBuilder, private http: HttpClient) { }
+export class FormComponent implements  OnInit {
+
+  constructor(
+    private authService: AuthService,
+    private authServiceFB : AuthServiceFB, 
+    private fb: FormBuilder,
+    private http: HttpClient,
+    private loginServices: LoginServices,
+    
+
+  ) { }
+
   
+
+
+  isRegistering: boolean = false;
 
   @ViewChild('container') container!: ElementRef;
   @ViewChild('register') registerBtn!: ElementRef;
   @ViewChild('login') loginBtn!: ElementRef;
 
-  ngAfterViewInit() {
-    this.registerBtn.nativeElement.addEventListener('click', () => {
-      this.container.nativeElement.classList.add('active');
-    });
-
-    this.loginBtn.nativeElement.addEventListener('click', () => {
-      this.container.nativeElement.classList.remove('active');
-    });
+  toggleRegistering(): void {
+    this.isRegistering = !this.isRegistering;
   }
-  
 
   onGoogleSignIn(): void {
     this.authService.signInWithGoogle().then(googleUser => {
@@ -62,6 +70,7 @@ export class FormComponent implements AfterViewInit, OnInit {
   userForm!: FormGroup;
   registerForm!: FormGroup;
 
+  
   ngOnInit(): void {
     this.userForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -77,16 +86,25 @@ export class FormComponent implements AfterViewInit, OnInit {
 
   onSubmitLogin(): void {
     if (this.userForm.valid) {
-      console.log('Login Form Data:', this.userForm.value);
-      // Lógica para iniciar sesión
+        console.log('Login Form Data:', this.userForm.value);
     }
-  }
+}
 
-  onSubmitRegister(): void {
-    if (this.registerForm.valid) {
-      console.log('Register Form Data:', this.registerForm.value);
-      // Lógica para registrarse
-    }
+onSubmitRegister() {
+  if (this.registerForm.valid) {
+    const email = this.registerForm.get('email')?.value;
+    this.loginServices.checkEmail(email).subscribe(response => {
+      if (response.exists) {
+        // Manejar el caso en que el email ya existe
+        console.log('El email ya está registrado.');
+      } else {
+        // Proceder con el registro
+        console.log('El email es válido.');
+      }
+    })
   }
+}
+
+
 
 }

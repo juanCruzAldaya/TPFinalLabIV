@@ -8,13 +8,12 @@
 
 <body>
 
-    <div class="container" id="container" #container>
-        
+    
+    <div class="container" id="container" [class.active]="isRegistering">
         <!-- Formulario de Registro -->
         <div class="form-container sign-up">
-            <form [formGroup]="userForm" (ngSubmit)="onSubmitLogin()">
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmitRegister()">
                 <h1>Crear Cuenta</h1>
-                
                 <div class="social-icons">
                     <a href="#" (click)="onGoogleSignIn()" class="icon"><i class="fa-brands fa-google"></i></a>
                     <a href="#" (click)="onFacebookSignIn()" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
@@ -23,41 +22,41 @@
                 <span>O usa tu email para registrarte.</span>
                 
                 <input type="email" id="email" class="form-control" formControlName="email" placeholder="Email"/>
-                <div *ngIf="userForm.get('email')?.invalid && (userForm.get('email')?.dirty || userForm.get('email')?.touched)" class="text-danger">
+                <div *ngIf="registerForm.get('email')?.invalid && (registerForm.get('email')?.dirty || registerForm.get('email')?.touched)" class="text-danger">
                   Mail invalido
                 </div>
                 
+                
                 <input type="password" placeholder="Contraseña" id="pass1" class="form-control" formControlName="password"/>
                 <input type="password" placeholder="Repetir contraseña" id="pass2" class="form-control" formControlName="confirmPassword"/>
-                <div *ngIf="userForm.hasError('passwordMismatch') && userForm.get('confirmPassword')?.touched" class="text-danger">
+                <div *ngIf="registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched" class="text-danger">
                     Las contraseñas no coinciden
                 </div>
-                <button type="submit">Crear Cuenta</button>
+                <button type="submit" [disabled]="!registerForm.valid" routerLink="/lñsakdlñksalñdkñlaskdkñla ">Crear Cuenta</button>
+
             </form>
         </div>
         
         <!-- Formulario de Inicio de Sesión -->
-        <div class="form-container sign-in">
+        <div class="form-container sign-in" >
             <form [formGroup]="userForm" (ngSubmit)="onSubmitLogin()">
                 <h1>Iniciar Sesión</h1>
                 
                 <div class="social-icons">
                     <a href="#" (click)="onGoogleSignIn()" class="icon"><i class="fa-brands fa-google"></i></a>
-                    <a href="#" (click)="onFacebookSignIn()" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a (click)="onFacebookSignIn()" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
                 </div>
                 
                 <span>O inicia con tu email.</span>
                 
-                <input type="email" id="email" class="form-control" formControlName="email2" placeholder="Email"/>
-                <div *ngIf="userForm.get('email2')?.invalid && (userForm.get('email2')?.dirty || userForm.get('email2')?.touched)" class="text-danger">
+                <input type="email" id="email" class="form-control" formControlName="email" placeholder="Email"/>
+                <div *ngIf="userForm.get('email')?.invalid && (userForm.get('email')?.dirty || userForm.get('email')?.touched)" class="text-danger">
                   Mail invalido
                 </div>
                 
                 <input type="password" placeholder="Contraseña" class="form-control" formControlName="password"/>
-
                 <a href="#">¿Olvidaste tu contraseña?</a>
-                
-                <button type="submit">Iniciar Sesión</button>
+                <button type="submit" [disabled]="!userForm.valid" routerLink="/hola" >Iniciar Sesión</button>
             </form>
         </div>
         
@@ -67,16 +66,14 @@
                 <div class="toggle-panel toggle-left">
                     <h1>¿Tienes Cuenta? Inicia Sesión</h1>
                     <p>Ingresa y encuentra lo que buscas</p>
-                    <button class="hidden" #login id="login">Iniciar Sesión</button>
+                    <button (click)="toggleRegistering()">Iniciar Sesión</button>
                 </div>
                 <div class="toggle-panel toggle-right">
                     <h1>¿No tienes cuenta?</h1>
                     <p>Regístrate fácil y rápido</p>
-                    <button class="hidden" #register id="register">Crear Cuenta</button>
+                    <button (click)="toggleRegistering()">Crear Cuenta</button>
                 </div>
             </div>
         </div>
-        
     </div>
-
 </body>

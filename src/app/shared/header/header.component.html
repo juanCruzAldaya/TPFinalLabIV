@@ -9,6 +9,13 @@
     </form>
   </div>
   <div class="collapse navbar-collapse justify-content-end">
-    <a class="navbar-brand" [routerLink]="['/login']">Iniciar Sesion</a>
+    <ng-container *ngIf="!isAuthenticated; else loggedIn">
+      <a class="navbar-brand" [routerLink]="['/login']">Iniciar Sesion</a>
+    </ng-container>
+    <ng-template #loggedIn>
+      <div class="user-icon" (click)="navigateToProfile()">
+        <img src="path-to-user-icon.png" alt="User Icon">
+      </div>
+    </ng-template>
   </div>
 </nav>

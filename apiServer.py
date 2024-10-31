@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 from decimal import Decimal
@@ -21,6 +21,18 @@ db = mysql.connector.connect(
     password="root",
     database="tpfinallab4"
 )
+
+
+def get_user_credentials(email, db):
+    # (Insert your existing database connection code here)
+
+    cursor = db.cursor(dictionary=True)
+    query = "SELECT email, password FROM users_incompletos WHERE email = %s"
+    cursor.execute(query, (email,))
+    user = cursor.fetchone()
+    cursor.close()
+    db.close()
+    return user
 
 
 
@@ -83,16 +95,32 @@ class Direccion(BaseModel):
 
 
 class User_Incompleto(BaseModel):
-    id:Optional[int]
     email: str
     password: str
 
+def get_user_credentials(email):
+    # Replace with your actual database connection code
+    db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="root",
+        database="tpfinallab4"
+    )
+    cursor = db.cursor(dictionary=True)
+    query = "SELECT email, password FROM users_incompletos WHERE email = %s"
+    cursor.execute(query, (email,))
+    user = cursor.fetchone()
+    cursor.close()
+    db.close()
+    print(user)
+    return user
 
-
-
-
-
-
+@app.post("/login")
+async def login(user: User_Incompleto):
+    user_data = get_user_credentials(user.email)
+    if user_data and user_data['password'] == user.password:
+        return {"token": "fake-jwt-token"}
+    raise HTTPException(status_code=400, detail="Invalid credentials")
 
 
 
@@ -109,6 +137,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 
 

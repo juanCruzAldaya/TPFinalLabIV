@@ -31,7 +31,7 @@
                 
                 <input type="password" placeholder="Contraseña" id="pass1" class="form-control" formControlName="password"/>
                 <input type="password" placeholder="Repetir contraseña" id="pass2" class="form-control" formControlName="confirmPassword"/>
-                <div *ngIf="userForm.hasError('passwordMismatch') && userForm.get('confirmPassword')?.touched" class="text-danger">
+                <div *ngIf="userForm.hasError('passwordMismtatch') && userForm.get('confirmPassword')?.touched" class="text-danger">
                     Las contraseñas no coinciden
                 </div>
                 <button type="submit">Crear Cuenta</button>

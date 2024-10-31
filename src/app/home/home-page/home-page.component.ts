@@ -1,13 +1,30 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { AuthService } from '../../auth/auth.services'; 
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home-page',
   templateUrl: './home-page.component.html',
-  styleUrl: './home-page.component.css'
+  styleUrls: ['./home-page.component.css'] // Corrected to styleUrls
 })
+export class HomePageComponent implements OnInit, OnDestroy {
+  isAuthenticated = false;
+  private authSubscription: Subscription = new Subscription(); // Initialize with an empty subscription
 
 
+  constructor(private authService: AuthService) {}
 
-export class HomePageComponent {
-  
+  ngOnInit() {
+    this.authSubscription = this.authService.isAuthenticated().subscribe(
+      (authStatus: boolean) => {
+        this.isAuthenticated = authStatus;
+      }
+    );
+  }
+
+  ngOnDestroy() {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
+  }
 }

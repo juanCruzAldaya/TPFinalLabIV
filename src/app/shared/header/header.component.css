@@ -10,11 +10,22 @@
 
 .navbar-brand {
   font-family: 'Montserrat', sans-serif; /* Cambia la fuente */
-  font-size: 24px; /* Cambia el tamaño de la fuente */
+  font-size: 45px; /* Cambia el tamaño de la fuente */
   font-weight: 700; /* Cambia el grosor de la fuente */
    color: #333; /* Cambia el color de la fuente */
 }
+.navbar a {
+  font-size: 18px; /* Change to desired font size */
+  color: #333; /* Ensure color is applied */
+}
 
+.navbar .navbar-brand, .navbar .navbar-brand a {
+  font-size: 28px !important; /* Use !important if necessary */
+}
+
+.navbar .navbar-brand, .navbar .navbar-brand a {
+  font-size: 18px !important; /* Use !important if necessary */
+}
 .form-inline {
   align-items: center;
   margin-left: auto;
@@ -40,9 +51,21 @@
 }
 
 .text-small {
-  font-size: 85%;
+  font-size: 125%;
 }
 
 .dropdown-toggle:not(:focus) {
   outline: 0;
+}
+
+.container-icon {
+  width: auto;
+  height: 60px;
+  cursor: pointer; /* Add this to indicate it's clickable */
+}
+
+.icon-profile {
+  width: 45px;
+  height: 45px;
+  pointer-events: auto; /* Ensure pointer events are enabled */
 }

@@ -19,13 +19,13 @@ export class AuthService {
 
 
   login(email: string, password: string): Observable<any> {
-    return this.http.post<{ message: string }>('http://127.0.0.1:8000/login', { email, password })
+    return this.http.post('http://127.0.0.1:8000/login', { email, password })
       .pipe(
         tap(response => {
-          console.log(response);
-              // console.log("asdasdasdasd")
-              // if (response.message === "Login successful") {
-              //   this.authStatus.next(true);
+            if (response != undefined){
+              this.authStatus.next(true);
+              
+            }
           }
         )
       );

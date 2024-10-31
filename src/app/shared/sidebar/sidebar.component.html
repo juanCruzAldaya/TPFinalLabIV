@@ -1,14 +1,8 @@
 <button class="btn btn-primary" (click)="toggleSidebar()" style="font-size: medium;">Mas opciones</button>
 <div *ngIf="isSidebarVisible" class="d-flex flex-column p-3 bg-light" style="width: 1600px;">
   <ul class="nav nav-pills flex-column mb-auto">
-    <li class="nav-item">
-      <a class="nav-link" aria-current="page" routerLink="/profile" style="font-size: large;">Ver perfil</a>
-    </li>
     <li>
       <a class="nav-link" routerLink="/search-professionals" style="font-size: large;">Buscar profesionales</a>
-    </li>
-    <li>
-      <a class="nav-link" routerLink="/reviews" style="font-size: large;">Ver reseñas</a>
     </li>
     <li>
       <a class="nav-link" routerLink="/contracts" style="font-size: large;">Consultar contrataciones</a>

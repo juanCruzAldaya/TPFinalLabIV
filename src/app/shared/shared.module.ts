@@ -8,6 +8,10 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
 import { ServiceService } from '../services/service.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { ProfessionalListComponent } from './professional-list/professional-list.component';
+import {FormsModule}  from '@angular/forms';
+
+
 
 @NgModule({
   declarations: [
@@ -16,6 +20,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
     FeedbackComponent,
     FooterComponent,
     SidebarComponent,
+    ProfessionalListComponent,
     
     
     
@@ -25,6 +30,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
     CommonModule,
     NgbModule,
     RouterModule,
+    FormsModule
 
   ],
   exports: [
@@ -32,7 +38,9 @@ import { SidebarComponent } from './sidebar/sidebar.component';
     CarouselComponent,
     FeedbackComponent,
     FooterComponent,
-    SidebarComponent
+    SidebarComponent,
+    ProfessionalListComponent,
+
     
     
   ],

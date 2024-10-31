@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { AuthService } from "../../auth/auth.services"
+import { AuthService } from '../../auth/auth.services';
 import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  templateUrl: './header.component.html'
 })
 export class HeaderComponent {
   isAuthenticated = false;
@@ -15,12 +15,7 @@ export class HeaderComponent {
     });
   }
 
-  navigateToLogin() {
-    this.router.navigate(['/login']);
-  }
-
   navigateToProfile() {
     this.router.navigate(['/profile']);
   }
-
 }

@@ -7,6 +7,7 @@ import { FooterComponent } from './footer/footer.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
 import { ServiceService } from '../services/service.service';
+import { SidebarComponent } from './sidebar/sidebar.component';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { ServiceService } from '../services/service.service';
     CarouselComponent,
     FeedbackComponent,
     FooterComponent,
+    SidebarComponent,
     
     
     
@@ -29,7 +31,8 @@ import { ServiceService } from '../services/service.service';
     HeaderComponent,
     CarouselComponent,
     FeedbackComponent,
-    FooterComponent
+    FooterComponent,
+    SidebarComponent
     
     
   ],

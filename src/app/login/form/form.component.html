@@ -14,7 +14,7 @@
         
         <!-- Formulario de Registro -->
         <div class="form-container sign-up">
-            <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+            <form [formGroup]="userForm" (ngSubmit)="onRegister()">
                 <h1>Crear Cuenta</h1>
                 
                 <div class="social-icons">
@@ -24,7 +24,7 @@
                 
                 <span>O usa tu email para registrarte.</span>
                 
-                <input type="email" id="email" class="form-control" formControlName="email" placeholder="Email"/>
+                <input type="email1" id="email" class="form-control" formControlName="email" placeholder="Email"/>
                 <div *ngIf="userForm.get('email')?.invalid && (userForm.get('email')?.dirty || userForm.get('email')?.touched)" class="text-danger">
                   Mail invalido
                 </div>
@@ -40,7 +40,7 @@
         
         <!-- Formulario de Inicio de Sesión -->
         <div class="form-container sign-in">
-            <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+            <form [formGroup]="userForm" (ngSubmit)="onLogin()">
                 <h1>Iniciar Sesión</h1>
                 
                 <div class="social-icons">
@@ -50,8 +50,8 @@
                 
                 <span>O inicia con tu email.</span>
                 
-                <input type="email" id="email" class="form-control" formControlName="email2" placeholder="Email"/>
-                <div *ngIf="userForm.get('email2')?.invalid && (userForm.get('email2')?.dirty || userForm.get('email2')?.touched)" class="text-danger">
+                <input type="email" id="email" class="form-control" formControlName="email" placeholder="Email"/>
+                <div *ngIf="userForm.get('email')?.invalid && (userForm.get('email')?.dirty || userForm.get('email')?.touched)" class="text-danger">
                   Mail invalido
                 </div>
                 

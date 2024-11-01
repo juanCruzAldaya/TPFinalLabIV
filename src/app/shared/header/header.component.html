@@ -1,0 +1,21 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#" style="font-size: x-large;">LaburApp</a>
+  <div *ngIf="isAuthenticated" class="collapse navbar-collapse justify-content-center">
+    <form class="form-inline my-2 my-lg-0" style="display: flex; align-items: center;">
+      <input class="form-control mr-sm-2" type="search" placeholder="Buscar" aria-label="Buscar" style="margin-right: 10px;">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="font-size: medium; margin-left: 5px;">Buscar</button>
+    </form>
+    
+  </div>
+  <div class="collapse navbar-collapse justify-content-end">
+    <ng-container *ngIf="!isAuthenticated; else loggedIn">
+      <a class="navbar-brand" [routerLink]="['/login']" style="font-size: x-large;">Iniciar Sesion</a>
+    </ng-container>
+    <ng-template #loggedIn>
+      <div class="container-icon" (click)="navigateToProfile()">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="font-size: medium" >Profile</button>
+        <img class="icon-profile" src="../../../assets/images/home/image-user.png" alt="User Icon" style="width: 45px; height: 45px;">
+      </div>
+    </ng-template>
+  </div>
+</nav>

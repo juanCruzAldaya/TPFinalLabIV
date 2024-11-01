@@ -1,7 +1,5 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Province } from "../models/province";
-import { Department } from "../models/department";
 
 @Injectable({
   providedIn: "root",
@@ -14,15 +12,15 @@ export class LocationAsyncService {
     return this.http.get(`${this.apiUrl}/provincias`).toPromise();
   }
 
-  getAllMunicipalitiesByProvince(province?: string | null): Promise<any> {
+  getAllDepartmentsByProvince(province?: string): Promise<any> {
     return this.http
       .get(`${this.apiUrl}/departamentos?provincia=${province}&max=529`)
       .toPromise();
   }
 
-  getAllLocalitiesByMunicipality(municipality: Department): Promise<any> {
+  getAllLocalitiesByDepartments(department: string): Promise<any> {
     return this.http
-      .get(`${this.apiUrl}/localidades?municipio=${municipality.nombre}`)
+      .get(`${this.apiUrl}/localidades?departamento=${department}&max=500`)
       .toPromise();
   }
 }

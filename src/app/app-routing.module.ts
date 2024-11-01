@@ -2,11 +2,11 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomePageComponent } from './home/home-page/home-page.component';
 import {FormComponent} from './login/form/form.component'
-import { ProfessionalListComponent } from '../app/shared/professional-list/professional-list.component';
+import { ProfessionalListComponent } from './filter-professionals/professional-list/professional-list.component';
 
 
 const routes: Routes = [
-  { path: 'search', component: ProfessionalListComponent },
+  { path: 'search-professionals', component: ProfessionalListComponent },
   { path: '', component: HomePageComponent },
   { path: 'login', component: FormComponent },
   { path: '**', component: HomePageComponent },

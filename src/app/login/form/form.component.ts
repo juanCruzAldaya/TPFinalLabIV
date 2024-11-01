@@ -2,7 +2,7 @@ import { Component, AfterViewInit, ElementRef, ViewChild, OnInit } from '@angula
 import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { AuthService } from '../../auth/auth.services';
+import { AuthService } from '../../services/auth.services';
 
 export function matchPasswordsValidator(password: string, confirmPassword: string): ValidatorFn {
   return (formGroup: AbstractControl) => {

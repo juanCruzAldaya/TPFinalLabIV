@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./home-page.component.css'] // Corrected to styleUrls
 })
 export class HomePageComponent implements OnInit, OnDestroy {
-  isAuthenticated = false;
+  isAuthenticated:boolean = false;
   private authSubscription: Subscription = new Subscription(); // Initialize with an empty subscription
 
 

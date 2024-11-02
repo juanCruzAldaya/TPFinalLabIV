@@ -4,18 +4,33 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.services';
 
-export function matchPasswordsValidator(password: string, confirmPassword: string): ValidatorFn {
-  return (formGroup: AbstractControl) => {
+export function matchPasswordsValidator(password: string, confirmPassword1: string): ValidatorFn {
+  return (formGroup: AbstractControl): { [key: string]: any } | null => {
     const passwordControl = formGroup.get(password);
-    const confirmPasswordControl = formGroup.get(confirmPassword);
+    const confirmPasswordControl = formGroup.get(confirmPassword1);
+
     if (!passwordControl || !confirmPasswordControl) {
+      console.log("Password or Confirm Password control is missing");
       return null;
     }
-    const error = passwordControl.value === confirmPasswordControl.value ? null : { passwordMismatch: true };
-    confirmPasswordControl.setErrors(error);
-    return error;
+
+    if (confirmPasswordControl.errors && !confirmPasswordControl.errors['passwordMismatch']) {
+      console.log("Other validation errors exist on Confirm Password");
+      return null;
+    }
+
+    if (passwordControl.value !== confirmPasswordControl.value) {
+      confirmPasswordControl.setErrors({ passwordMismatch: true });
+      console.log("Passwords do not match");
+      return { passwordMismatch: true };
+    } else {
+      confirmPasswordControl.setErrors(null);
+      console.log("Passwords match");
+      return null;
+    }
   };
 }
+
 
 @Component({
   selector: 'app-form',
@@ -37,7 +52,9 @@ export class FormComponent implements AfterViewInit, OnInit {
   @ViewChild('register') registerBtn!: ElementRef;
   @ViewChild('login') loginBtn!: ElementRef;
 
-  ngOnInit(): void {
+
+  ngOnInit() {
+    this.isRegistering = true; 
     this.initializeForm();
   }
 
@@ -51,16 +68,20 @@ export class FormComponent implements AfterViewInit, OnInit {
   }
 
   initializeForm(): void {
+    const commonControls = {
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    };
+  
     if (this.isRegistering) {
       this.userForm = this.fb.group({
-        email: ['', [Validators.required, Validators.email]],
-        password: ['', Validators.required],
-        confirmPassword: ['', Validators.required]
-      }, { validator: matchPasswordsValidator('password', 'confirmPassword') });
+        ...commonControls,
+        confirmPassword1: ['', Validators.required]
+      }, { validators: matchPasswordsValidator('password', 'confirmPassword') });
     } else {
       this.userForm = this.fb.group({
         email: ['', [Validators.required, Validators.email]],
-        password: ['', Validators.required]
+        password: ['', [Validators.required]]
       });
     }
   }
@@ -81,30 +102,59 @@ export class FormComponent implements AfterViewInit, OnInit {
   }
 
   onRegister(): void {
-    console.log(this.userForm.value)
+    console.log("Form Valid:", this.userForm.valid);
+    console.log("Form Errors:", this.userForm.errors);
+    console.log("Form Value:", this.userForm.value);
+  
+    // Log each control's errors
+    Object.keys(this.userForm.controls).forEach(key => {
+      const controlErrors = this.userForm.get(key)?.errors;
+      if (controlErrors) {
+        console.log(`Control: ${key}, Errors:`, controlErrors);
+      }
+    });
+  
     if (this.userForm.valid) {
-      console.log("asdasd")
-      this.http.post('http://localhost:8000/users_incompletos', this.userForm.value)
+      const formData = {
+        id: 0,
+        email: this.userForm.value.email,
+        password: this.userForm.value.password
+      };
+  
+      this.http.post('http://localhost:8000/users_incompletos', formData)
         .subscribe(response => {
           console.log('User added:', response);
           this.router.navigate(['/']);
+        }, error => {
+          console.error('Registration failed:', error);
+          if (error.status === 422) {
+            console.error('Validation error:', error.error);
+          }
         });
+    } else {
+      console.log("Form is invalid, please check the errors above.");
     }
   }
-
+  
   onLogin(): void {
-    const { email, password } = this.userForm.value;
-
-    this.authService.login(email, password).subscribe(
-      response => {
-        if (response !=undefined
-        ) {
-          this.router.navigate(['/home']);
+    console.log("Form Value:", this.userForm.value);
+    const email = this.userForm.get('email')?.value;
+    const password = this.userForm.get('password')?.value;
+  
+    if (email && password) {
+      this.authService.login(0,email, password).subscribe(
+        response => {
+          if (response) {
+            this.router.navigate(['/home']);
+          }
+        },
+        error => {
+          console.error('Login failed:', error);
         }
-      },
-      error => {
-        console.error('Login failed:', error);
-      }
-    );
+      );
+    } else {
+      console.error('Email or password is missing');
+    }
   }
+  
 }

@@ -1,5 +1,6 @@
-export interface Professional {
+export interface Usuario {
     id?: number;
+    email: string;
     nombre: string;
     zona: string;
     ciudad: string;

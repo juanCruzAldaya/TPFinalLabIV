@@ -1,0 +1,27 @@
+<app-header [showSearch]="false"></app-header>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3">
+      <app-filter-sidebar (filterChanged)="updateFilter($event)"></app-filter-sidebar>
+    </div>
+    <div class="col-md-9">
+      <div class="professional-list row">
+        <div *ngFor="let service of filteredServices" class="col-md-4 mb-4">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">{{ service.nombre }}</h5>
+              <p class="card-text">{{ service.descripcion }}</p>
+              <p class="card-text"><strong>Zona:</strong> {{ service.departamento }}</p>
+              <p class="card-text"><strong>Ciudad:</strong> {{ service.localidad }}</p>
+              <p class="card-text"><strong>Calificación:</strong> {{ service.calificacion}}</p>
+              <p class="card-text"><strong>Categoría:</strong> {{ service.categoria }}</p>
+              <p class="card-text"><strong>Subcategoría:</strong> {{ service.subCategoria }}</p>
+              <p class="card-text"><strong>Profesional:</strong> {{ service.nombreProfesional }}</p>
+              <p class="card-text"><strong>Precio:</strong> ${{ service.precio }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

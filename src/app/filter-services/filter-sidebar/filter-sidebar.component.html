@@ -1,0 +1,32 @@
+<div class="sidebar">
+  <h3>Filtros</h3>
+  
+  <div class="form-group">
+    <label for="nombre">Profesional</label>
+    <input type="text" class="form-control" id="nombre" [(ngModel)]="filterCriteria.nombre" (input)="onFilterChange()">
+  </div>
+
+  <div class="form-group">
+    <label>Calificación</label>
+    <div>
+      <ng-container *ngFor="let rating of [5, 4, 3, 2, 1]">
+        <input type="radio" name="calificacion" [value]="rating" [(ngModel)]="filterCriteria.calificacion" (change)="onFilterChange()"> {{ rating }} estrellas<br>
+      </ng-container>
+    </div>  
+  </div>
+
+  <div class="form-group">
+    <label for="localidad">Localidad</label>
+    <input type="text" class="form-control" id="localidad" [(ngModel)]="filterCriteria.localidad" (input)="onFilterChange()">
+  </div>
+
+  <div class="form-group">
+    <label for="categoria">Categoría</label>
+    <input type="text" class="form-control" id="categoria" [(ngModel)]="filterCriteria.categoria" (input)="onFilterChange()">
+  </div>
+
+  <div class="form-group">
+    <label for="subCategoria">Subcategoría</label>
+    <input type="text" class="form-control" id="subCategoria" [(ngModel)]="filterCriteria.subCategoria" (input)="onFilterChange()">
+  </div>
+</div>

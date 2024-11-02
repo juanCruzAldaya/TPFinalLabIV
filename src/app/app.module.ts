@@ -10,7 +10,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule, Routes } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { SharedModule } from './shared/shared.module';
-import { FilterServiceModule } from '../app/filter-professionals/filter-services.module';
+import { FilterServiceModule } from '../app/filter-services/filter-services.module';
 @NgModule({
   declarations: [
     AppComponent,

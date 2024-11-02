@@ -13,7 +13,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
 
 
   constructor(private authService: AuthService) {}
-
+  
   ngOnInit() {
     this.authSubscription = this.authService.isAuthenticated().subscribe(
       (authStatus: boolean) => {
@@ -21,6 +21,7 @@ export class HomePageComponent implements OnInit, OnDestroy {
       }
     );
   }
+  
 
   ngOnDestroy() {
     if (this.authSubscription) {

@@ -18,8 +18,8 @@ export class AuthService {
 
 
 
-  login(email: string, password: string): Observable<any> {
-    return this.http.post('http://127.0.0.1:8000/login', { email, password })
+  login(id: number, email: string, password: string): Observable<any> {
+    return this.http.post('http://127.0.0.1:8000/login', {id, email, password })
       .pipe(
         tap(response => {
             if (response != undefined){

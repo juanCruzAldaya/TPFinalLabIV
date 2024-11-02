@@ -8,7 +8,7 @@ export class ServiceService {
 
   getServices() {
     return [
-      { id: 1, title: 'Servicios del hogar', description: 'Profesionales disponibles en tu zona.', image: "assets\\images\\carousel\\electrician.jpg"},
+      { id: 1, title: 'Servicios del hogar', description: '', image: "assets\\images\\carousel\\electrician.jpg"},
       { id: 2, title: 'Servicios del hogar', description: '', image: "assets\\images\\carousel\\plumber.jpg"},
       { id: 3, title: 'Servicios del hogar', description: '', image: "assets\\images\\carousel\\tools.jpg"},
       { id: 4, title: 'Electrónica', description: '', image: "assets\\images\\carousel\\electronica.jpg"},

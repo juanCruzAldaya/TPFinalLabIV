@@ -2,13 +2,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms'; // Import FormsModule if needed
 import { SharedModule } from '../shared/shared.module';
-import { SidebarComponent } from './side-bar/side-bar.component';
-import { ProfessionalListComponent } from './professional-list/professional-list.component';
+import { FilterSidebarComponent } from './filter-sidebar/filter-sidebar.component';
+import { ServiceListComponent } from './service-list/service-list.component';
 
 @NgModule({
   declarations: [
-    SidebarComponent,
-    ProfessionalListComponent,
+    FilterSidebarComponent,
+    ServiceListComponent,
   ],
   imports: [
     CommonModule,
@@ -16,8 +16,8 @@ import { ProfessionalListComponent } from './professional-list/professional-list
     SharedModule
   ],
   exports: [
-    SidebarComponent,
-    ProfessionalListComponent,
+    FilterSidebarComponent,
+    ServiceListComponent,
   ]
 })
 export class FilterServiceModule { }

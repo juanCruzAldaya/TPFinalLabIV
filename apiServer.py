@@ -223,6 +223,46 @@ def add_categoria(categoria: Categoria):
     db.close()
     return {"message": "Categoria added successfully"}
 
+
+
+
+@app.get("/subcategorias/{id}")
+def get_subcategoria(id: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT nombre FROM subcategorias WHERE id = %s", (id,))
+    result = cursor.fetchone()
+    cursor.close()
+    db.close()
+    if result is None:
+        raise HTTPException(status_code=404, detail="Subcategoría no encontrada")
+    return result
+
+@app.get("/categorias/{id}")
+def get_categoria(id: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT nombre FROM categorias WHERE id = %s", (id,))
+    result = cursor.fetchone()
+    cursor.close()
+    db.close()
+    if result is None:
+        raise HTTPException(status_code=404, detail="Categoría no encontrada")
+    return result
+
+@app.get("/usuarios/{id}")
+def get_profesional(id: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT nombre FROM usuarios WHERE id = %s", (id,))
+    result = cursor.fetchone()
+    cursor.close()
+    db.close()
+    if result is None:
+        raise HTTPException(status_code=404, detail="Profesional no encontrado")
+    return result
+
+
 @app.get("/subcategorias")
 def get_subcategorias():
     db = get_db_connection()

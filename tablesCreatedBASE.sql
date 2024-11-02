@@ -7,6 +7,9 @@
     calificacion_promedio DECIMAL(3, 2)
 );
 
+
+
+
 CREATE TABLE clientes (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
@@ -73,4 +76,28 @@ CREATE TABLE direcciones (
     codigo_postal VARCHAR(255) NOT NULL,
     FOREIGN KEY (cliente_id) REFERENCES clientes(id)
 );
+
+CREATE TABLE categorias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE subcategorias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    categoria_id INT,
+    FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+);
+
+CREATE TABLE servicios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion TEXT,
+    precio DECIMAL(10, 2) NOT NULL,
+    calificacion DECIMAL(3, 2),
+    subcategoria_id INT,
+    FOREIGN KEY (subcategoria_id) REFERENCES subcategorias(id)
+);
+
+
 */

@@ -8,15 +8,23 @@ import { Component, Output, EventEmitter } from '@angular/core';
 export class FilterSidebarComponent {
   filterCriteria = {
     localidad: '',
+    calificacion: 0,
     nombre: '',
-    calificacion: '',
     categoria: '',
     subCategoria: '',
     nombreProfesional: ''
   };
 
   @Output() filterChanged = new EventEmitter<any>();
-
+  onRatingChange(rating: number) {
+    if (this.filterCriteria.calificacion === rating) {
+      this.filterCriteria.calificacion = 0; // Deselect if the same rating is clicked
+    } else {
+      this.filterCriteria.calificacion = rating; // Select the new rating
+    }
+    this.onFilterChange();
+  }
+  
   onFilterChange() {
     this.filterChanged.emit(this.filterCriteria);
   }

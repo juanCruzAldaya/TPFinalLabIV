@@ -1,23 +1,41 @@
 // service.service.ts
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+
+
+export function getImagePath(title: string): string {
+  console.log(title);
+  return '../../assets/images/carousel/'+title+".jpg";
+  
+}
+
 
 @Injectable({
-  providedIn: "root"})
-export class ServiceService {
-  constructor() { }
+  providedIn: 'root'
 
-  getServices() {
-    return [
-      { id: 1, title: 'Servicios del hogar', description: '', image: "assets\\images\\carousel\\electrician.jpg"},
-      { id: 2, title: 'Servicios del hogar', description: '', image: "assets\\images\\carousel\\plumber.jpg"},
-      { id: 3, title: 'Servicios del hogar', description: '', image: "assets\\images\\carousel\\tools.jpg"},
-      { id: 4, title: 'Electrónica', description: '', image: "assets\\images\\carousel\\electronica.jpg"},
-      { id: 5, title: 'Mecánica', description: '', image: "assets\\images\\carousel\\mecanica.jpg"},
-      { id: 6, title: 'Joyería', description: '', image: "assets\\images\\carousel\\watch.jpg"},
-      
-      
-      
-      // Añade más servicios aquí con rutas de imágenes válidas
-    ];
+})
+
+
+export class ServiceService {
+  private apiUrl = 'http://127.0.0.1:8000/categorias'; // Reemplaza con la URL de tu API
+
+  constructor(private http: HttpClient) { }
+
+  getCategories(): Observable<Category[]> {
+    return this.http.get<Category[]>(this.apiUrl).pipe(
+      map(categories => categories.map(category => ({
+        ...category,
+        image: getImagePath(category.title)
+      })))
+    );
   }
+}
+
+export interface Category {
+  id: number;
+  title: string;
+  image?: string;
 }

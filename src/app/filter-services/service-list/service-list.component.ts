@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FilterServicesService } from '../../services/filter-services.service';
 import { Servicio } from '../../interfaces/servicio.interface';
 
@@ -8,8 +8,15 @@ import { Servicio } from '../../interfaces/servicio.interface';
   styleUrls: ['./service-list.component.css']
 })
 export class ServiceListComponent implements OnInit {
-  services: Servicio[] = [];
-  filteredServices: Servicio[] = [];
+  
+  @ViewChild('scrollAnchor', { static: false }) scrollAnchor!: ElementRef;
+
+  services: Servicio[] = []; // Array of Servicio
+
+  filteredServices: Servicio[] = []; // Array of Servicio filtered 
+  pageSize = 10; // Number of pages to  
+  currentPage = 1; // Current page number
+  
   filterCriteria = {
     localidad: '',
     nombre: '',
@@ -21,12 +28,30 @@ export class ServiceListComponent implements OnInit {
 
   constructor(private filterService: FilterServicesService) {}
 
+  selectedService: any;
+  isModalOpen = false;
+
+  showServiceDetails(service: any) {
+    this.selectedService = service;
+    this.isModalOpen = true;
+    if (this.isModalOpen == true){
+      
+    }
+
+  }
+
+  closeModal() {
+    this.isModalOpen = false;
+  }
+
   ngOnInit(): void {
     this.filterService.getServices().subscribe(
       (data: Servicio[]) => {
         this.services = data;
-        this.filteredServices = data;
+        this.filteredServices = [];
+        this.loadServices();
         this.loadAdditionalData();
+        this.setupIntersectionObserver();
       },
       (error) => {
         console.error('Error fetching services:', error);
@@ -43,18 +68,33 @@ export class ServiceListComponent implements OnInit {
         service.subCategoria = subCategoria.nombre;
       });
       this.filterService.getProfesional(service.profesional_id).subscribe(profesional => {
-        service.nombreProfesional = profesional.nombre;
+        service.nombreProfesional = profesional.nombre + " " + profesional.apellido;
       });
     });
   }
 
   updateFilter(criteria: any): void {
     this.filterCriteria = criteria;
-    this.filterServices();
+    this.currentPage = 1;
+    this.filteredServices = [];
+    this.loadServices();
   }
 
-  filterServices(): void {
-    this.filteredServices = this.services.filter(service =>
+  // filterServices(): void {
+  //   this.filteredServices = this.services.filter(service =>
+  //     (this.filterCriteria.localidad ? service.localidad.includes(this.filterCriteria.localidad) : true) &&
+  //     (this.filterCriteria.nombre ? service.nombre.includes(this.filterCriteria.nombre) : true) &&
+  //     (this.filterCriteria.calificacion ? service.calificacion === +this.filterCriteria.calificacion : true) &&
+  //     (this.filterCriteria.categoria ? service.categoria.includes(this.filterCriteria.categoria) : true) &&
+  //     (this.filterCriteria.subCategoria ? service.subCategoria.includes(this.filterCriteria.subCategoria) : true) &&
+  //     (this.filterCriteria.nombreProfesional ? service.nombreProfesional.includes(this.filterCriteria.nombreProfesional) : true)
+  //   );
+  // }
+
+  loadServices(): void {
+    const start = (this.currentPage - 1) * this.pageSize;
+    const end = this.currentPage * this.pageSize;
+    const newServices = this.services.slice(start, end).filter(service =>
       (this.filterCriteria.localidad ? service.localidad.includes(this.filterCriteria.localidad) : true) &&
       (this.filterCriteria.nombre ? service.nombre.includes(this.filterCriteria.nombre) : true) &&
       (this.filterCriteria.calificacion ? service.calificacion === +this.filterCriteria.calificacion : true) &&
@@ -62,5 +102,30 @@ export class ServiceListComponent implements OnInit {
       (this.filterCriteria.subCategoria ? service.subCategoria.includes(this.filterCriteria.subCategoria) : true) &&
       (this.filterCriteria.nombreProfesional ? service.nombreProfesional.includes(this.filterCriteria.nombreProfesional) : true)
     );
+    this.filteredServices = [...this.filteredServices, ...newServices];
+    this.currentPage++;
   }
+
+  setupIntersectionObserver(): void {
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        this.loadServices();
+      }
+    });
+    observer.observe(this.scrollAnchor.nativeElement);
+  }
+  checkAvailability(service: any) {
+    // Lógica para verificar disponibilidad
+    console.log('Verificando disponibilidad para:', service);
+  }
+
+  hireService(service: any) {
+    // Lógica para contratar el servicio
+    console.log('Contratando servicio:', service);
+  }
+
+  // More code...
+  // Pagination logic...
+  // Filter and sorting logic...
+  // etc.
 }

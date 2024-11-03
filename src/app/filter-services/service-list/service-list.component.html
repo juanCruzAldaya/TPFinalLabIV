@@ -1,5 +1,5 @@
 <app-header [showSearch]="false"></app-header>
-<div class="container-fluid">
+<div class="container-fluid mt-4">
   <div class="row">
     <div class="col-md-3">
       <app-filter-sidebar (filterChanged)="updateFilter($event)"></app-filter-sidebar>
@@ -7,21 +7,50 @@
     <div class="col-md-9">
       <div class="professional-list row">
         <div *ngFor="let service of filteredServices" class="col-md-4 mb-4">
-          <div class="card h-100 shadow-sm">
+          <div class="serviceCard">
             <div class="card-body">
-              <h5 class="card-title">{{ service.nombre }}</h5>
+              <h5 class="card-title text-primary">{{ service.nombre }}</h5>
               <p class="card-text">{{ service.descripcion }}</p>
-              <p class="card-text"><strong>Zona:</strong> {{ service.departamento }}</p>
               <p class="card-text"><strong>Ciudad:</strong> {{ service.localidad }}</p>
-              <p class="card-text"><strong>Calificación:</strong> {{ service.calificacion}}</p>
               <p class="card-text"><strong>Categoría:</strong> {{ service.categoria }}</p>
               <p class="card-text"><strong>Subcategoría:</strong> {{ service.subCategoria }}</p>
-              <p class="card-text"><strong>Profesional:</strong> {{ service.nombreProfesional }}</p>
-              <p class="card-text"><strong>Precio:</strong> ${{ service.precio }}</p>
+              <p class="card-text"><strong>Profesional:</strong> {{ service.nombreProfesional  }}</p>
+              <div class="button-container">
+                <button class="btn btn-primary custom-btn" (click)="showServiceDetails(service)">Ver Detalles</button>
+              </div>
             </div>
           </div>
         </div>
+        <div #scrollAnchor></div> <!-- Elemento de referencia para lazy loading -->
       </div>
     </div>
   </div>
 </div>
+
+<div class="modal" [ngClass]="{'show': isModalOpen}" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <span class="close" (click)="closeModal()">&times;</span>
+    <h4>{{ selectedService?.nombre }}</h4>
+    <p>{{ selectedService?.descripcion }}</p>
+
+    <p><strong>Profesional:</strong> {{ selectedService?.nombreProfesional }}</p>
+    <p><strong>Categoría:</strong> {{ selectedService?.categoria }}</p>
+    <p><strong>Subcategoría:</strong> {{ selectedService?.subCategoria }}</p>
+    <p><strong>Ciudad:</strong> {{ selectedService?.localidad }}</p>
+    
+    <p><strong>Calificación:</strong> {{ selectedService?.calificacion }}</p>
+
+    <p><strong>Precio:</strong> {{ selectedService?.precio }}</p>
+
+    <div class="button-container">
+
+      <button class="btn-hire-btn" (click)="checkAvailability(selectedService)">Ver Disponibilidad</button>
+      <button class="btn-hire-btn" (click)="hireService(selectedService)">Contratar</button>
+      
+
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>
+  

@@ -13,19 +13,22 @@
   font-size: 45px; /* Cambia el tamaño de la fuente */
   font-weight: 700; /* Cambia el grosor de la fuente */
    color: #333; /* Cambia el color de la fuente */
+   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  background-color: #fff;
+  
 }
 .navbar a {
   font-size: 18px; /* Change to desired font size */
   color: #333; /* Ensure color is applied */
 }
 
-.navbar .navbar-brand, .navbar .navbar-brand a {
-  font-size: 28px !important; /* Use !important if necessary */
-}
 
-.navbar .navbar-brand, .navbar .navbar-brand a {
-  font-size: 18px !important; /* Use !important if necessary */
-}
 .form-inline {
   align-items: center;
   margin-left: auto;

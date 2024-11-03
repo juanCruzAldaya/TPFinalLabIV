@@ -27,13 +27,16 @@
     margin: 20px 0;
   }
   
-  .footer {
+  /* .footer {
     display: flex;
     justify-content: space-between;
-    padding: 20px 0;
+    
     background-color: #f8f9fa;
+  } */
+  .sidebar{
+    max-width: 250px;
+    
   }
-  
   .social-media a {
     margin-right: 10px;
     font-size: 1.5em;
@@ -42,3 +45,5 @@
   .support {
     text-align: right;
   }
+
+

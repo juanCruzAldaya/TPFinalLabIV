@@ -1,16 +1,12 @@
 <!-- carousel.component.html -->
-
-
-<ngb-carousel *ngIf="services && services.length">
-  <ng-template ngbSlide *ngFor="let service of services; let i = index">
-      <div class="picsum-img-wrapper" *ngIf="service.image" loading="lazy">
-        <img [src]="service.image" alt="Plumber">
-         <!-- "..\..\..\assets\images\carousel\plumber.jpg" -->
-      </div>
+<ngb-carousel *ngIf="categories && categories.length">
+  <ng-template ngbSlide *ngFor="let category of categories; let i = index">
+    <div class="picsum-img-wrapper" *ngIf="category.image" loading="lazy">
+      <img [src]="category.image" [alt]="category.title">
+    </div>
     <div class="carousel-caption">
-      <h3>{{ service.title }}</h3>
-      <p>{{ service.description }}</p>
-      <a [routerLink]="['/services', service.id]" class="btn btn-primary">Ver Profesionales</a>
+      <h3>{{ category.title }}</h3>
+      <a [routerLink]="['/services', category.id]" class="btn btn-primary">Ver Profesionales</a>
     </div>
   </ng-template>
 </ngb-carousel>

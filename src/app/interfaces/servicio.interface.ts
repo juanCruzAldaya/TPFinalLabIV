@@ -2,6 +2,7 @@ export interface Servicio {
   id: number;
   profesional_id: number;
   nombre: string;
+  apellido: string;
   descripcion: string;
   precio: number;
   calificacion: number;

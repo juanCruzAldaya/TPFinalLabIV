@@ -1,4 +1,4 @@
- .navbar {
+.navbar {
   position: fixed;
   top: 0;
   width: 100%;
@@ -9,11 +9,11 @@
 }
 
 .navbar-brand {
-  font-family: 'Montserrat', sans-serif; /* Cambia la fuente */
-  font-size: 45px; /* Cambia el tamaño de la fuente */
-  font-weight: 700; /* Cambia el grosor de la fuente */
-   color: #333; /* Cambia el color de la fuente */
-   display: flex;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 45px;
+  font-weight: 700;
+  color: #333;
+  display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
@@ -21,13 +21,12 @@
   cursor: pointer;
   transition: background-color 0.3s ease-in-out;
   background-color: #fff;
-  
-}
-.navbar a {
-  font-size: 18px; /* Change to desired font size */
-  color: #333; /* Ensure color is applied */
 }
 
+.navbar a {
+  font-size: 18px;
+  color: #333;
+}
 
 .form-inline {
   align-items: center;
@@ -44,10 +43,12 @@
 
 .content {
   margin-top: 70px;
-} 
+}
+
 .form-control-dark {
   border-color: var(--bs-gray);
 }
+
 .form-control-dark:focus {
   border-color: #fff;
   box-shadow: 0 0 0 .25rem rgba(255, 255, 255, .25);
@@ -64,11 +65,34 @@
 .container-icon {
   width: auto;
   height: 60px;
-  cursor: pointer; /* Add this to indicate it's clickable */
+  cursor: pointer;
 }
 
 .icon-profile {
   width: 45px;
   height: 45px;
-  pointer-events: auto; /* Ensure pointer events are enabled */
+  pointer-events: auto;
+}
+
+.btn-laburapp {
+  background-color: #ff6f61;
+  border: 2px solid #ff6f61;
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 12px 24px;
+  border-radius: 25px;
+  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  margin: 10px;
+}
+
+.btn-laburapp:hover {
+  background-color: #e65c50;
+  border-color: #e65c50;
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
 }

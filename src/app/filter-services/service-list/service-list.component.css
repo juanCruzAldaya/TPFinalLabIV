@@ -5,7 +5,9 @@ body {
   }
   
   .container-fluid {
-    padding: 20px;
+    padding: 5px;
+    
+    
   }
   
   .card {
@@ -272,7 +274,12 @@ h4{
     margin-left: 10px;
     
 }
-
+.btn-hire-btn:hover {
+  background-color: #0863a8; /* Cambia el color de fondo al pasar el ratón */
+  border-color: #b2d9ff; /* Cambia el color del borde al pasar el ratón */
+  color: #ffffff; /* Cambia el color del texto al pasar el ratón */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* Aumenta la sombra al pasar el ratón */
+}
     
 
 

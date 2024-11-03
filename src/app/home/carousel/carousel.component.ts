@@ -1,4 +1,3 @@
-
 // carousel.component.ts
 import { Component, OnInit } from '@angular/core';
 import { ServiceService, Category } from '../../services/service.service';

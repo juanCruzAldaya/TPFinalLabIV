@@ -26,6 +26,10 @@
   font-size: 24px; /* Cambia el tamaño de la fuente */
   color: #ffffff; /* Cambia el color de la fuente */
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Agrega sombra al texto */
+  margin-bottom: 15px;
+  margin-top: 10px; /* Ajusta este valor según tus necesidades */
+  
+
 }
 
 .carousel-caption p {
@@ -33,6 +37,12 @@
   font-size: 18px; /* Cambia el tamaño de la fuente */
   color: #ecd5d5; /* Cambia el color de la fuente */
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Agrega sombra al texto */
+  margin-bottom: 0;
+
+  margin-top: 10px; /* Ajusta este valor según tus necesidades */
+
+  
+  
 }
 
 .carousel-caption a.btn {
@@ -42,9 +52,15 @@
   background-color: #651277; /* Cambia el color de fondo del botón */
   border: none; /* Elimina el borde */
   padding: 10px 20px; /* Ajusta el relleno */
-  text-shadow: none; /* Elimina la sombra del texto */
+  text-shadow: none; /* Elimina la sombra del texto */ 
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out; /* Agrega efecto de transición */
+  cursor: pointer; /* Cambia el cursor al pasar el ratón */
+  margin-top: 10px; /* Ajusta este valor según tus necesidades */
+  
+  
 }
 
 .carousel-caption a.btn:hover {
   background-color: #0056b3; /* Cambia el color de fondo al pasar el ratón */
 }
+

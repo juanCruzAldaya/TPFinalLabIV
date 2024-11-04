@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FilterServicesService } from '../../services/filter-services.service';
 import { Servicio } from '../../interfaces/servicio.interface';
+import {CalendarComponent} from './../calendar/calendar.component';
+
 
 @Component({
   selector: 'app-service-list',
@@ -10,12 +12,14 @@ import { Servicio } from '../../interfaces/servicio.interface';
 export class ServiceListComponent implements OnInit {
   
   @ViewChild('scrollAnchor', { static: false }) scrollAnchor!: ElementRef;
+  @ViewChild(CalendarComponent) calendarComponent!: CalendarComponent;
 
   services: Servicio[] = []; // Array of Servicio
-
+  showCalendar: boolean = false;
   filteredServices: Servicio[] = []; // Array of Servicio filtered 
   pageSize = 10; // Number of pages to  
   currentPage = 1; // Current page number
+
   
   filterCriteria = {
     localidad: '',
@@ -114,13 +118,38 @@ export class ServiceListComponent implements OnInit {
     });
     observer.observe(this.scrollAnchor.nativeElement);
   }
+
+  ngAfterViewInit(): void {
+    if (this.calendarComponent){
+      console.log('CalendarComponent loaded');
+
+    }
+    else{
+      console.log('CalendarComponent not loaded');
+    }
+  }
+
+  
   checkAvailability(service: any) {
-    // Lógica para verificar disponibilidad
-    console.log('Verificando disponibilidad para:', service);
+    this.selectedService = service;
+    
+    console.log(this.calendarComponent)
+    
+    if (this.calendarComponent){
+      console.log('CalendarComponent loaded');
+      this.showCalendar = true;
+
+      this.calendarComponent.loadCalendar(service.profesional_id);
+    }
+    else{
+      console.log('CalendarComponent not loaded');
+    }
+   
+
   }
 
   hireService(service: any) {
-    // Lógica para contratar el servicio
+    
     console.log('Contratando servicio:', service);
   }
 

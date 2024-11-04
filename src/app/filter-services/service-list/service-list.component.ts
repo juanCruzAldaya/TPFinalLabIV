@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FilterServicesService } from '../../services/filter-services.service';
 import { Servicio } from '../../interfaces/servicio.interface';
 import {CalendarComponent} from './../calendar/calendar.component';
+import { CalendarService } from '../../services/calendar.service';
 
 
 @Component({
@@ -14,6 +15,7 @@ export class ServiceListComponent implements OnInit {
   @ViewChild('scrollAnchor', { static: false }) scrollAnchor!: ElementRef;
   @ViewChild(CalendarComponent) calendarComponent!: CalendarComponent;
 
+  
   services: Servicio[] = []; // Array of Servicio
   showCalendar: boolean = false;
   filteredServices: Servicio[] = []; // Array of Servicio filtered 
@@ -30,7 +32,7 @@ export class ServiceListComponent implements OnInit {
     nombreProfesional: ''
   };
 
-  constructor(private filterService: FilterServicesService) {}
+  constructor(private filterService: FilterServicesService, private calendarService: CalendarService) {}
 
   selectedService: any;
   isModalOpen = false;
@@ -132,11 +134,10 @@ export class ServiceListComponent implements OnInit {
   
   checkAvailability(service: any) {
     this.selectedService = service;
-    
-    console.log(this.calendarComponent)
+    this.calendarComponent = new CalendarComponent(this.calendarService)
     
     if (this.calendarComponent){
-      console.log('CalendarComponent loaded');
+      console.log(this.calendarComponent);
       this.showCalendar = true;
 
       this.calendarComponent.loadCalendar(service.profesional_id);

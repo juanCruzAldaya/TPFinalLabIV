@@ -2,13 +2,19 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 from decimal import Decimal
-
-
+from datetime import date, time, timedelta
+from typing import Optional, List
 
 import mysql.connector
-
+from jose import JWTError, jwt
 from fastapi.middleware.cors import CORSMiddleware
 
+
+
+
+
+SECRET_KEY = "your_secret_key"
+ALGORITHM = "HS256"
 
 
 
@@ -25,21 +31,68 @@ def get_db_connection():
     return db
 
 
-def get_user_credentials(email, db):
-    # (Insert your existing database connection code here)
 
+
+def convert_timedelta_to_time(td: timedelta) -> time:
+    total_seconds = int(td.total_seconds())
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    return time(hours, minutes, seconds)
+
+def get_calendario_by_usuario(usuario_id: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    
+    query = "SELECT * FROM calendarios WHERE usuario_id = %s"
+    cursor.execute(query, (usuario_id,))
+    calendario = cursor.fetchone()
+    
+    if not calendario:
+        return None
+    
+    query_eventos = "SELECT * FROM eventos WHERE calendario_id = %s"
+    cursor.execute(query_eventos, (calendario['id'],))
+    eventos = cursor.fetchall()
+    cursor.close()
+
+    eventos_list = [
+        EventoBase(
+            calendario_id=evento['calendario_id'],
+            fecha=evento['fecha'],
+            hora_inicio=convert_timedelta_to_time(evento['hora_inicio']),
+            hora_fin=convert_timedelta_to_time(evento['hora_fin']),
+            estado=evento['estado']
+        ) 
+        for evento in eventos
+    ]
+    
+    calendario_data = CalendarioBase(
+        usuario_id=calendario['usuario_id'],
+        anio=calendario['anio'],
+        mes=calendario['mes'],
+        eventos=eventos_list
+    )
+    
+    return calendario_data
+def get_user_credentials(email):
+    # Replace with your actual database connection code
+    db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="root",
+        database="laburappdb"
+    )
+    
     cursor = db.cursor(dictionary=True)
     query = "SELECT email, password FROM users_incompletos WHERE email = %s"
     cursor.execute(query, (email,))
+    
     user = cursor.fetchone()
+    print(user)
     cursor.close()
     db.close()
     return user
 
-
-from pydantic import BaseModel, EmailStr, Field
-from typing import Optional, List
-from decimal import Decimal
 
 class Usuario(BaseModel):
     id: Optional[int]
@@ -109,35 +162,56 @@ class Direccion(BaseModel):
     codigo_postal: str
 
 class User_Incompleto(BaseModel):
-    id: Optional[int]
     email: str
     password: str
 
+class EventoBase(BaseModel):
+    calendario_id: int
+    fecha: date
+    hora_inicio: time
+    hora_fin: time
+    estado: Optional[str] = "disponible"
 
-def get_user_credentials(email):
-    # Replace with your actual database connection code
-    db = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="root",
-        database="tpfinallab4"
-    )
-    cursor = db.cursor(dictionary=True)
-    query = "SELECT email, password FROM users_incompletos WHERE email = %s"
-    cursor.execute(query, (email,))
-    user = cursor.fetchone()
-    cursor.close()
-    db.close()
-    print(user)
-    return user
+class EventoCreate(EventoBase):
+    pass
 
-@app.post("/login")
-async def login(user: User_Incompleto):
-    user_data = get_user_credentials(user.email)
-    if user_data and user_data['password'] == user.password:
-        return {"token": "fake-jwt-token"}
-    raise HTTPException(status_code=400, detail="Invalid credentials")
+class EventoUpdate(BaseModel):
+    fecha: Optional[date]
+    hora_inicio: Optional[time]
+    hora_fin: Optional[time]
+    estado: Optional[str]
 
+class EventoResponse(EventoBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+
+
+
+class CalendarioBase(BaseModel):
+    usuario_id: int
+    anio: int
+    mes: int
+    eventos: List[EventoBase] = []
+
+class CalendarioCreate(CalendarioBase):
+    pass
+
+class CalendarioResponse(CalendarioBase):
+    id: int
+    eventos: List[EventoResponse] = []
+
+    class Config:
+        orm_mode = True
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+class AuthResponse(BaseModel):
+    token: str
 
 
 origins = [
@@ -170,6 +244,7 @@ def get_users_incompletos():
 @app.post("/users_incompletos")
 def add_user_incompleto(user_incompleto: User_Incompleto):
     db = get_db_connection()
+    print(user_incompleto)
     cursor = db.cursor()
     cursor.execute("""
         INSERT INTO users_incompletos (email, password)
@@ -213,11 +288,34 @@ def get_categorias():
     db.close()
     return results
 
+
+
+
+
+
+
+
+
+@app.post("/login", response_model=AuthResponse)
+def login(request: LoginRequest):
+
+    print(request)
+    user_data = get_user_credentials(request.email)
+    
+
+    if user_data and request.email == user_data['email'] and request.password == user_data['password']:
+        
+        token = jwt.encode({"sub": request.email}, SECRET_KEY, algorithm=ALGORITHM)
+        return {"token": token}
+    raise HTTPException(status_code=401, detail="Invalid credentials")
+
+
+
 @app.post("/categorias")
 def add_categoria(categoria: Categoria):
     db = get_db_connection()
     cursor = db.cursor()
-    cursor.execute("INSERT INTO categorias (nombre) VALUES (%s)", (categoria.nombre,))
+    cursor.execute("INSERT INTO categwaorias (nombre) VALUES (%s)", (categoria.nombre,))
     db.commit()
     cursor.close()
     db.close()
@@ -254,7 +352,7 @@ def get_categoria(id: int):
 def get_profesional(id: int):
     db = get_db_connection()
     cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT nombre FROM usuarios WHERE id = %s", (id,))
+    cursor.execute("SELECT nombre, apellido FROM usuarios WHERE id = %s", (id,))
     result = cursor.fetchone()
     cursor.close()
     db.close()
@@ -329,28 +427,7 @@ def add_resena(resena: Resena):
     db.close()
     return {"message": "Resena added successfully"}
 
-@app.get("/calendario")
-def get_calendario():
-    db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM calendario")
-    results = cursor.fetchall()
-    cursor.close()
-    db.close()
-    return results
 
-@app.post("/calendario")
-def add_calendario(calendario: Calendario):
-    db = get_db_connection()
-    cursor = db.cursor()
-    cursor.execute("""
-        INSERT INTO calendario (profesional_id, fecha, hora_inicio, hora_fin, estado) 
-        VALUES (%s, %s, %s, %s, %s)
-    """, (calendario.profesional_id, calendario.fecha, calendario.hora_inicio, calendario.hora_fin, calendario.estado))
-    db.commit()
-    cursor.close()
-    db.close()
-    return {"message": "Calendario added successfully"}
 @app.get("/contrataciones")
 def get_contrataciones():
     db = get_db_connection()
@@ -511,6 +588,135 @@ def delete_user_incompleto(user_id: int):
     cursor.close()
     db.close()
     return {"message": "User Incompleto deleted successfully"}
+
+
+
+
+
+@app.get("/calendario")
+def get_calendario():
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM calendario")
+    results = cursor.fetchall()
+    cursor.close()
+    db.close()
+    return results
+
+@app.post("/calendario")
+def add_calendario(calendario: Calendario):
+    db = get_db_connection()
+    cursor = db.cursor()
+    cursor.execute("""
+        INSERT INTO calendario (profesional_id, fecha, hora_inicio, hora_fin, estado) 
+        VALUES (%s, %s, %s, %s, %s)
+    """, (calendario.profesional_id, calendario.fecha, calendario.hora_inicio, calendario.hora_fin, calendario.estado))
+    db.commit()
+    cursor.close()
+    db.close()
+    return {"message": "Calendario added successfully"}
+
+
+
+
+
+
+def create_calendario(calendario: CalendarioCreate):
+    db = get_db_connection()
+    cursor = db.cursor()
+    query = "INSERT INTO calendarios (usuario_id, anio, mes) VALUES (%s, %s, %s)"
+    cursor.execute(query, (calendario.usuario_id, calendario.anio, calendario.mes))
+    db.commit()
+    calendario_id = cursor.lastrowid
+    cursor.close()
+    return {**calendario.model_dump(), "id": calendario_id, "eventos": []}
+
+
+
+def create_evento(evento: EventoCreate):
+    db = get_db_connection()
+    cursor = db.cursor()
+    query = """
+    INSERT INTO eventos (calendario_id, fecha, hora_inicio, hora_fin, estado)
+    VALUES (%s, %s, %s, %s, %s)
+    """
+    cursor.execute(query, (evento.calendario_id, evento.fecha, evento.hora_inicio, evento.hora_fin, evento.estado))
+    db.commit()
+    evento_id = cursor.lastrowid
+    cursor.close()
+    return {**evento.model_dump(), "id": evento_id}
+
+def update_evento(evento_id: int, evento: EventoUpdate):
+    db = get_db_connection()
+    cursor = db.cursor()
+    query = """
+    UPDATE eventos
+    SET fecha = %s, hora_inicio = %s, hora_fin = %s, estado = %s
+    WHERE id = %s
+    """
+    cursor.execute(query, (evento.fecha, evento.hora_inicio, evento.hora_fin, evento.estado, evento_id))
+    db.commit()
+    cursor.close()
+    return {**evento.model_dump(), "id": evento_id}
+
+def delete_evento(evento_id: int):
+    db = get_db_connection()
+    cursor = db.cursor()
+    query = "DELETE FROM eventos WHERE id = %s"
+    cursor.execute(query, (evento_id,))
+    db.commit()
+    cursor.close()
+    return {"id": evento_id}
+
+
+
+
+
+
+
+@app.post("/calendarios/", response_model= CalendarioResponse)
+def create_calendario(calendario: CalendarioCreate):
+    db = get_db_connection()
+    if db:
+        return create_calendario(db, calendario)
+    else:
+        raise HTTPException(status_code=500, detail="Error al conectar a la base de datos")
+
+@app.get("/calendarios/{usuario_id}", response_model=CalendarioBase)
+def read_calendario(usuario_id: int):
+    calendario = get_calendario_by_usuario(usuario_id)
+    if not calendario:
+        raise HTTPException(status_code=404, detail="Calendario no encontrado")
+    return calendario
+
+
+
+@app.post("/eventos/", response_model=EventoResponse)
+def create_evento(evento: EventoCreate):
+    db = get_db_connection()
+    if db:
+        return create_evento(db, evento)
+    else:
+        raise HTTPException(status_code=500, detail="Error al conectar a la base de datos")
+
+@app.put("/eventos/{evento_id}", response_model=EventoResponse)
+def update_evento(evento_id: int, evento: EventoUpdate):
+    db = get_db_connection()
+    if db:
+        return update_evento(db, evento_id, evento)
+    else:
+        raise HTTPException(status_code=500, detail="Error al conectar a la base de datos")
+
+@app.delete("/eventos/{evento_id}", response_model=EventoResponse)
+def delete_evento(evento_id: int):
+    db = get_db_connection()
+    if db:
+        return delete_evento(db, evento_id)
+    else:
+        raise HTTPException(status_code=500, detail="Error al conectar a la base de datos")
+
+
+
 
 
 

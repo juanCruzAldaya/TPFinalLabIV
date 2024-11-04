@@ -40,6 +40,7 @@ export function matchPasswordsValidator(password: string, confirmPassword1: stri
 export class FormComponent implements AfterViewInit, OnInit {
   isRegistering: boolean = false;
   userForm!: FormGroup;
+  loginForm!: FormGroup;
 
   constructor(
     private authService: AuthService,
@@ -56,6 +57,11 @@ export class FormComponent implements AfterViewInit, OnInit {
   ngOnInit() {
     this.isRegistering = true; 
     this.initializeForm();
+    this.loginForm = this.fb.group({
+      emailLogin: ['', [Validators.required, Validators.email]],
+      passwordLogin: ['', [Validators.required, Validators.minLength(6)]]
+    });
+   
   }
 
   ngAfterViewInit() {
@@ -69,7 +75,7 @@ export class FormComponent implements AfterViewInit, OnInit {
 
   initializeForm(): void {
     const commonControls = {
-      email: ['', [Validators.required, Validators.email]],
+      email: ['', [Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     };
   
@@ -83,6 +89,7 @@ export class FormComponent implements AfterViewInit, OnInit {
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required]]
       });
+      
     }
   }
 
@@ -120,7 +127,7 @@ export class FormComponent implements AfterViewInit, OnInit {
         email: this.userForm.value.email,
         password: this.userForm.value.password
       };
-  
+      
       this.http.post('http://localhost:8000/users_incompletos', formData)
         .subscribe(response => {
           console.log('User added:', response);
@@ -137,12 +144,13 @@ export class FormComponent implements AfterViewInit, OnInit {
   }
   
   onLogin(): void {
-    console.log("Form Value:", this.userForm.value);
-    const email = this.userForm.get('email')?.value;
-    const password = this.userForm.get('password')?.value;
-  
+    console.log("Form Value:", this.loginForm.value);
+    const email = this.loginForm.get('emailLogin')?.value;
+    const password = this.loginForm.get('passwordLogin')?.value;
+
     if (email && password) {
-      this.authService.login(0,email, password).subscribe(
+      
+      this.authService.login(email, password).subscribe(
         response => {
           if (response) {
             this.router.navigate(['/home']);

@@ -41,16 +41,24 @@
     <p><strong>Calificación:</strong> {{ selectedService?.calificacion }}</p>
 
     <p><strong>Precio:</strong> {{ selectedService?.precio }}</p>
-    <!-- <div *ngIf="showCalendar"> <app-professional-calendar></app-professional-calendar> </div> -->
+
     <div class="button-container">
 
-      <button class="btn-hire-btn" (click)="checkAvailability(selectedService)">Ver Disponibilidad</button>
+      <button class="btn-hire-btn" (click)="openCalendarModal(selectedService)">Ver Disponibilidad</button>
       <button class="btn-hire-btn" (click)="hireService(selectedService)">Contratar</button>
       
 
     </div>
   </div>
 </div>
-
+<div class="modal" [ngClass]="{'show': isCalendarModalOpen}" (click)="closeCalendarModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <span class="close" (click)="closeCalendarModal()">&times;</span>
+    <h4>Disponibilidad de {{ selectedService?.nombreProfesional }}</h4>
+    <div *ngIf="showCalendar">
+      <app-professional-calendar [events]="selectedService?.eventos" (dayClicked)="onDayClicked($event)"></app-professional-calendar>
+    </div>
+  </div>
+</div>
 <app-footer></app-footer>
   

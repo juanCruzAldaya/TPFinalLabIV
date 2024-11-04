@@ -31,18 +31,18 @@
     </div>
     <!-- Formulario de Inicio de Sesión -->
     <div class="form-container sign-in">
-      <form [formGroup]="userForm" (ngSubmit)="onLogin()">
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
         <h1>Iniciar Sesión</h1>
         <div class="social-icons">
           <a href="#" (click)="onGoogleSignIn()" class="icon"><i class="fa-brands fa-google"></i></a>
           <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
         </div>
         <span>O inicia con tu email.</span>
-        <input type="email" id="email" class="form-control" formControlName="email" placeholder="Email"/>
-        <div *ngIf="userForm.get('email')?.invalid && (userForm.get('email')?.dirty || userForm.get('email')?.touched)" class="text-danger">
+        <input type="email" id="email" class="form-control" formControlName="emailLogin" placeholder="Email"/>
+        <div *ngIf="userForm.get('emailLogin')?.invalid && (userForm.get('emailLogin')?.dirty || userForm.get('emailLogin')?.touched)" class="text-danger">
           Mail invalido
         </div>
-        <input type="password" placeholder="Contraseña" class="form-control" formControlName="password"/>
+        <input type="password" placeholder="Contraseña" class="form-control" formControlName="passwordLogin"/>
         <a href="#">¿Olvidaste tu contraseña?</a>
         <button type="submit">Iniciar Sesión</button>
       </form>

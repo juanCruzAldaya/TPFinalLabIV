@@ -1,7 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, catchError } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+
+
+interface AuthResponse {
+  token: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -18,20 +23,24 @@ export class AuthService {
 
 
 
-  login(id: number, email: string, password: string): Observable<any> {
-    return this.http.post('http://127.0.0.1:8000/login', {id, email, password })
-      .pipe(
-        tap(response => {
-            if (response != undefined){
-              this.authStatus.next(true);
-              
-            }
-          }
-        )
-      );
+  
+  login(email: string, password: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>('http://127.0.0.1:8000/login', { email, password }, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
+      tap((response: AuthResponse) => {
+        if (response && response.token) {
+          localStorage.setItem('token', response.token);
+          this.authStatus.next(true);
+        }
+      }),
+      catchError(error => {
+        console.error('Login error', error);
+        this.authStatus.next(false);
+        throw error;
+      })
+    );
   }
-  
-  
   
 
   logout() {

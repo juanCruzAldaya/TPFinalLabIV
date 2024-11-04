@@ -3,7 +3,7 @@ import { FilterServicesService } from '../../services/filter-services.service';
 import { Servicio } from '../../interfaces/servicio.interface';
 import {CalendarComponent} from './../calendar/calendar.component';
 import { CalendarService } from '../../services/calendar.service';
-
+import { Calendario } from '../../interfaces/calendario.interface';
 
 @Component({
   selector: 'app-service-list',
@@ -15,7 +15,7 @@ export class ServiceListComponent implements OnInit {
   @ViewChild('scrollAnchor', { static: false }) scrollAnchor!: ElementRef;
   @ViewChild(CalendarComponent) calendarComponent!: CalendarComponent;
 
-  
+  isCalendarModalOpen = false;
   services: Servicio[] = []; // Array of Servicio
   showCalendar: boolean = false;
   filteredServices: Servicio[] = []; // Array of Servicio filtered 
@@ -132,23 +132,22 @@ export class ServiceListComponent implements OnInit {
   }
 
   
-  checkAvailability(service: any) {
+  openCalendarModal(service: any) {
     this.selectedService = service;
-    this.calendarComponent = new CalendarComponent(this.calendarService)
-    
-    if (this.calendarComponent){
-      console.log(this.calendarComponent);
-      this.showCalendar = true;
+    this.isCalendarModalOpen = true;
+    this.showCalendar = false;
 
-      this.calendarComponent.loadCalendar(service.profesional_id);
-    }
-    else{
-      console.log('CalendarComponent not loaded');
-    }
-   
-
+    this.calendarService.getCalendar(service.profesional_id).subscribe(
+      (calendario: Calendario) => {
+        this.selectedService.eventos = calendario.eventos;
+        this.showCalendar = true;
+      },
+      (error) => {
+        console.error('Error al cargar el calendario', error);
+      }
+    );
   }
-
+ 
   hireService(service: any) {
     
     console.log('Contratando servicio:', service);
@@ -158,4 +157,31 @@ export class ServiceListComponent implements OnInit {
   // Pagination logic...
   // Filter and sorting logic...
   // etc.
+
+
+
+closeCalendarModal() {
+  this.isCalendarModalOpen = false;
+}
+
+onDayClicked(date: Date) {
+  // Lógica para manejar la selección de un día y mostrar los horarios disponibles
+  console.log('Día seleccionado:', date);
+}
+
+onEventClicked(event: Event) {
+  // Lógica para manejar la selección de un evento en el calendario
+  console.log('Evento seleccionado:', event);
+}
+
+onSlotClicked(slot: any) {
+  // Lógica para manejar la selección de un slot en el calendario
+  console.log('Slot seleccionado:', slot);
+}
+
+onDateSelected(date: Date) {
+  // Lógica para manejar la selección de una fecha en el calendario
+  console.log('Fecha seleccionada:', date);
+}
+
 }

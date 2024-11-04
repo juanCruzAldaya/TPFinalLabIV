@@ -11,12 +11,14 @@ import { RouterModule, Routes } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { SharedModule } from './shared/shared.module';
 import { FilterServiceModule } from '../app/filter-services/filter-services.module';
+
+
+
 @NgModule({
   declarations: [
     AppComponent,
     FormComponent,
-
-   
+    
   ],
 
   imports: [
@@ -28,13 +30,14 @@ import { FilterServiceModule } from '../app/filter-services/filter-services.modu
     NgbModule,
     SharedModule,
     HttpClientModule,
-    FilterServiceModule
+    FilterServiceModule,
     
     
   ],
   exports:[
     RouterModule,
-    FormComponent
+    FormComponent,
+    
   ],
   
   providers: [],

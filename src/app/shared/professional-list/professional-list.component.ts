@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProfessionalService } from '../../services/professional.service';
-import { Professional } from '../../interfaces/professional';
+import { Professional } from '../../interfaces/Users.interfaces';
 
 
 @Component({

@@ -81,7 +81,7 @@ export class FormComponent implements AfterViewInit, OnInit {
   }
 
   onRegister(): void {
-    console.log(this.userForm.value)
+    console.log(this.userForm.value) 
     if (this.userForm.valid) {
       console.log("asdasd")
       this.http.post('http://localhost:8000/users_incompletos', this.userForm.value)

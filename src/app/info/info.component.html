@@ -1,33 +1,40 @@
 <body>
     <div class="container">
-        
-            <form >
-                <h1>Informacion personal</h1>
-                <span>Completa el siguiente formulario para terminar de configurar tu cuenta.</span>
-                <p>Nombre</p>
-                <input type="text" class="form-control" >
-                
-                <p>Apelldio</p>
-                <input type="text"class="form-control" >
-                
-                <p>Fecha de nacimiento</p>
-                <input type="date"class="form-control">
-                
-                <p>Numero de contacto</p>
-                <input type="number"class="form-control" >
+        <form [formGroup]="formGroup" (ngSubmit)="onCompleting()">
+            <h1>Información Personal</h1>
+            <span>Completa el siguiente formulario para terminar de configurar tu cuenta.</span>
 
-                <p>Provincia</p>
-                <input type="text"class="form-control" >
+            <p>Nombre</p>
+            <input type="text" class="form-control" id="nombre" formControlName="nombre">
+            <div *ngIf="formGroup.get('nombre')?.invalid && (formGroup.get('nombre')?.dirty || formGroup.get('nombre')?.touched)" class="text-danger">
+                El campo debe estar completo
+            </div>
 
-                <p>Ciudad</p>
-                <input type="text"class="form-control" >
+            <p>Apellido</p>
+            <input type="text" class="form-control" id="apellido" formControlName="apellido">
+            <div *ngIf="formGroup.get('apellido')?.invalid && (formGroup.get('apellido')?.dirty || formGroup.get('apellido')?.touched)" class="text-danger">
+                El campo debe estar completo
+            </div>
 
-                
+            <p>Fecha de nacimiento</p>
+            <input type="date" class="form-control" id="nacimiento" formControlName="nacimiento">
+            <div *ngIf="formGroup.get('nacimiento')?.invalid && (formGroup.get('nacimiento')?.dirty || formGroup.get('nacimiento')?.touched)" class="text-danger">
+                El campo debe estar completo
+            </div>
 
-                
-                
-                <button type="submit">Guardar</button>
-            </form>
-        
+            <p>Número de contacto</p>
+            <input type="number" class="form-control" id="contacto" formControlName="contacto">
+            <div *ngIf="formGroup.get('contacto')?.invalid && (formGroup.get('contacto')?.dirty || formGroup.get('contacto')?.touched)" class="text-danger">
+                El campo debe estar completo
+            </div>
+
+            <p>Ciudad</p>
+            <input type="text" class="form-control" id="ciudad" formControlName="ciudad">
+            <div *ngIf="formGroup.get('ciudad')?.invalid && (formGroup.get('ciudad')?.dirty || formGroup.get('ciudad')?.touched)" class="text-danger">
+                El campo debe estar completo
+            </div>
+
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </form>
     </div>
 </body>

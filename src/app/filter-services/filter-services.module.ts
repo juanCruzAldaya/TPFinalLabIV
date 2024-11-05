@@ -8,12 +8,14 @@ import { CalendarComponent } from '../filter-services/calendar/calendar.componen
 import { CalendarModule, DateAdapter } from 'angular-calendar';
 import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { CalendarService } from '../services/calendar.service';
+import { AvailableSlotsComponent } from './available-slots/available-slots.component';
 
 @NgModule({
   declarations: [
     FilterSidebarComponent,
     ServiceListComponent,
-    CalendarComponent
+    CalendarComponent,
+    AvailableSlotsComponent
     
   ],
   imports: [

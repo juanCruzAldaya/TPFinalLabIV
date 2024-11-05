@@ -4,7 +4,7 @@ import { Servicio } from '../../interfaces/servicio.interface';
 import {CalendarComponent} from './../calendar/calendar.component';
 import { CalendarService } from '../../services/calendar.service';
 import { Calendario } from '../../interfaces/calendario.interface';
-
+import { CalendarEvent, CalendarMonthViewDay } from 'angular-calendar';
 @Component({
   selector: 'app-service-list',
   templateUrl: './service-list.component.html',
@@ -21,6 +21,8 @@ export class ServiceListComponent implements OnInit {
   filteredServices: Servicio[] = []; // Array of Servicio filtered 
   pageSize = 10; // Number of pages to  
   currentPage = 1; // Current page number
+  availableSlots: string[] = [];
+  selectedDate: Date | null = null;
 
   
   filterCriteria = {
@@ -136,24 +138,42 @@ export class ServiceListComponent implements OnInit {
     this.selectedService = service;
     this.isCalendarModalOpen = true;
     this.showCalendar = false;
-
+  
     this.calendarService.getCalendar(service.profesional_id).subscribe(
       (calendario: Calendario) => {
+        // Si el calendario existe, asignamos los eventos
         this.selectedService.eventos = calendario.eventos;
         this.showCalendar = true;
       },
       (error) => {
         console.error('Error al cargar el calendario', error);
+        // Si hay un error (por ejemplo, el calendario no existe), inicializamos un calendario vacío
+        this.selectedService.eventos = [];
+        this.showCalendar = true;
       }
     );
   }
- 
+
+  handleDayClick({ day }: { day: CalendarMonthViewDay<any> }): void {
+    this.selectedDate = day.date;
+    this.showCalendar = false;
+    this.calendarService.getAvailableSlots(this.selectedService.profesional_id, this.selectedDate).subscribe(
+      (availableSlots: string[]) => {
+        this.availableSlots = availableSlots;
+      },
+      (error: any) => {
+        console.error('Error fetching available slots', error);
+      }
+    );
+  }
+  
+
   hireService(service: any) {
     
     console.log('Contratando servicio:', service);
   }
 
-  // More code...
+ //More code...
   // Pagination logic...
   // Filter and sorting logic...
   // etc.
@@ -164,24 +184,39 @@ closeCalendarModal() {
   this.isCalendarModalOpen = false;
 }
 
+
 onDayClicked(date: Date) {
-  // Lógica para manejar la selección de un día y mostrar los horarios disponibles
   console.log('Día seleccionado:', date);
+  // Aquí puedes llamar a un servicio para obtener los horarios disponibles para el día seleccionado
+  this.calendarService.getAvailableSlots(this.selectedService.profesional_id, date).subscribe(
+    (slots: any[]) => {
+      this.availableSlots = slots;
+      // Aquí puedes actualizar la vista para mostrar los horarios disponibles
+    },
+    (error) => {
+      console.error('Error al obtener los horarios disponibles', error);
+    }
+  );
 }
+
+onSlotSelected(slot: string): void {
+  console.log('Selected slot:', slot);
+  
+  // Aquí puedes manejar la lógica para cuando se selecciona un horario
+}
+//
 
 onEventClicked(event: Event) {
   // Lógica para manejar la selección de un evento en el calendario
   console.log('Evento seleccionado:', event);
 }
 
-onSlotClicked(slot: any) {
-  // Lógica para manejar la selección de un slot en el calendario
-  console.log('Slot seleccionado:', slot);
-}
 
 onDateSelected(date: Date) {
   // Lógica para manejar la selección de una fecha en el calendario
   console.log('Fecha seleccionada:', date);
 }
 
+
 }
+

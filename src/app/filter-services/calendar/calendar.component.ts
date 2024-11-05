@@ -29,7 +29,7 @@ export class CalendarComponent implements OnInit {
 
   viewDate: Date = new Date();
   @Input () events: Evento[] = [];
-  @Output() dayClicked = new EventEmitter<Date>();
+  @Output() dayClicked = new EventEmitter<{ day: CalendarMonthViewDay<any> }>();
 
   calendarEvents: CalendarEvent[] = [];
 
@@ -57,7 +57,7 @@ export class CalendarComponent implements OnInit {
   onEventClick(event: { event: CalendarEvent }): void {
     console.log('Event clicked:', event);
   }
-  handleDayClick({ day }: { day: CalendarMonthViewDay }): void {
-    this.dayClicked.emit(day.date);
+  handleDayClick(event: { day: CalendarMonthViewDay<any>; sourceEvent: MouseEvent | KeyboardEvent }): void {
+    this.dayClicked.emit({ day: event.day });
   }
 }

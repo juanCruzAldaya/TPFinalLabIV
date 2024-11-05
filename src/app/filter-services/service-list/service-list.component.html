@@ -55,9 +55,19 @@
   <div class="modal-content" (click)="$event.stopPropagation()">
     <span class="close" (click)="closeCalendarModal()">&times;</span>
     <h4>Disponibilidad de {{ selectedService?.nombreProfesional }}</h4>
-    <div *ngIf="showCalendar">
-      <app-professional-calendar [events]="selectedService?.eventos" (dayClicked)="onDayClicked($event)"></app-professional-calendar>
+    <div *ngIf="selectedDate">
+      <h5>Día seleccionado: {{ selectedDate | date: 'fullDate' }}</h5>
     </div>
+    <div *ngIf="showCalendar">
+      <app-professional-calendar [events]="selectedService?.eventos" (dayClicked)="handleDayClick($event)"></app-professional-calendar>
+    </div>
+    <div *ngIf="!showCalendar">
+      <app-available-slots
+        [availableSlots]="availableSlots"
+        (slotSelected)="onSlotSelected($event)">
+      </app-available-slots>
+    </div>
+    <button class="btn btn-primary" (click)="closeCalendarModal()">Cerrar</button>
   </div>
 </div>
 <app-footer></app-footer>

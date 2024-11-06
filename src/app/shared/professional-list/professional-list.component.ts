@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ProfessionalService } from '../../services/professional.service';
-import { Professional } from '../../interfaces/Users.interfaces';
-
+import { Professional } from '../../interfaces/professional';
 
 @Component({
   selector: 'app-professional-list',

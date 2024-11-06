@@ -16,14 +16,14 @@
                 El campo debe estar completo
             </div>
 
-            <p>Fecha de nacimiento</p>
+            <!-- <p>Fecha de nacimiento</p>
             <input type="date" class="form-control" id="nacimiento" formControlName="nacimiento">
             <div *ngIf="formGroup.get('nacimiento')?.invalid && (formGroup.get('nacimiento')?.dirty || formGroup.get('nacimiento')?.touched)" class="text-danger">
                 El campo debe estar completo
-            </div>
+            </div> -->
 
             <p>Número de contacto</p>
-            <input type="number" class="form-control" id="contacto" formControlName="contacto">
+            <input type="text" class="form-control" id="contacto" formControlName="contacto">
             <div *ngIf="formGroup.get('contacto')?.invalid && (formGroup.get('contacto')?.dirty || formGroup.get('contacto')?.touched)" class="text-danger">
                 El campo debe estar completo
             </div>
@@ -34,7 +34,11 @@
                 El campo debe estar completo
             </div>
 
-            <button type="submit" class="btn btn-primary">Guardar</button>
+          
+            
+            <button type="submit" class="btn btn-primary" [disabled]="isCompleting || formGroup.invalid">Guardar</button>
+
+            
         </form>
     </div>
 </body>

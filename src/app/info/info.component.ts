@@ -55,4 +55,5 @@ export class InfoComponent implements OnInit {
       console.log('Formulario no valido');
     }
   }
+  
 }

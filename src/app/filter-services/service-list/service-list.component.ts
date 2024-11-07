@@ -22,7 +22,7 @@ export class ServiceListComponent implements OnInit {
   pageSize = 10; // Number of pages to  
   currentPage = 1; // Current page number
   availableSlots: string[] = [];
-  selectedDate: Date | null = null;
+  selectedDate: string | null = null;
 
   
   filterCriteria = {
@@ -154,8 +154,8 @@ export class ServiceListComponent implements OnInit {
     );
   }
 
-  handleDayClick({ day }: { day: CalendarMonthViewDay<any> }): void {
-    this.selectedDate = day.date;
+  handleDayClick(event: { day: CalendarMonthViewDay<any>, date: string }) {
+    this.selectedDate = event.date;
     this.showCalendar = false;
     this.calendarService.getAvailableSlots(this.selectedService.profesional_id, this.selectedDate).subscribe(
       (availableSlots: string[]) => {
@@ -185,7 +185,7 @@ closeCalendarModal() {
 }
 
 
-onDayClicked(date: Date) {
+onDayClicked(date: string) {
   console.log('Día seleccionado:', date);
   // Aquí puedes llamar a un servicio para obtener los horarios disponibles para el día seleccionado
   this.calendarService.getAvailableSlots(this.selectedService.profesional_id, date).subscribe(
@@ -200,6 +200,7 @@ onDayClicked(date: Date) {
 }
 
 onSlotSelected(slot: string): void {
+  console.log(slot);
   console.log('Selected slot:', slot);
   
   // Aquí puedes manejar la lógica para cuando se selecciona un horario

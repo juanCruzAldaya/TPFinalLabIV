@@ -3,11 +3,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { HomePageComponent } from './home/home-page/home-page.component';
 import {FormComponent} from './login/form/form.component'
 import { ServiceListComponent } from './filter-services/service-list/service-list.component';
-
+import { BookingFormComponent } from './filter-services/booking-form/booking-form.component'
 
 const routes: Routes = [
   { path: 'search-professionals', component: ServiceListComponent },
   { path: '', component: HomePageComponent },
+  { path: 'booking-form', component: BookingFormComponent },
   { path: 'login', component: FormComponent },
   { path: '**', component: HomePageComponent },
   

@@ -35,10 +35,10 @@ export class CalendarService {
 
 
 
-  getAvailableSlots(profesionalId: number, date: Date): Observable<string[]> {
+  getAvailableSlots(profesionalId: number, date: string): Observable<string[]> {
     return this.getCalendar(profesionalId).pipe(
       map(calendario => {
-        const formattedDate = date.toISOString().split('T')[0];
+        const formattedDate = date;
         const events = calendario.eventos.filter(event => event.fecha === formattedDate);
         const blockedTimes = events.map(event => event.hora_inicio); // Asume que cada evento tiene una propiedad 'hora_inicio'
         const allPossibleTimes = this.generatePossibleTimes();

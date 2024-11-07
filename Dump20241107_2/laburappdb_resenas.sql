@@ -1,8 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `tpfinallab4` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `tpfinallab4`;
+CREATE DATABASE  IF NOT EXISTS `laburappdb` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `laburappdb`;
 -- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: tpfinallab4
+-- Host: 127.0.0.1    Database: laburappdb
 -- ------------------------------------------------------
 -- Server version	8.0.40
 
@@ -18,24 +18,25 @@ USE `tpfinallab4`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `calendario`
+-- Table structure for table `resenas`
 --
 
-DROP TABLE IF EXISTS `calendario`;
+DROP TABLE IF EXISTS `resenas`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `calendario` (
+CREATE TABLE `resenas` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `profesional_id` bigint DEFAULT NULL,
-  `fecha` date NOT NULL,
-  `hora_inicio` time NOT NULL,
-  `hora_fin` time NOT NULL,
-  `estado` varchar(255) DEFAULT 'disponible',
+  `servicio_id` bigint DEFAULT NULL,
+  `cliente_id` bigint DEFAULT NULL,
+  `calificacion` int DEFAULT NULL,
+  `comentario` text,
   PRIMARY KEY (`id`),
-  KEY `profesional_id` (`profesional_id`),
-  CONSTRAINT `calendario_ibfk_1` FOREIGN KEY (`profesional_id`) REFERENCES `profesionales` (`id`),
-  CONSTRAINT `calendario_chk_1` CHECK ((`estado` in (_utf8mb4'disponible',_utf8mb4'reservado')))
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `cliente_id` (`cliente_id`),
+  KEY `resenas_ibfk_1` (`servicio_id`),
+  CONSTRAINT `resenas_ibfk_1` FOREIGN KEY (`servicio_id`) REFERENCES `servicios` (`id`),
+  CONSTRAINT `resenas_ibfk_2` FOREIGN KEY (`cliente_id`) REFERENCES `usuarios` (`id`),
+  CONSTRAINT `resenas_chk_1` CHECK (((`calificacion` >= 1) and (`calificacion` <= 5)))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -47,4 +48,4 @@ CREATE TABLE `calendario` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-07 18:57:25
+-- Dump completed on 2024-11-07 19:21:29

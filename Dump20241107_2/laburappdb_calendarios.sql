@@ -1,8 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `tpfinallab4` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `tpfinallab4`;
+CREATE DATABASE  IF NOT EXISTS `laburappdb` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `laburappdb`;
 -- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: tpfinallab4
+-- Host: 127.0.0.1    Database: laburappdb
 -- ------------------------------------------------------
 -- Server version	8.0.40
 
@@ -18,22 +18,21 @@ USE `tpfinallab4`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `direcciones`
+-- Table structure for table `calendarios`
 --
 
-DROP TABLE IF EXISTS `direcciones`;
+DROP TABLE IF EXISTS `calendarios`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `direcciones` (
+CREATE TABLE `calendarios` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `cliente_id` bigint DEFAULT NULL,
-  `direccion` text NOT NULL,
-  `ciudad` varchar(255) NOT NULL,
-  `codigo_postal` varchar(255) NOT NULL,
+  `usuario_id` bigint DEFAULT NULL,
+  `anio` int NOT NULL,
+  `mes` int NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `cliente_id` (`cliente_id`),
-  CONSTRAINT `direcciones_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `clientes` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `usuario_id` (`usuario_id`),
+  CONSTRAINT `calendarios_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -45,4 +44,4 @@ CREATE TABLE `direcciones` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-07 18:57:24
+-- Dump completed on 2024-11-07 19:21:41

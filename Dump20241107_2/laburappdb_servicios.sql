@@ -1,8 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `tpfinallab4` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `tpfinallab4`;
+CREATE DATABASE  IF NOT EXISTS `laburappdb` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `laburappdb`;
 -- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: tpfinallab4
+-- Host: 127.0.0.1    Database: laburappdb
 -- ------------------------------------------------------
 -- Server version	8.0.40
 
@@ -18,19 +18,25 @@ USE `tpfinallab4`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `clientes`
+-- Table structure for table `servicios`
 --
 
-DROP TABLE IF EXISTS `clientes`;
+DROP TABLE IF EXISTS `servicios`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `clientes` (
+CREATE TABLE `servicios` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `profesional_id` int DEFAULT NULL,
+  `nombre` varchar(255) DEFAULT NULL,
+  `descripcion` text,
+  `precio` decimal(10,2) DEFAULT NULL,
+  `calificacion` int DEFAULT NULL,
+  `sub_categoria` int DEFAULT NULL,
+  `provincia` varchar(255) DEFAULT NULL,
+  `departamento` varchar(255) DEFAULT NULL,
+  `localidad` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -42,4 +48,4 @@ CREATE TABLE `clientes` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-07 18:57:20
+-- Dump completed on 2024-11-07 19:21:30

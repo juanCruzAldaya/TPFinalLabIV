@@ -2,11 +2,11 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 from decimal import Decimal
-from datetime import date, time, timedelta
+from datetime import date, time, timedelta, datetime
 from typing import Optional, List
 
 import mysql.connector
-from jose import JWTError, jwt
+from jose import  jwt
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -144,8 +144,10 @@ class Contratacion(BaseModel):
     id: Optional[int]
     cliente_id: int
     servicio_id: int
-    fecha_contratacion: Optional[str]  # Puedes usar datetime si prefieres
+    fecha_contratacion: Optional[str]  
     calendario_id: int
+    contacto: str
+    domicilio: Optional[str]
     estado: Optional[str] = 'pendiente'
 
 class MetodoDePago(BaseModel):
@@ -162,6 +164,7 @@ class Direccion(BaseModel):
     codigo_postal: str
 
 class User_Incompleto(BaseModel):
+    id: int
     email: str
     password: str
 
@@ -275,7 +278,7 @@ def add_usuario(usuario: Usuario):
     """, (usuario.email, usuario.password, usuario.nombre, usuario.apellido, usuario.contacto, usuario.ciudad, usuario.calificacion_promedio))
     db.commit()
     cursor.close()
-    db.close()
+    db.close()  
     return {"message": "Usuario added successfully"}
 
 @app.get("/categorias")
@@ -443,9 +446,9 @@ def add_contratacion(contratacion: Contratacion):
     db = get_db_connection()
     cursor = db.cursor()
     cursor.execute("""
-        INSERT INTO contrataciones (cliente_id, servicio_id, fecha_contratacion, calendario_id, estado) 
+        INSERT INTO contrataciones (cliente_id, servicio_id, fecha_contratacion, calendario_id,contacto, domicilio, estado) 
         VALUES (%s, %s, %s, %s, %s)
-    """, (contratacion.cliente_id, contratacion.servicio_id, contratacion.fecha_contratacion, contratacion.calendario_id, contratacion.estado))
+    """, (contratacion.cliente_id, contratacion.servicio_id, contratacion.fecha_contratacion, contratacion.calendario_id, contratacion.domicilio, contratacion.contacto, contratacion.estado))
     db.commit()
     cursor.close()
     db.close()
@@ -717,7 +720,15 @@ def delete_evento(evento_id: int):
 
 
 
+# @app.get("/events", response_model=List[EventoBase])
+# def get_events(profesionalId: int, date: datetime.date):
+#     db = get_db_connection()
 
+#     events = [
+#         {"calendario_id": 1, "fecha": date, "hora_inicio": "09:00:00", "hora_fin": "10:00:00", "estado": "reservado"},
+#         {"calendario_id": 1, "fecha": date, "hora_inicio": "11:00:00", "hora_fin": "12:00:00", "estado": "reservado"}
+#     ]
+#     return events
 
 
 if __name__ == "__main__":

@@ -6,6 +6,7 @@ import { map, tap } from 'rxjs/operators';
 
 interface AuthResponse {
   token: string;
+  userId: string;
 }
 
 @Injectable({
@@ -13,6 +14,8 @@ interface AuthResponse {
 })
 export class AuthService {
   private authStatus = new BehaviorSubject<boolean>(false);
+  private apiUrl = 'http://127.0.0.1:8000';
+  private userId: string | null = null;
 
 
   constructor(private http: HttpClient) {}
@@ -31,6 +34,9 @@ export class AuthService {
       tap((response: AuthResponse) => {
         if (response && response.token) {
           localStorage.setItem('token', response.token);
+          
+          console.log(response) // Almacenar el ID del usuario
+          
           this.authStatus.next(true);
         }
       }),
@@ -42,7 +48,9 @@ export class AuthService {
     );
   }
   
-
+  getUserId(): string | null {
+    return this.userId || localStorage.getItem('userId');
+  }
   logout() {
     this.authStatus.next(false);
   }
@@ -53,4 +61,7 @@ export class AuthService {
       resolve({ user: 'Google User' });
     });
   }
-}
+
+
+  }
+

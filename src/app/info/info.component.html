@@ -5,7 +5,7 @@
             <span>Completa el siguiente formulario para terminar de configurar tu cuenta.</span>
 
             <p>Nombre</p>
-            <input type="text" class="form-control" id="nombre" formControlName="nombre">
+            <input type="text"  id="nombre" formControlName="nombre">
             <div *ngIf="formGroup.get('nombre')?.invalid && (formGroup.get('nombre')?.dirty || formGroup.get('nombre')?.touched)" class="text-danger">
                 El campo debe estar completo
             </div>

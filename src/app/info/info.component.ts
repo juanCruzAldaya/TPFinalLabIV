@@ -34,26 +34,26 @@ export class InfoComponent implements OnInit {
   }
 
   onCompleting(): void {
-    if (this.formGroup.valid) {
-      const usuario: Usuarios = {
-        nombre: this.formGroup.get('nombre')?.value,
-        apellido: this.formGroup.get('apellido')?.value,
-        contacto: this.formGroup.get('contacto')?.value,
-        // nacimiento: this.formGroup.get('nacimiento')?.value,
-        ciudad: this.formGroup.get('ciudad')?.value,
-        calificacion_promedio: this.formGroup.get('calificacion_promedio')?.value
-      };
-      this.services.postUser(usuario).subscribe(
-        data => {
-          console.log('Usuario completado y enviado:', data);
-        },
-        error => {
-          console.error('Error al enviar el usuario:', error);
-        }
-      );
-    } else {
-      console.log('Formulario no valido');
-    }
-  }
+  //   if (this.formGroup.valid) {
+  //     const usuario: Usuarios = {
+  //       nombre: this.formGroup.get('nombre')?.value,
+  //       apellido: this.formGroup.get('apellido')?.value,
+  //       contacto: this.formGroup.get('contacto')?.value,
+  //       // nacimiento: this.formGroup.get('nacimiento')?.value,
+  //       ciudad: this.formGroup.get('ciudad')?.value,
+  //       calificacion_promedio: this.formGroup.get('calificacion_promedio')?.value
+  //     };
+  //     this.services.postUser(usuario).subscribe(
+  //       data => {
+  //         console.log('Usuario completado y enviado:', data);
+  //       },
+  //       error => {
+  //         console.error('Error al enviar el usuario:', error);
+  //       }
+  //     );
+  //   } else {
+  //     console.log('Formulario no valido');
+  //   }
+   }
   
-}
+  }

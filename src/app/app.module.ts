@@ -10,6 +10,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule, Routes } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { InfoComponent } from './info/info.component';
+import { ReseñasComponent } from './resenia/resenia.component';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -17,6 +19,7 @@ import { InfoComponent } from './info/info.component';
     AppComponent,
     FormComponent,
     InfoComponent,
+    ReseñasComponent,
     
    
   ],
@@ -28,7 +31,8 @@ import { InfoComponent } from './info/info.component';
     ReactiveFormsModule,
     HomeModule,
     NgbModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
 
     
   ],

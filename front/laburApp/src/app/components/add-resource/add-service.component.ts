@@ -39,10 +39,6 @@ export class AddServiceComponent implements OnInit {
   ];
 
   resourceForm = new FormGroup({
-    price: new FormControl("", [
-      Validators.required,
-      Validators.pattern("[0-9]*"),
-    ]),
     description: new FormControl("", [
       Validators.required,
       Validators.maxLength(500),
@@ -111,6 +107,7 @@ export class AddServiceComponent implements OnInit {
 
   onSubmit() {
     let service: Service = {
+      id: "",
       state: "",
       department: "",
       locality: "",

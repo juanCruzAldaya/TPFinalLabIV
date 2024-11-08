@@ -14,29 +14,6 @@
       <h2 class="mb-4">Formulario de Servicio</h2>
       <form [formGroup]="resourceForm" (ngSubmit)="onSubmit()">
         <div class="mb-3">
-          <label for="precio" class="form-label">Precio</label>
-          <input
-            type="number"
-            name="price"
-            formControlName="price"
-            class="form-control"
-            placeholder="Ingrese el precio"
-          />
-        </div>
-        <div class="mb-3">
-          <label for="que-incluye" class="form-label"
-            >¿Qué incluye? / ¿Qué no incluye?</label
-          >
-          <input
-            class="form-control"
-            name="description"
-            formControlName="description"
-            placeholder="Ingrese lo que incluye"
-            value=""
-          />
-        </div>
-
-        <div class="mb-3">
           <label for="category" class="form-label">Categoria</label>
           <select
             class="form-select"
@@ -70,6 +47,19 @@
               {{ subCategory }}
             </option>
           </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="que-incluye" class="form-label"
+            >¿Qué incluye? / ¿Qué no incluye?</label
+          >
+          <input
+            class="form-control"
+            name="description"
+            formControlName="description"
+            placeholder="Ingrese lo que incluye"
+            value=""
+          />
         </div>
 
         <div class="mb-3">

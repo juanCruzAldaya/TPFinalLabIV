@@ -1,9 +1,10 @@
 export interface IService {
-  description?: string;
-  mainCategory?: string;
-  secondaryCategory?: string;
+  id: string;
+  description: string;
+  mainCategory: string;
+  secondaryCategory: string;
   state: string;
   department: string;
   locality: string;
-  profesionalId: number;
+  profesionalId: string;
 }

@@ -1,18 +1,20 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { environment } from "../../enviroments/enviroments";
+import { IDepartment, IDepartments } from "../interfaces/department.interface";
 
 @Injectable({
   providedIn: "root",
 })
 export class LocationAsyncService {
-  private apiUrl = "https://apis.datos.gob.ar/georef/api";
+  private apiUrl = environment.LOCATION_API_URL;
   constructor(private http: HttpClient) {}
 
   getAllProvinces(): Promise<any> {
     return this.http.get(`${this.apiUrl}/provincias`).toPromise();
   }
 
-  getAllDepartmentsByProvince(province?: string): Promise<any> {
+  getAllDepartmentsByProvince(province?: string): Promise<IDepartments> {
     return this.http
       .get(`${this.apiUrl}/departamentos?provincia=${province}&max=529`)
       .toPromise();

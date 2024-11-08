@@ -58,8 +58,15 @@ export class FormComponent implements AfterViewInit, OnInit {
     this.isRegistering = true; 
     this.initializeForm();
     this.loginForm = this.fb.group({
+      id: 'None',
       emailLogin: ['', [Validators.required, Validators.email]],
-      passwordLogin: ['', [Validators.required, Validators.minLength(6)]]
+      passwordLogin: ['', [Validators.required, Validators.minLength(6)]],
+      nombre:'None',
+      apellido: 'None',
+      contacto: 'None',
+      ciudad: 'None',
+      calificacion_promedio: 'None'
+
     });
    
   }
@@ -75,6 +82,7 @@ export class FormComponent implements AfterViewInit, OnInit {
 
   initializeForm(): void {
     const commonControls = {
+      id: 0,
       email: ['', [Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     };
@@ -82,14 +90,17 @@ export class FormComponent implements AfterViewInit, OnInit {
     if (this.isRegistering) {
       this.userForm = this.fb.group({
         ...commonControls,
-        confirmPassword1: ['', Validators.required]
+        nombre:  'None',
+        apellido: 'None',
+        contacto: 'None',
+        ciudad: 'None',
+        calificacion_promedio: 0
       }, { validators: matchPasswordsValidator('password', 'confirmPassword') });
     } else {
-      this.userForm = this.fb.group({
+      this.loginForm = this.fb.group({
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required]]
       });
-      
     }
   }
 
@@ -120,15 +131,24 @@ export class FormComponent implements AfterViewInit, OnInit {
         console.log(`Control: ${key}, Errors:`, controlErrors);
       }
     });
-  
+    console.log(this.userForm.value.email);
     if (this.userForm.valid) {
       const formData = {
-        id: 0,
+        id: this.userForm.value.id,
         email: this.userForm.value.email,
-        password: this.userForm.value.password
+        password: this.userForm.value.password,
+        nombre: this.userForm.value.nombre,
+        apellido: this.userForm.value.apellido,
+        contacto: this.userForm.value.contacto,
+        ciudad: this.userForm.value.ciudad,
+        calificacion_promedio: this.userForm.value.calificacion_promedio,
+
+        // Add other fields if needed 
       };
-      
-      this.http.post('http://localhost:8000/users_incompletos', formData)
+
+
+      console.log(formData);
+      this.http.post('http://localhost:8000/usuarios', formData)
         .subscribe(response => {
           console.log('User added:', response);
           this.router.navigate(['/']);
@@ -144,12 +164,12 @@ export class FormComponent implements AfterViewInit, OnInit {
   }
   
   onLogin(): void {
-    console.log("Form Value:", this.loginForm.value);
     const email = this.loginForm.get('emailLogin')?.value;
     const password = this.loginForm.get('passwordLogin')?.value;
 
     if (email && password) {
-      
+      console.log(email);
+      console.log(password);
       this.authService.login(email, password).subscribe(
         response => {
           if (response) {
@@ -157,6 +177,7 @@ export class FormComponent implements AfterViewInit, OnInit {
           }
         },
         error => {
+          
           console.error('Login failed:', error);
         }
       );

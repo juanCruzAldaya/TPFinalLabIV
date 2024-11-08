@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
   templateUrl: './available-slots.component.html',
   styleUrl: './available-slots.component.css'
 })
+
+
 export class AvailableSlotsComponent {
     @Input() availableSlots: string[] = [];
     @Output() slotSelected = new EventEmitter<string>();

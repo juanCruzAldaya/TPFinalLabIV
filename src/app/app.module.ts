@@ -11,14 +11,14 @@ import { RouterModule, Routes } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { SharedModule } from './shared/shared.module';
 import { FilterServiceModule } from '../app/filter-services/filter-services.module';
-
+import {InfoComponent} from '../app/complet_user/info.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     FormComponent,
-    
+    InfoComponent    
     
   ],
 
@@ -32,6 +32,7 @@ import { FilterServiceModule } from '../app/filter-services/filter-services.modu
     SharedModule,
     HttpClientModule,
     FilterServiceModule,
+    
     
     
   ],

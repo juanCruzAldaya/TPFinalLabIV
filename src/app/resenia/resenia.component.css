@@ -36,6 +36,7 @@ body{
     margin-bottom: 0;
 }
 
+
 .container span{
     font-size: 12px;
     margin-top: 20px;
@@ -79,7 +80,7 @@ h3{
     justify-content: center;
     flex-direction: column;
     padding: 0 40px;
-    height: 100%;
+    
 }
 
 .container input{

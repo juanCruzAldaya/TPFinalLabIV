@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `laburappdb` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `laburappdb`;
 -- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: laburappdb
@@ -18,26 +16,34 @@ USE `laburappdb`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `servicios`
+-- Table structure for table `calendario`
 --
 
-DROP TABLE IF EXISTS `servicios`;
+DROP TABLE IF EXISTS `calendario`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `servicios` (
+CREATE TABLE `calendario` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `profesional_id` int DEFAULT NULL,
-  `nombre` varchar(255) DEFAULT NULL,
-  `descripcion` text,
-  `precio` decimal(10,2) DEFAULT NULL,
-  `calificacion` int DEFAULT NULL,
-  `sub_categoria` int DEFAULT NULL,
-  `provincia` varchar(255) DEFAULT NULL,
-  `departamento` varchar(255) DEFAULT NULL,
-  `localidad` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `profesional_id` bigint DEFAULT NULL,
+  `fecha` date NOT NULL,
+  `hora_inicio` time NOT NULL,
+  `hora_fin` time NOT NULL,
+  `estado` varchar(255) DEFAULT 'disponible',
+  PRIMARY KEY (`id`),
+  KEY `profesional_id` (`profesional_id`),
+  CONSTRAINT `calendario_ibfk_1` FOREIGN KEY (`profesional_id`) REFERENCES `usuarios` (`id`),
+  CONSTRAINT `calendario_chk_1` CHECK ((`estado` in (_utf8mb4'disponible',_utf8mb4'reservado')))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `calendario`
+--
+
+LOCK TABLES `calendario` WRITE;
+/*!40000 ALTER TABLE `calendario` DISABLE KEYS */;
+/*!40000 ALTER TABLE `calendario` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -48,4 +54,4 @@ CREATE TABLE `servicios` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-07 19:21:30
+-- Dump completed on 2024-11-08 20:10:42

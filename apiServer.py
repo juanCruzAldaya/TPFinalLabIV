@@ -84,6 +84,7 @@ def get_user_credentials(email):
     cursor.execute(query, (email,))  # Asegúrate de que 'email' está en una tupla
     
     user = cursor.fetchone()
+    print(user)
     cursor.close()
     db.close()
     

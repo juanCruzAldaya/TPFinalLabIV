@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `laburappdb` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `laburappdb`;
 -- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: laburappdb
@@ -18,22 +16,28 @@ USE `laburappdb`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `metodos_de_pago`
+-- Table structure for table `categorias`
 --
 
-DROP TABLE IF EXISTS `metodos_de_pago`;
+DROP TABLE IF EXISTS `categorias`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `metodos_de_pago` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `cliente_id` bigint DEFAULT NULL,
-  `tipo` varchar(255) NOT NULL,
-  `detalles` text NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `cliente_id` (`cliente_id`),
-  CONSTRAINT `metodos_de_pago_ibfk_1` FOREIGN KEY (`cliente_id`) REFERENCES `usuarios` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `categorias` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `categorias`
+--
+
+LOCK TABLES `categorias` WRITE;
+/*!40000 ALTER TABLE `categorias` DISABLE KEYS */;
+INSERT INTO `categorias` VALUES (1,'Reparación y mantenimiento'),(2,'Servicios de limpieza'),(3,'Servicios de jardinería y paisajismo'),(4,'Cuidado personal'),(5,'Servicios de belleza'),(6,'Transporte y mudanza'),(7,'Educación y formación'),(8,'Servicios para eventos'),(9,'Consultoría y asesoría'),(10,'Servicios digitales'),(11,'Servicios para mascotas');
+/*!40000 ALTER TABLE `categorias` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -44,4 +48,4 @@ CREATE TABLE `metodos_de_pago` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-07 19:21:31
+-- Dump completed on 2024-11-08 20:10:45

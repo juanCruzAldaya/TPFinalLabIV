@@ -6,21 +6,22 @@ import {
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
-import { Resource } from "../../models/resource";
-import { LocationAsyncService } from "../../services/location-async.service";
+import { Service } from "../../models/service";
 import { CommonModule } from "@angular/common";
-import { IDepartment } from "../../interfaces/department";
-import { ILocality } from "../../interfaces/locality";
-import { IProvince } from "../../interfaces/province";
+import { IDepartment } from "../../interfaces/department.interface";
+import { ILocality } from "../../interfaces/locality.interface";
+import { IProvince } from "../../interfaces/province.interface";
+import { ServicesService } from "../../services/service-async.service";
+import { LocationAsyncService } from "../../services/location-async.service";
 
 @Component({
-  selector: "app-add-resource",
+  selector: "app-add-service",
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule],
-  templateUrl: "./add-resource.component.html",
-  styleUrl: "./add-resource.component.css",
+  templateUrl: "./add-service.component.html",
+  styleUrl: "./add-service.component.css",
 })
-export class AddResourceComponent implements OnInit {
+export class AddServiceComponent implements OnInit {
   provinceList: Array<IProvince> = [];
   departmentList: Array<IDepartment> = [];
   localityList: Array<ILocality> = [];
@@ -55,16 +56,19 @@ export class AddResourceComponent implements OnInit {
     selectedLocality: new FormControl(this.localityList, [Validators.required]),
   });
 
-  constructor(private locationService: LocationAsyncService) {}
+  constructor(
+    private locationService: LocationAsyncService,
+    private servicesService: ServicesService
+  ) {}
 
   ngOnInit() {
     this.locationService
       .getAllProvinces()
-      .then((response) => {
+      .then((response: { provincias: IProvince[] }) => {
         this.provinceList = response.provincias;
         console.log("response.provincias", response.provincias);
       })
-      .catch((error) => {
+      .catch((error: any) => {
         console.log("Ocurrio un error:", JSON.stringify(error));
       });
   }
@@ -73,7 +77,7 @@ export class AddResourceComponent implements OnInit {
   loadDepartments(provinceName: string) {
     this.locationService
       .getAllDepartmentsByProvince(provinceName)
-      .then((response) => {
+      .then((response: { departamentos: IDepartment[] }) => {
         console.log("response.departamentos", response.departamentos);
         this.departmentList = []; // Limpiar las localidades al cambiar la provincia
         this.departmentList = response.departamentos;
@@ -83,7 +87,7 @@ export class AddResourceComponent implements OnInit {
   loadLocalities(departmentName: string) {
     this.locationService
       .getAllLocalitiesByDepartments(departmentName)
-      .then((response) => {
+      .then((response: { localidades: ILocality[] }) => {
         console.log("response.localidades", response.localidades);
         this.localityList = []; // Limpiar las localidades al cambiar la provincia
         this.localityList = response.localidades;
@@ -106,8 +110,12 @@ export class AddResourceComponent implements OnInit {
   }
 
   onSubmit() {
-    let resource = new Resource();
-    const price = this.resourceForm.getRawValue().price as string;
+    let service: Service = {
+      state: "",
+      department: "",
+      locality: "",
+      profesionalId: 0,
+    };
     const description = this.resourceForm.getRawValue().description as string;
     const mainCategory = this.resourceForm.getRawValue()
       .selectedCategory as string;
@@ -122,14 +130,13 @@ export class AddResourceComponent implements OnInit {
     const locality = new Object(
       this.resourceForm.getRawValue().selectedLocality
     ) as ILocality;
-    resource.price = price;
-    resource.description = description;
-    resource.mainCategory = mainCategory;
-    resource.secondaryCategory = secondaryCategory;
-    resource.state = province.nombre;
-    resource.department = department.nombre;
-    resource.locality = locality.nombre;
+    service.description = description;
+    service.mainCategory = mainCategory;
+    service.secondaryCategory = secondaryCategory;
+    service.state = province.nombre;
+    service.department = department.nombre;
+    service.locality = locality.nombre;
 
-    console.log("resource", resource);
+    this.servicesService.addService(service);
   }
 }

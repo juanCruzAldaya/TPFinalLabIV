@@ -1,11 +1,11 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { RouterModule, Routes } from "@angular/router";
-import { AddResourceComponent } from "./components/add-resource/add-resource.component";
 import { PageNotFoundComponent } from "./components/page-not-found/page-not-found.component";
+import { AddServiceComponent } from "./components/add-resource/add-service.component";
 
 export const appRoutes: Routes = [
-  { path: "addResource", component: AddResourceComponent },
+  { path: "addResource", component: AddServiceComponent },
 ];
 
 @NgModule({

@@ -3,3 +3,6 @@ export interface ILocality {
   centroide: { lat: string; lon: string };
   nombre: string;
 }
+export interface ILocalities {
+  departamentos: ILocality[];
+}

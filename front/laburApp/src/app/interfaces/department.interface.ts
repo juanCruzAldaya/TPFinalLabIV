@@ -1,4 +1,4 @@
-import { IProvince } from "./province";
+import { IProvince } from "./province.interface";
 
 export interface IDepartment {
   id: string;
@@ -6,4 +6,8 @@ export interface IDepartment {
   provincia: IProvince;
   centroide: { lat: string; lon: string };
   categoria: string;
+}
+
+export interface IDepartments {
+  departamentos: IDepartment[];
 }

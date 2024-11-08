@@ -3,3 +3,6 @@ export interface IProvince {
   centroide: { lat: string; lon: string };
   nombre: string;
 }
+export interface IProvinces {
+  departamentos: IProvince[];
+}

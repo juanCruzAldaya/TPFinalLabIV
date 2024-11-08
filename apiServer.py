@@ -8,13 +8,12 @@ from typing import Optional, List
 import mysql.connector
 from jose import  jwt
 from fastapi.middleware.cors import CORSMiddleware
-
-
-
+from passlib.context import CryptContext
 
 
 SECRET_KEY = "your_secret_key"
 ALGORITHM = "HS256"
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 
@@ -74,42 +73,50 @@ def get_calendario_by_usuario(usuario_id: int):
     )
     
     return calendario_data
+
+
+
 def get_user_credentials(email):
-    # Replace with your actual database connection code
-    db = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="root",
-        database="laburappdb"
-    )
-    
+    db = get_db_connection()
     cursor = db.cursor(dictionary=True)
-    query = "SELECT email, password FROM users_incompletos WHERE email = %s"
-    cursor.execute(query, (email,))
+    
+    query = "SELECT * FROM usuarios WHERE email = %s"
+    cursor.execute(query, (email,))  # Asegúrate de que 'email' está en una tupla
     
     user = cursor.fetchone()
-    print(user)
     cursor.close()
     db.close()
+    
     return user
+
+
+
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+
+
+
 
 
 class Usuario(BaseModel):
     id: Optional[int]
     email: EmailStr
     password: str
-    nombre: str
-    apellido: str
-    contacto: str
-    ciudad: str
-    calificacion_promedio: Optional[Decimal] = Field(None, max_digits=3, decimal_places=2)
+    nombre: Optional[str]
+    apellido: Optional[str]
+    contacto: Optional[str]
+    ciudad: Optional[str]
+    nacimiento: Optional[date]
+    calificacion_promedio: Optional[Decimal]
+
 
 class Categoria(BaseModel):
     id: Optional[int]
     nombre: str
 
 class SubCategoria(BaseModel):
-    id: Optional[int]
     nombre: str
     categoria_id: int
 
@@ -184,13 +191,15 @@ class EventoUpdate(BaseModel):
     hora_fin: Optional[time]
     estado: Optional[str]
 
+
+
+
+
 class EventoResponse(EventoBase):
     id: int
 
     class Config:
         orm_mode = True
-
-
 
 
 class CalendarioBase(BaseModel):
@@ -215,6 +224,7 @@ class LoginRequest(BaseModel):
 
 class AuthResponse(BaseModel):
     token: str
+    userId: int
 
 
 origins = [
@@ -234,6 +244,16 @@ app.add_middleware(
 
 
 
+@app.put("/usuarios/{id}")
+def update_usuario(user_id: int):
+    db = get_db_connection()
+    if db:
+        return update_user(db, user_id)
+    else:
+        raise HTTPException(status_code=500, detail="Error al conectar a la base de datos")
+
+
+
 @app.get("/users_incompletos")
 def get_users_incompletos():
     db = get_db_connection()
@@ -247,7 +267,7 @@ def get_users_incompletos():
 @app.post("/users_incompletos")
 def add_user_incompleto(user_incompleto: User_Incompleto):
     db = get_db_connection()
-    print(user_incompleto)
+
     cursor = db.cursor()
     cursor.execute("""
         INSERT INTO users_incompletos (email, password)
@@ -270,16 +290,22 @@ def get_usuarios():
 
 @app.post("/usuarios")
 def add_usuario(usuario: Usuario):
+    
     db = get_db_connection()
-    cursor = db.cursor()
-    cursor.execute("""
-        INSERT INTO usuarios (email, password, nombre, apellido, contacto, ciudad, calificacion_promedio) 
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
-    """, (usuario.email, usuario.password, usuario.nombre, usuario.apellido, usuario.contacto, usuario.ciudad, usuario.calificacion_promedio))
-    db.commit()
-    cursor.close()
-    db.close()  
-    return {"message": "Usuario added successfully"}
+    if db:
+        db.get_server_info()
+        cursor = db.cursor()
+        hashed_password = pwd_context.hash(usuario.password)
+    
+        cursor.execute("""
+            INSERT INTO usuarios (email, password) 
+            VALUES (%s, %s)
+        """, (usuario.email, hashed_password))
+        db.commit()
+
+        cursor.close()
+        db.close()  
+        return {"message": "Usuario added successfully"}
 
 @app.get("/categorias")
 def get_categorias():
@@ -294,23 +320,22 @@ def get_categorias():
 
 
 
-
-
-
-
-
 @app.post("/login", response_model=AuthResponse)
 def login(request: LoginRequest):
-
-    print(request)
-    user_data = get_user_credentials(request.email)
+    
+    user = get_user_credentials(request.email)
+    
+    user['password'] = pwd_context.hash(user['password'])
     
 
-    if user_data and request.email == user_data['email'] and request.password == user_data['password']:
-        
-        token = jwt.encode({"sub": request.email}, SECRET_KEY, algorithm=ALGORITHM)
-        return {"token": token}
-    raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    
+    if not user or not verify_password(request.password, user['password']):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    token = jwt.encode({"sub": request.email}, SECRET_KEY, algorithm=ALGORITHM)
+    
+    return {"token": token, "userId": int(user['id'])}
 
 
 
@@ -536,63 +561,6 @@ def delete_direccion(direccion_id: int):
     db.close()
     return {"message": "Direccion deleted successfully"}
 
-@app.get("/users_incompletos")
-def get_users_incompletos():
-    db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM users_incompletos")
-    results = cursor.fetchall()
-    cursor.close()
-    db.close()
-    return results
-
-@app.get("/users_incompletos/{user_id}")
-def get_user_incompleto(user_id: int):
-    db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM users_incompletos WHERE id = %s", (user_id,))
-    result = cursor.fetchone()
-    cursor.close()
-    db.close()
-    if result:
-        return result
-    raise HTTPException(status_code=404, detail="User Incompleto not found")
-
-@app.post("/users_incompletos")
-def add_user_incompleto(user_incompleto: User_Incompleto):
-    db = get_db_connection()
-    cursor = db.cursor()
-    cursor.execute("INSERT INTO users_incompletos (email, password) VALUES (%s, %s)", (user_incompleto.email, user_incompleto.password))
-    db.commit()
-    cursor.close()
-    db.close()
-    return {"message": "User Incompleto added successfully"}
-
-@app.put("/users_incompletos/{user_id}")
-def update_user_incompleto(user_id: int, user_incompleto: User_Incompleto):
-    db = get_db_connection()
-    cursor = db.cursor()
-    cursor.execute("""
-        UPDATE users_incompletos 
-        SET email = %s, password = %s
-        WHERE id = %s
-    """, (user_incompleto.email, user_incompleto.password, user_id))
-    db.commit()
-    cursor.close()
-    db.close()
-    return {"message": "User Incompleto updated successfully"}
-
-@app.delete("/users_incompletos/{user_id}")
-def delete_user_incompleto(user_id: int):
-    db = get_db_connection()
-    cursor = db.cursor()
-    cursor.execute("DELETE FROM users_incompletos WHERE id = %s", (user_id,))
-    db.commit()
-    cursor.close()
-    db.close()
-    return {"message": "User Incompleto deleted successfully"}
-
-
 
 
 
@@ -672,9 +640,17 @@ def delete_evento(evento_id: int):
     return {"id": evento_id}
 
 
-
-
-
+def update_user(user_id: int, usuario: Usuario):
+    db = get_db_connection()
+    cursor = db.cursor()
+    query = """
+    UPDATE usuarios
+    SET nombre = %s, apellido = %s, contacto = %s, nacimiento = %s, ciudad = %s
+    WHERE id = %s
+    """
+    cursor.execute(query, (usuario.nombre, usuario.apellido, usuario.contacto,usuario.nacimiento, usuario.ciudad, user_id))
+    db.commit()
+    cursor.close()
 
 
 @app.post("/calendarios/", response_model= CalendarioResponse)
@@ -683,6 +659,7 @@ def create_calendario(calendario: CalendarioCreate):
     if db:
         return create_calendario(db, calendario)
     else:
+
         raise HTTPException(status_code=500, detail="Error al conectar a la base de datos")
 
 @app.get("/calendarios/{usuario_id}", response_model=CalendarioBase)

@@ -1,4 +1,4 @@
-export interface Usuarios {
+export interface IUsuarios {
   id?: any;  
   email: any;
   password: any;

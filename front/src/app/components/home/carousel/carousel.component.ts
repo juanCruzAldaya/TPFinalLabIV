@@ -1,16 +1,16 @@
 // carousel.component.ts
-import { Component, OnInit } from '@angular/core';
-import { ServiceService, Category } from '../../services/service.service';
+import { Component, OnInit } from "@angular/core";
+import { ServiceService, Category } from "../../../services/service.service";
 
 @Component({
-  selector: 'app-carousel',
-  templateUrl: './carousel.component.html',
-  styleUrls: ['./carousel.component.css']
+  selector: "app-carousel",
+  templateUrl: "./carousel.component.html",
+  styleUrls: ["./carousel.component.css"],
 })
 export class CarouselComponent implements OnInit {
   categories: Category[] = [];
 
-  constructor(private serviceService: ServiceService) { }
+  constructor(private serviceService: ServiceService) {}
 
   ngOnInit(): void {
     this.serviceService.getCategories().subscribe(
@@ -18,7 +18,7 @@ export class CarouselComponent implements OnInit {
         this.categories = data;
       },
       (error) => {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
       }
     );
   }

@@ -5,16 +5,17 @@ import {
   ReactiveFormsModule,
   Validators,
 } from "@angular/forms";
-import { LocationAsyncService } from "../services/location-async.service";
+import { LocationAsyncService } from "../../services/location-async.service";
 import { CommonModule } from "@angular/common";
 import { IDepartment } from "../../interfaces/department.interface";
 import { ILocality } from "../../interfaces/locality.interface";
 import { IProvince } from "../../interfaces/province.interface";
-import { CategoriesService } from "../services/categorie-async.service";
-import { ServicesService } from "../services/service-async.service";
-import { AuthService } from "../services/auth.services";
+import { CategoriesService } from "../../services/categorie-async.service";
+import { ServicesService } from "../../services/service-async.service";
+import { AuthService } from "../../services/auth.services";
 import { ICategory } from "../../interfaces/category.interface";
 import { IService } from "../../interfaces/service.interface";
+import { ISubCategory } from "../../interfaces/subCategory.interface";
 
 @Component({
   selector: "app-add-service",
@@ -27,12 +28,12 @@ export class AddServiceComponent implements OnInit {
   provinceList: Array<IProvince> = [];
   departmentList: Array<IDepartment> = [];
   localityList: Array<ILocality> = [];
-  mainCategoryList: any[] = [
+  mainCategoryList: Array<ICategory> = [
     // "Reparación y mantenimiento",
     // "Servicios de limpieza",
     // "Servicios de jardinería y paisajismo",
   ];
-  subCategoryList: any[] = [
+  subCategoryList: Array<ISubCategory> = [
     // "Limpieza de hogares",
     // "Limpieza de oficinas",
     // "Limpieza de ventanas",

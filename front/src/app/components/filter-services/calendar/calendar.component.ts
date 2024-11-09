@@ -4,7 +4,7 @@ import {
   CalendarView,
   CalendarMonthViewDay,
 } from "angular-calendar";
-import { CalendarService } from "../../services/calendar.service";
+import { CalendarService } from "../../../services/calendar.service";
 import { IEvento } from "../../../interfaces/calendario.interface";
 import { HttpClient } from "@angular/common/http";
 

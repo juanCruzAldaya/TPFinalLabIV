@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
-import { FilterServicesService } from "../../services/filter-services.service";
+import { FilterServicesService } from "../../../services/filter-services.service";
 import { IServicio } from "../../../interfaces/servicio.interface";
 import { CalendarComponent } from "../calendar/calendar.component";
-import { CalendarService } from "../../services/calendar.service";
+import { CalendarService } from "../../../services/calendar.service";
 import { ICalendario } from "../../../interfaces/calendario.interface";
 import { CalendarEvent, CalendarMonthViewDay } from "angular-calendar";
 @Component({

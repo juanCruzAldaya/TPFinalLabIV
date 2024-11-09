@@ -21,7 +21,7 @@ export class CompletingUsersService {
     usuario.password = this.authService.getUserPassword();
     console.log(usuario);
     return this.http.put<IUsuarios>(
-      `${this.apiURL}/usuarios` + "/" + this.authService.getUserId(),
+      `${this.apiURL}/usuarios/${this.authService.getUserId()}`,
       usuario
     );
   }

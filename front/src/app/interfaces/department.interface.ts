@@ -1,4 +1,4 @@
-import { IProvince } from "./province";
+import { IProvince } from "./province.interface";
 
 export interface IDepartment {
   id: string;

@@ -7,4 +7,5 @@ export interface IService {
   department: string;
   locality: string;
   profesionalId: string;
+  calificacion?: number;
 }

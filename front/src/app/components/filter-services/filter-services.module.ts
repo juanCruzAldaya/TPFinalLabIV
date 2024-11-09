@@ -7,7 +7,7 @@ import { ServiceListComponent } from "./service-list/service-list.component";
 import { CalendarComponent } from "./calendar/calendar.component";
 import { CalendarModule, DateAdapter } from "angular-calendar";
 import { adapterFactory } from "angular-calendar/date-adapters/date-fns";
-import { CalendarService } from "../services/calendar.service";
+import { CalendarService } from "../../services/calendar.service";
 import { AvailableSlotsComponent } from "./available-slots/available-slots.component";
 import { BookingFormComponent } from "./booking-form/booking-form.component";
 import { ReactiveFormsModule } from "@angular/forms";

@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { CompletingUsersService } from "../services/completing-users.service";
+import { CompletingUsersService } from "../../services/completing-users.service";
 import { IUsuarios } from "../../interfaces/users.interfaces";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { AuthService } from "../services/auth.services";
+import { AuthService } from "../../services/auth.services";
 
 @Component({
   selector: "app-info",

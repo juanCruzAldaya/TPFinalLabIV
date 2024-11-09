@@ -6,7 +6,7 @@ import { FeedbackComponent } from "../components/home/feedback/feedback.componen
 import { FooterComponent } from "../components/home/footer/footer.component";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { RouterModule } from "@angular/router";
-import { ServiceService } from "../components/services/service.service";
+import { ServiceService } from "../services/service.service";
 import { SidebarComponent } from "../components/home/sidebar/sidebar.component";
 import { FormsModule } from "@angular/forms";
 

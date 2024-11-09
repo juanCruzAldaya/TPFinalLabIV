@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { ReseñasService } from "../services/resenia.service";
+import { ReseñasService } from "../../services/resenia.service";
 import { IReseña } from "../../interfaces/resenia.interface";
 import { FormsModule } from "@angular/forms";
 

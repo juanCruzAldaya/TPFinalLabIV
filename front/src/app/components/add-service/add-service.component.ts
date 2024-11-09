@@ -7,15 +7,14 @@ import {
 } from "@angular/forms";
 import { LocationAsyncService } from "../services/location-async.service";
 import { CommonModule } from "@angular/common";
-import { IDepartment } from "../interfaces/department";
-import { ILocality } from "../interfaces/locality";
-import { IProvince } from "../interfaces/province";
 import { CategoriesService } from "../services/categorie-async.service";
 import { ServicesService } from "../services/service-async.service";
 import { AuthService } from "../services/auth.services";
-import { ICategory } from "../interfaces/category.interface";
-import { IService } from "../interfaces/service.interface";
-import { FilterServiceModule } from "../filter-services/filter-services.module";
+import { ICategory } from "../../interfaces/category.interface";
+import { IService } from "../../interfaces/service.interface";
+import { IDepartment } from "../../interfaces/department";
+import { ILocality } from "../../interfaces/locality";
+import { IProvince } from "../../interfaces/province";
 
 @Component({
   selector: "app-add-service",
@@ -152,7 +151,7 @@ export class AddServiceComponent implements OnInit {
     const category = new Object(
       this.resourceForm.getRawValue().selectedCategory
     ) as ICategory;
-    console.log(category)
+    console.log(category);
     this.loadSubCategoryList(category.id);
   }
 

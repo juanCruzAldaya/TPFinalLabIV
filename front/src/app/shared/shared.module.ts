@@ -1,16 +1,14 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { HeaderComponent } from '../home/header/header.component';
-import { CarouselComponent } from '../home/carousel/carousel.component';
-import { FeedbackComponent } from '../home/feedback/feedback.component';
-import { FooterComponent } from '../home/footer/footer.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { RouterModule } from '@angular/router';
-import { ServiceService } from '../services/service.service';
-import { SidebarComponent } from '../home/sidebar/sidebar.component';
-import {FormsModule}  from '@angular/forms';
-
-
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { HeaderComponent } from "../components/home/header/header.component";
+import { CarouselComponent } from "../components/home/carousel/carousel.component";
+import { FeedbackComponent } from "../components/home/feedback/feedback.component";
+import { FooterComponent } from "../components/home/footer/footer.component";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { RouterModule } from "@angular/router";
+import { ServiceService } from "../components/services/service.service";
+import { SidebarComponent } from "../components/home/sidebar/sidebar.component";
+import { FormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -18,29 +16,17 @@ import {FormsModule}  from '@angular/forms';
     CarouselComponent,
     FeedbackComponent,
     FooterComponent,
-    SidebarComponent
-
+    SidebarComponent,
   ],
 
-  imports: [
-    CommonModule,
-    NgbModule,
-    RouterModule,
-    FormsModule,
-
-
-  ],
+  imports: [CommonModule, NgbModule, RouterModule, FormsModule],
   exports: [
     HeaderComponent,
     CarouselComponent,
     FeedbackComponent,
     FooterComponent,
-    SidebarComponent
-
-    
-    
+    SidebarComponent,
   ],
   providers: [ServiceService],
-  
 })
-export class SharedModule { }
+export class SharedModule {}

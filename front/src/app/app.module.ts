@@ -1,26 +1,20 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { FormComponent } from './login/form/form.component';
-import { HomeModule } from './home/home.module';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { RouterModule, Routes } from '@angular/router';
-import { appRoutes } from './app.routes';
-import { SharedModule } from './shared/shared.module';
-import { FilterServiceModule } from '../app/filter-services/filter-services.module';
-import {InfoComponent} from '../app/complet_user/info.component';
-
+import { NgModule } from "@angular/core";
+import { BrowserModule } from "@angular/platform-browser";
+import { HttpClientModule } from "@angular/common/http";
+import { AppRoutingModule } from "./app-routing.module";
+import { AppComponent } from "./app.component";
+import { ReactiveFormsModule } from "@angular/forms";
+import { FormComponent } from "./components/login/form/form.component";
+import { HomeModule } from "./components/home/home.module";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
+import { RouterModule, Routes } from "@angular/router";
+import { appRoutes } from "./app.routes";
+import { SharedModule } from "./shared/shared.module";
+import { FilterServiceModule } from "./components/filter-services/filter-services.module";
+import { InfoComponent } from "./components/complet_user/info.component";
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    FormComponent,
-    InfoComponent    
-    
-  ],
+  declarations: [AppComponent, FormComponent, InfoComponent],
 
   imports: [
     BrowserModule,
@@ -32,17 +26,10 @@ import {InfoComponent} from '../app/complet_user/info.component';
     SharedModule,
     HttpClientModule,
     FilterServiceModule,
-    
-    
-    
   ],
-  exports:[
-    RouterModule,
-    FormComponent,
-    
-  ],
-  
+  exports: [RouterModule, FormComponent],
+
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

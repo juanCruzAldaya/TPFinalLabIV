@@ -1,0 +1,74 @@
+<app-header [showSearch]="false"></app-header>
+<div class="container-fluid mt-4">
+  <div class="row">
+    <div class="col-md-3">
+      <app-filter-sidebar (filterChanged)="updateFilter($event)"></app-filter-sidebar>
+    </div>
+    <div class="col-md-9">
+      <div class="professional-list row">
+        <div *ngFor="let service of filteredServices" class="col-md-4 mb-4">
+          <div class="serviceCard">
+            <div class="card-body">
+              <h5 class="card-title text-primary">{{ service.nombre }}</h5>
+              <p class="card-text">{{ service.descripcion }}</p>
+              <p class="card-text"><strong>Ciudad:</strong> {{ service.localidad }}</p>
+              <p class="card-text"><strong>Categoría:</strong> {{ service.categoria }}</p>
+              <p class="card-text"><strong>Subcategoría:</strong> {{ service.subCategoria }}</p>
+              <p class="card-text"><strong>Profesional:</strong> {{ service.nombreProfesional  }}</p>
+              <div class="button-container">
+                <button class="btn btn-primary custom-btn" (click)="showServiceDetails(service)">Ver Detalles</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div #scrollAnchor></div> <!-- Elemento de referencia para lazy loading -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" [ngClass]="{'show': isModalOpen}" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <span class="close" (click)="closeModal()">&times;</span>
+    <h4>{{ selectedService?.nombre }}</h4>
+    <p>{{ selectedService?.descripcion }}</p>
+
+    <p><strong>Profesional:</strong> {{ selectedService?.nombreProfesional }}</p>
+    <p><strong>Categoría:</strong> {{ selectedService?.categoria }}</p>
+    <p><strong>Subcategoría:</strong> {{ selectedService?.subCategoria }}</p>
+    <p><strong>Ciudad:</strong> {{ selectedService?.localidad }}</p>
+    
+    <p><strong>Calificación:</strong> {{ selectedService?.calificacion }}</p>
+
+    <p><strong>Precio:</strong> {{ selectedService?.precio }}</p>
+
+    <div class="button-container">
+
+      <button class="btn-hire-btn" (click)="openCalendarModal(selectedService)">Ver Disponibilidad</button>
+      <button class="btn-hire-btn" (click)="hireService(selectedService)">Contratar</button>
+      
+
+    </div>
+  </div>
+</div>
+<div class="modal" [ngClass]="{'show': isCalendarModalOpen}" (click)="closeCalendarModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <span class="close" (click)="closeCalendarModal()">&times;</span>
+    <h4>Disponibilidad de {{ selectedService?.nombreProfesional }}</h4>
+    <div *ngIf="selectedDate">
+      <h5>Día seleccionado: {{ selectedDate | date: 'fullDate' }}</h5>
+    </div>
+    <div *ngIf="showCalendar">
+      <app-professional-calendar [events]="selectedService?.eventos" (dayClicked)="handleDayClick($event)"></app-professional-calendar>
+    </div>
+    <div *ngIf="!showCalendar">
+      <app-available-slots
+        [availableSlots]="availableSlots"
+        (slotSelected)="onSlotSelected($event)">
+      </app-available-slots>
+    </div>
+    <button class="btn btn-primary" (click)="closeCalendarModal()">Cerrar</button>
+  </div>
+</div>
+<app-footer></app-footer>
+  

@@ -1,0 +1,45 @@
+<!-- booking-form.component.html -->
+<app-header></app-header>
+<div class="container mt-5">
+  <div class="card">
+    <div class="card-header bg-primary text-white">
+      <h4>Formulario de Reserva</h4>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+        <div class="form-group mb-3">
+          <label for="contact"><i class="fas fa-user"></i> Contacto:</label>
+          <input id="contact" formControlName="contact" type="text" class="form-control" placeholder="Introduce tu contacto">
+          <div *ngIf="bookingForm.get('contact')?.invalid && bookingForm.get('contact')?.touched" class="text-danger">
+            El contacto es requerido.
+          </div>
+        </div>
+
+        <div class="form-group mb-3">
+          <label for="address"><i class="fas fa-home"></i> Domicilio:</label>
+          <input id="address" formControlName="address" type="text" class="form-control" placeholder="Introduce tu domicilio">
+          <div *ngIf="bookingForm.get('address')?.invalid && bookingForm.get('address')?.touched" class="text-danger">
+            El domicilio es requerido.
+          </div>
+        </div>
+
+        <div class="form-group mb-3">
+          <label for="comments"><i class="fas fa-comments"></i> Comentarios Extras:</label>
+          <textarea id="comments" formControlName="comments" class="form-control" rows="3" placeholder="Introduce tus comentarios"></textarea>
+        </div>
+
+        <div class="form-group mb-3">
+          <label for="date"><i class="fas fa-calendar-alt"></i> Fecha Seleccionada:</label>
+          <input id="date" formControlName="date" type="text" class="form-control" >
+        </div>
+
+        <div class="form-group mb-3">
+          <label for="slot"><i class="fas fa-clock"></i> Horario Seleccionado:</label>
+          <input id="slot" formControlName="slot" type="text" class="form-control" >
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg w-100">Enviar Solicitud</button>
+      </form>
+    </div>
+  </div>
+</div>

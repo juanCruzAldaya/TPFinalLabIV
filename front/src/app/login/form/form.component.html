@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="form.component.css">
+</head>
+<body>
+  <div class="container" id="container" #container>
+    <!-- Formulario de Registro -->
+    <div class="form-container sign-up">
+      <form [formGroup]="userForm" (ngSubmit)="onRegister()">
+        <h1>Crear Cuenta</h1>
+        <div class="social-icons">
+          <a href="#" (click)="onGoogleSignIn()" class="icon"><i class="fa-brands fa-google"></i></a>
+          <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+        </div>
+        <span>O usa tu email para registrarte.</span>
+        <input type="email" id="email" class="form-control" formControlName="email" placeholder="Email"/>
+        <div *ngIf="userForm.get('email')?.invalid && (userForm.get('email')?.dirty || userForm.get('email')?.touched)" class="text-danger">
+          Mail invalido
+        </div>
+        <input type="password" placeholder="Contraseña" id="pass1" class="form-control" formControlName="password"/>
+        <input type="password" placeholder="Repetir contraseña" id="pass2" class="form-control" formControlName="confirmPassword1"/>
+        <div *ngIf="userForm.hasError('passwordMismatch') && userForm.get('confirmPassword1')?.touched" class="text-danger">
+          Las contraseñas no coinciden
+        </div>
+        <button type="submit">Crear Cuenta</button>
+      </form>
+    </div>
+    <!-- Formulario de Inicio de Sesión -->
+    <div class="form-container sign-in">
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+        <h1>Iniciar Sesión</h1>
+        <div class="social-icons">
+          <a href="#" (click)="onGoogleSignIn()" class="icon"><i class="fa-brands fa-google"></i></a>
+          <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+        </div>
+        <span>O inicia con tu email.</span>
+        <input type="email" id="email" class="form-control" formControlName="emailLogin" placeholder="Email"/>
+        <div *ngIf="userForm.get('emailLogin')?.invalid && (userForm.get('emailLogin')?.dirty || userForm.get('emailLogin')?.touched)" class="text-danger">
+          Mail invalido
+        </div>
+        <input type="password" placeholder="Contraseña" class="form-control" formControlName="passwordLogin"/>
+        <a href="#">¿Olvidaste tu contraseña?</a>
+        <button type="submit">Iniciar Sesión</button>
+      </form>
+    </div>
+    <!-- Contenedor de Alternancia de Formularios -->
+    <div class="toggle-container">
+      <div class="toggle">
+        <div class="toggle-panel toggle-left">
+          <h1>¿Tienes Cuenta? Inicia Sesión</h1>
+          <p>Ingresa y encuentra lo que buscas</p>
+          <button class="hidden" #login id="login">Iniciar Sesión</button>
+        </div>
+        <div class="toggle-panel toggle-right">
+          <h1>¿No tienes cuenta?</h1>
+          <p>Regístrate fácil y rápido</p>
+          <button class="hidden" #register id="register">Crear Cuenta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

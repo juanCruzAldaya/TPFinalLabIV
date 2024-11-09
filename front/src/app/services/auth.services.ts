@@ -1,7 +1,8 @@
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, throwError, map } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { BehaviorSubject, Observable, throwError } from "rxjs";
+import { catchError, tap } from "rxjs/operators";
+import { environment } from "../../enviroments/enviroments";
 
 interface AuthResponse {
   token: string;
@@ -11,11 +12,11 @@ interface AuthResponse {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class AuthService {
   private authStatus = new BehaviorSubject<boolean>(false);
-  private apiUrl = 'http://127.0.0.1:8000';
+  private apiUrl = `${environment.LOCAL_API_URL}`;
   private userId: number | null = null;
   private email: string | null = null;
   private password: string | null = null;
@@ -43,12 +44,12 @@ export class AuthService {
           this.authStatus.next(true);
         }
       }),
-      catchError(error => {
-        console.error('Login error', error);
-        this.authStatus.next(false);
-        return throwError(error);
-      })
-    );
+        catchError((error) => {
+          console.error("Login error", error);
+          this.authStatus.next(false);
+          return throwError(error);
+        })
+      );
   }
 
   getUserId(): any {
@@ -56,19 +57,19 @@ export class AuthService {
   }
 
   getUserEmail(): string | null {
-    return this.email ? this.email : localStorage.getItem('email');
+    return this.email ? this.email : localStorage.getItem("email");
   }
 
   getUserPassword(): string | null {
-    return this.password ? this.password : localStorage.getItem('password');
+    return this.password ? this.password : localStorage.getItem("password");
   }
 
   logout() {
     this.authStatus.next(false);
-    localStorage.removeItem('token');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('email');
-    localStorage.removeItem('password');
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("email");
+    localStorage.removeItem("password");
     this.userId = null;
     this.email = null;
     this.password = null;
@@ -77,7 +78,7 @@ export class AuthService {
   signInWithGoogle(): Promise<any> {
     return new Promise((resolve, reject) => {
       // Simulación de autenticación
-      resolve({ user: 'Google User' });
+      resolve({ user: "Google User" });
     });
   }
   getLastUserId(): Observable<number> {

@@ -350,15 +350,12 @@ def add_categoria(categoria: Categoria):
     db.close()
     return {"message": "Categoria added successfully"}
 
-
-
-
 @app.get("/subcategorias/{id}")
 def get_subcategoria(id: int):
     db = get_db_connection()
     cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT nombre FROM subcategorias WHERE id = %s", (id,))
-    result = cursor.fetchone()
+    cursor.execute("SELECT * FROM subcategorias WHERE categoria_id = %s", (id,))
+    result = cursor.fetchall()
     cursor.close()
     db.close()
     if result is None:

@@ -17,6 +17,9 @@
     private apiURL ="http://127.0.0.1:8000/usuarios";
 
     updateUser(usuario: Usuarios): Observable<Usuarios> {
+      usuario.email = this.authService.getUserEmail();
+      usuario.password = this.authService.getUserPassword();
+      console.log(usuario)
       return this.http.put<Usuarios>(this.apiURL+ "/" + this.authService.getUserId(), usuario);
     }
 

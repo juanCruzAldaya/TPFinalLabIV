@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CompletingUsersService } from '../services/completing-users.service';
 import { Usuarios } from "../interfaces/users.interfaces";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from '../services/auth.services';
 
 @Component({
   selector: 'app-info',
@@ -13,8 +14,9 @@ export class InfoComponent implements OnInit {
   isCompleting: boolean = false;
 
   constructor(
-    private services: CompletingUsersService,
-    private fb: FormBuilder
+    private servis: CompletingUsersService,
+    private fb: FormBuilder, 
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -24,18 +26,20 @@ export class InfoComponent implements OnInit {
   // Inicializa el formulario con las validaciones necesarias
   initializeForm(): void {
     this.formGroup = this.fb.group({
+      id: [0],
       nombre: ['', Validators.required],
       apellido: ['', Validators.required],
       contacto: ['', Validators.required],
       nacimiento: ['', Validators.required],
       ciudad: ['', Validators.required],
-      calificacion_promedio: [null]
+      calificacion_promedio: [0]
     });
   }
 
   onSubmit(): void {
     if (this.formGroup.valid) {
-        const usuario: Usuarios = {
+      const usuario: Usuarios = {
+        id: this.authService.getUserId(),
         nombre: this.formGroup.get('nombre')?.value,
         apellido: this.formGroup.get('apellido')?.value,
         contacto: this.formGroup.get('contacto')?.value,
@@ -43,7 +47,7 @@ export class InfoComponent implements OnInit {
         ciudad: this.formGroup.get('ciudad')?.value,
         calificacion_promedio: this.formGroup.get('calificacion_promedio')?.value
       };
-      this.services.updateUser(usuario).subscribe(
+      this.servis.updateUser(usuario).subscribe(
         data => {
           console.log('Usuario completado y enviado:', data);
         },
@@ -54,6 +58,5 @@ export class InfoComponent implements OnInit {
     } else {
       console.log('Formulario no valido');
     }
-   }
-  
   }
+}

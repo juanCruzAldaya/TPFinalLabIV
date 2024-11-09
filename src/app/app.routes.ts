@@ -5,8 +5,8 @@ import { InfoComponent } from './complet_user/info.component';
 const routes: Routes = [
   
   { path: 'login', component: FormComponent },
-  { path: 'complete_user/:id', component: InfoComponent},
-  { path: '', component: HomePageComponent },
+  
+  { path: '', component: HomePageComponent }
 
 ]
 

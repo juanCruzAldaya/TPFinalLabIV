@@ -1,7 +1,7 @@
 export interface Usuarios {
-  id?: number;  
-  email?: string;
-  password?: string;
+  id?: any;  
+  email?: any;
+  password?: any;
     
   nombre?: string;
   apellido?: string;

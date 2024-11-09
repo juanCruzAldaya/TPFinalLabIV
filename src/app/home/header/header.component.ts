@@ -20,7 +20,10 @@ export class HeaderComponent {
   }
 
 
-
+  logOut()
+  {
+    return this.authService.logout()
+  }
 
 
   navigateHome() {

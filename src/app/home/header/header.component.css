@@ -1,98 +1,53 @@
 .navbar {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 1000;
-  padding: 10px 20px;
   background-color: #f8f9fa;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-brand {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 45px;
-  font-weight: 700;
-  color: #333;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 10px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #007bff;
   cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
-  background-color: #fff;
 }
 
-.navbar a {
-  font-size: 18px;
-  color: #333;
-}
-
-.form-inline {
-  align-items: center;
-  margin-left: auto;
-}
-
-.form-control {
-  margin-right: 10px;
-}
-
-.btn {
-  margin-left: 5px;
-}
-
-.content {
-  margin-top: 70px;
-}
-
-.form-control-dark {
-  border-color: var(--bs-gray);
-}
-
-.form-control-dark:focus {
-  border-color: #fff;
-  box-shadow: 0 0 0 .25rem rgba(255, 255, 255, .25);
-}
-
-.text-small {
-  font-size: 125%;
-}
-
-.dropdown-toggle:not(:focus) {
-  outline: 0;
-}
-
-.container-icon {
-  width: auto;
-  height: 60px;
+.nav-link {
+  font-size: 1.1rem;
+  color: #007bff;
   cursor: pointer;
+}
+
+.nav-link:hover {
+  color: #0056b3;
 }
 
 .icon-profile {
-  width: 45px;
-  height: 45px;
-  pointer-events: auto;
+  border-radius: 50%;
+  margin-left: 10px;
 }
 
 .btn-laburapp {
-  background-color: #ff6f61;
-  border: 2px solid #ff6f61;
-  color: #ffffff;
-  font-size: 20px;
-  font-weight: bold;
-  padding: 12px 24px;
-  border-radius: 25px;
-  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, transform 0.3s ease-in-out;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
   cursor: pointer;
-  text-decoration: none;
-  display: inline-block;
-  margin: 10px;
 }
 
 .btn-laburapp:hover {
-  background-color: #e65c50;
-  border-color: #e65c50;
-  transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  background-color: #0056b3;
+}
+
+.btn-profile {
+  background-color: transparent;
+  color: #007bff;
+  border: 1px solid #007bff;
+  padding: 5px 10px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.btn-profile:hover {
+  background-color: #007bff;
+  color: white;
 }

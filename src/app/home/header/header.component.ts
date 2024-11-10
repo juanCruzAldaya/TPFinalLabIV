@@ -4,11 +4,9 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
-  templateUrl: './header.component.html'
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.css'] // Add a CSS file for custom styles
 })
-
-
-
 export class HeaderComponent {
   isAuthenticated = false;
   @Input() showSearch: boolean = true;
@@ -19,27 +17,23 @@ export class HeaderComponent {
     });
   }
 
-
-  logOut()
-  {
-    return this.authService.logout()
+  logOut() {
+    return this.authService.logout();
   }
-
 
   navigateHome() {
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/home']); } 
-    else { 
-      this.router.navigate(['/login']); } 
+      this.router.navigate(['/home']);
+    } else {
+      this.router.navigate(['/login']);
     }
-
+  }
 
   navigateToProfile() {
     this.router.navigate(['/profile']);
   }
 
   navigateToCompleteUser() {
-   
     this.router.navigate([`/complete_user/${this.authService.getUserId()}`]);
   }
 }

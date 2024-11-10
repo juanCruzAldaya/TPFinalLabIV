@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, throwError, map } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
 interface AuthResponse {
@@ -32,6 +32,7 @@ export class AuthService {
     }).pipe(
       tap((response: AuthResponse) => {
         if (response && response.token) {
+          console.log(response)
           localStorage.setItem('token', response.token);
           localStorage.setItem('userId', response.userId);
           localStorage.setItem('email', response.email);
@@ -79,4 +80,24 @@ export class AuthService {
       resolve({ user: 'Google User' });
     });
   }
+  getLastUserId(): Observable<number> {
+    return this.http.get<{ id: number }>(`${this.apiUrl}/usuarios/ultimo_id`).pipe(
+      map(response => {
+        if (response && response.id !== undefined) {
+          return response.id;
+        } else {
+          throw new Error('Invalid response format');
+        }
+      }),
+      tap(lastId => {
+        
+        localStorage.setItem('lastUserId', lastId.toString());
+      }),  // Store lastUserId for future requests
+      catchError(error => {
+        console.error('Get last user id error', error);
+        return throwError(error);
+      }),
+    );
+  }
+
 }

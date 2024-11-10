@@ -1,10 +1,12 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FilterServicesService } from '../../services/filter-services.service';
-import { Servicio } from '../../interfaces/servicio.interface';
-import {CalendarComponent} from './../calendar/calendar.component';
 import { CalendarService } from '../../services/calendar.service';
+import { IService } from '../../service.interface';
+import { IServiceCard } from '../../interfaces/IServiceCard.interface';
+import { CalendarComponent } from './../calendar/calendar.component';
+import { CalendarMonthViewDay } from 'angular-calendar';
 import { Calendario } from '../../interfaces/calendario.interface';
-import { CalendarEvent, CalendarMonthViewDay } from 'angular-calendar';
+
 @Component({
   selector: 'app-service-list',
   templateUrl: './service-list.component.html',
@@ -16,15 +18,17 @@ export class ServiceListComponent implements OnInit {
   @ViewChild(CalendarComponent) calendarComponent!: CalendarComponent;
 
   isCalendarModalOpen = false;
-  services: Servicio[] = []; // Array of Servicio
+  services: IService[] = [];
+  serviceCards: IServiceCard[] = [];
+  serviceCard: IServiceCard | undefined;
   showCalendar: boolean = false;
-  filteredServices: Servicio[] = []; // Array of Servicio filtered 
-  pageSize = 10; // Number of pages to  
-  currentPage = 1; // Current page number
+  filteredServices: IServiceCard[] = [];
+  pageSize = 10;
+  currentPage = 1;
   availableSlots: string[] = [];
   selectedDate: string | null = null;
-
-  
+  selectedService: any;
+  isModalOpen = false;
   filterCriteria = {
     localidad: '',
     nombre: '',
@@ -36,16 +40,9 @@ export class ServiceListComponent implements OnInit {
 
   constructor(private filterService: FilterServicesService, private calendarService: CalendarService) {}
 
-  selectedService: any;
-  isModalOpen = false;
-
-  showServiceDetails(service: any) {
+  showServiceDetails(service: IServiceCard) {
     this.selectedService = service;
     this.isModalOpen = true;
-    if (this.isModalOpen == true){
-      
-    }
-
   }
 
   closeModal() {
@@ -54,12 +51,9 @@ export class ServiceListComponent implements OnInit {
 
   ngOnInit(): void {
     this.filterService.getServices().subscribe(
-      (data: Servicio[]) => {
+      (data: IService[]) => {
         this.services = data;
-        this.filteredServices = [];
-        this.loadServices();
         this.loadAdditionalData();
-        this.setupIntersectionObserver();
       },
       (error) => {
         console.error('Error fetching services:', error);
@@ -69,14 +63,24 @@ export class ServiceListComponent implements OnInit {
 
   loadAdditionalData(): void {
     this.services.forEach(service => {
-      this.filterService.getCategoria(service.sub_categoria).subscribe(categoria => {
-        service.categoria = categoria.nombre;
-      });
-      this.filterService.getSubCategoria(service.sub_categoria).subscribe(subCategoria => {
-        service.subCategoria = subCategoria.nombre;
-      });
-      this.filterService.getProfesional(service.profesional_id).subscribe(profesional => {
-        service.nombreProfesional = profesional.nombre + " " + profesional.apellido;
+      this.filterService.getCategoria(service.mainCategory).subscribe(categoria => {
+        const serviceCard: IServiceCard = {
+          service,
+          category_name: categoria.nombre,
+          subCategory_name: '',
+          profesional_name: ''
+        };
+        this.filterService.getSubCategoria(service.secondaryCategory).subscribe(subCategoria => {
+          serviceCard.subCategory_name = subCategoria.nombre;
+          this.filterService.getProfesional(service.profesionalId).subscribe(profesional => {
+            serviceCard.profesional_name = profesional.nombre + " " + profesional.apellido;
+            this.serviceCards.push(serviceCard);
+            if (this.serviceCards.length === this.services.length) {
+              this.loadServices();
+              this.setupIntersectionObserver();
+            }
+          });
+        });
       });
     });
   }
@@ -88,27 +92,15 @@ export class ServiceListComponent implements OnInit {
     this.loadServices();
   }
 
-  // filterServices(): void {
-  //   this.filteredServices = this.services.filter(service =>
-  //     (this.filterCriteria.localidad ? service.localidad.includes(this.filterCriteria.localidad) : true) &&
-  //     (this.filterCriteria.nombre ? service.nombre.includes(this.filterCriteria.nombre) : true) &&
-  //     (this.filterCriteria.calificacion ? service.calificacion === +this.filterCriteria.calificacion : true) &&
-  //     (this.filterCriteria.categoria ? service.categoria.includes(this.filterCriteria.categoria) : true) &&
-  //     (this.filterCriteria.subCategoria ? service.subCategoria.includes(this.filterCriteria.subCategoria) : true) &&
-  //     (this.filterCriteria.nombreProfesional ? service.nombreProfesional.includes(this.filterCriteria.nombreProfesional) : true)
-  //   );
-  // }
-
   loadServices(): void {
     const start = (this.currentPage - 1) * this.pageSize;
     const end = this.currentPage * this.pageSize;
-    const newServices = this.services.slice(start, end).filter(service =>
-      (this.filterCriteria.localidad ? service.localidad.includes(this.filterCriteria.localidad) : true) &&
-      (this.filterCriteria.nombre ? service.nombre.includes(this.filterCriteria.nombre) : true) &&
-      (this.filterCriteria.calificacion ? service.calificacion === +this.filterCriteria.calificacion : true) &&
-      (this.filterCriteria.categoria ? service.categoria.includes(this.filterCriteria.categoria) : true) &&
-      (this.filterCriteria.subCategoria ? service.subCategoria.includes(this.filterCriteria.subCategoria) : true) &&
-      (this.filterCriteria.nombreProfesional ? service.nombreProfesional.includes(this.filterCriteria.nombreProfesional) : true)
+    const newServices = this.serviceCards.slice(start, end).filter(serviceCard =>
+      (this.filterCriteria.localidad ? serviceCard.service.locality.includes(this.filterCriteria.localidad) : true) &&
+      (this.filterCriteria.nombre ? serviceCard.service.description.includes(this.filterCriteria.nombre) : true) &&
+      (this.filterCriteria.categoria ? serviceCard.category_name.includes(this.filterCriteria.categoria) : true) &&
+      (this.filterCriteria.subCategoria ? serviceCard.subCategory_name.includes(this.filterCriteria.subCategoria) : true) &&
+      (this.filterCriteria.nombreProfesional ? serviceCard.profesional_name.includes(this.filterCriteria.nombreProfesional) : true)
     );
     this.filteredServices = [...this.filteredServices, ...newServices];
     this.currentPage++;
@@ -126,14 +118,11 @@ export class ServiceListComponent implements OnInit {
   ngAfterViewInit(): void {
     if (this.calendarComponent){
       console.log('CalendarComponent loaded');
-
-    }
-    else{
+    } else {
       console.log('CalendarComponent not loaded');
     }
   }
 
-  
   openCalendarModal(service: any) {
     this.selectedService = service;
     this.isCalendarModalOpen = true;
@@ -141,18 +130,17 @@ export class ServiceListComponent implements OnInit {
   
     this.calendarService.getCalendar(service.profesional_id).subscribe(
       (calendario: Calendario) => {
-        // Si el calendario existe, asignamos los eventos
         this.selectedService.eventos = calendario.eventos;
         this.showCalendar = true;
       },
       (error) => {
         console.error('Error al cargar el calendario', error);
-        // Si hay un error (por ejemplo, el calendario no existe), inicializamos un calendario vacío
         this.selectedService.eventos = [];
         this.showCalendar = true;
       }
     );
   }
+
 
   handleDayClick(event: { day: CalendarMonthViewDay<any>, date: string }) {
     this.selectedDate = event.date;

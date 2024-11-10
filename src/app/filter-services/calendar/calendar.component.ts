@@ -40,7 +40,7 @@ export class CalendarComponent implements OnInit {
 
   loadCalendar(user_id: number): void {
     this.calendarService.getCalendar(user_id).subscribe(data => {
-      this.calendarEvents = data.eventos.map(event => ({
+      this.calendarEvents = data.eventos!.map(event => ({
         
         start: new Date(event.fecha + 'T' + event.hora_inicio),
         end: new Date(event.fecha + 'T' + event.hora_fin),

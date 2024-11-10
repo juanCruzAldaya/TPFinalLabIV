@@ -17,7 +17,9 @@ export class CalendarService {
   getCalendar(userId: number): Observable<Calendario> {
     return this.http.get<Calendario>(`${this.apiUrl}calendarios/${userId}`);
   }
- 
+  createCalendar(calendario: Calendario): Observable<Calendario> {
+    return this.http.post<Calendario>(`${this.apiUrl}calendarios`, calendario);
+}
 
   createEvent(event: CalendarEvent): Observable<CalendarEvent> {
     return this.http.post<CalendarEvent>(`${this.apiUrl}eventos`, event);
@@ -39,7 +41,7 @@ export class CalendarService {
     return this.getCalendar(profesionalId).pipe(
       map(calendario => {
         const formattedDate = date;
-        const events = calendario.eventos.filter(event => event.fecha === formattedDate);
+        const events = calendario.eventos!.filter(event => event.fecha === formattedDate);
         const blockedTimes = events.map(event => event.hora_inicio); // Asume que cada evento tiene una propiedad 'hora_inicio'
         const allPossibleTimes = this.generatePossibleTimes();
         return allPossibleTimes.filter(time => !blockedTimes.includes(time));

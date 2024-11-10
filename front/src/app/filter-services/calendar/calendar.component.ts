@@ -2,6 +2,10 @@ import { Component, OnInit, Input, Output, EventEmitter, TemplateRef, ViewChild 
 import { CalendarEvent, CalendarMonthViewDay } from 'angular-calendar';
 import { CalendarService } from '../../services/calendar.service';
 import { Evento } from '../../interfaces/calendario.interface';
+<<<<<<< HEAD:front/src/app/filter-services/calendar/calendar.component.ts
+=======
+import { HttpClient } from '@angular/common/http';
+>>>>>>> b47140f1d6a00bceeff138a234d8db70e24363a6:src/app/filter-services/calendar/calendar.component.ts
 import { AuthService } from '../../services/auth.services';
 
 @Component({
@@ -44,6 +48,10 @@ export class CalendarComponent implements OnInit {
   loadCalendar(user_id: number): void {
     this.calendarService.getCalendar(user_id).subscribe(data => {
       this.calendarEvents = data.eventos!.map(event => ({
+<<<<<<< HEAD:front/src/app/filter-services/calendar/calendar.component.ts
+=======
+        
+>>>>>>> b47140f1d6a00bceeff138a234d8db70e24363a6:src/app/filter-services/calendar/calendar.component.ts
         start: new Date(event.fecha + 'T' + event.hora_inicio),
         end: new Date(event.fecha + 'T' + event.hora_fin),
         title: event.estado,

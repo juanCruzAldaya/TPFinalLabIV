@@ -4,33 +4,32 @@ import { Observable } from 'rxjs';
 import { CalendarEvent } from 'angular-calendar';
 import { map } from 'rxjs/operators';
 import {Calendario} from '../interfaces/calendario.interface'
-
+import { environment } from '../../enviroments/enviroments';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CalendarService {
-  private apiUrl = 'http://127.0.0.1:8000/';
 
   constructor(private http: HttpClient) {}
 
   getCalendar(userId: number): Observable<Calendario> {
-    return this.http.get<Calendario>(`${this.apiUrl}calendarios/${userId}`);
+    return this.http.get<Calendario>(environment.LOCAL_API_URL + `/calendarios/${userId}`);
   }
   createCalendar(calendario: Calendario): Observable<Calendario> {
-    return this.http.post<Calendario>(`${this.apiUrl}calendarios`, calendario);
+    return this.http.post<Calendario>(environment.LOCAL_API_URL + `/calendarios`, calendario);
 }
 
   createEvent(event: CalendarEvent): Observable<CalendarEvent> {
-    return this.http.post<CalendarEvent>(`${this.apiUrl}eventos`, event);
+    return this.http.post<CalendarEvent>(environment.LOCAL_API_URL + `/eventos`, event);
   }
 
   updateEvent(event: CalendarEvent): Observable<CalendarEvent> {
-    return this.http.put<CalendarEvent>(`${this.apiUrl}eventos/${event.id}`, event);
+    return this.http.put<CalendarEvent>(environment.LOCAL_API_URL + `/eventos/${event.id}`, event);
   }
 
   deleteEvent(eventId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}eventos/${eventId}`);
+    return this.http.delete<void>(environment.LOCAL_API_URL + `/eventos/${eventId}`);
   }
 
 

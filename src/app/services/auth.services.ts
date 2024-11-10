@@ -51,7 +51,7 @@ export class AuthService {
     );
   }
 
-  getUserId(): string | null {
+  getUserId(): any {
     return this.userId ? this.userId.toString() : localStorage.getItem('userId'); // Ensure userId is a string
   }
 

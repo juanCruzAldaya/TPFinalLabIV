@@ -6,6 +6,8 @@ import { IServiceCard } from '../../interfaces/IServiceCard.interface';
 import { CalendarComponent } from './../calendar/calendar.component';
 import { CalendarMonthViewDay } from 'angular-calendar';
 import { Calendario } from '../../interfaces/calendario.interface';
+import { AuthService } from '../../services/auth.services';
+
 
 @Component({
   selector: 'app-service-list',
@@ -38,7 +40,7 @@ export class ServiceListComponent implements OnInit {
     nombreProfesional: ''
   };
 
-  constructor(private filterService: FilterServicesService, private calendarService: CalendarService) {}
+  constructor(private filterService: FilterServicesService, private calendarService: CalendarService, private authService: AuthService) {}
 
   showServiceDetails(service: IServiceCard) {
     this.selectedService = service;
@@ -128,7 +130,7 @@ export class ServiceListComponent implements OnInit {
     this.isCalendarModalOpen = true;
     this.showCalendar = false;
   
-    this.calendarService.getCalendar(service.profesional_id).subscribe(
+    this.calendarService.getCalendar(this.authService.getUserId()).subscribe(
       (calendario: Calendario) => {
         this.selectedService.eventos = calendario.eventos;
         this.showCalendar = true;
@@ -145,7 +147,7 @@ export class ServiceListComponent implements OnInit {
   handleDayClick(event: { day: CalendarMonthViewDay<any>, date: string }) {
     this.selectedDate = event.date;
     this.showCalendar = false;
-    this.calendarService.getAvailableSlots(this.selectedService.profesional_id, this.selectedDate).subscribe(
+    this.calendarService.getAvailableSlots(this.authService.getUserId(), this.selectedDate).subscribe(
       (availableSlots: string[]) => {
         this.availableSlots = availableSlots;
       },

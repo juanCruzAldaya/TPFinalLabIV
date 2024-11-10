@@ -3,7 +3,7 @@ import { CalendarEvent, CalendarView, CalendarMonthViewDay } from 'angular-calen
 import { CalendarService } from '../../services/calendar.service';
 import { Evento } from '../../interfaces/calendario.interface';
 import { HttpClient } from '@angular/common/http';
-
+import { AuthService } from '../../services/auth.services';
 
 @Component({
   selector: 'app-professional-calendar',

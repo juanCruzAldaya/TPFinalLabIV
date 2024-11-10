@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css'] // Add a CSS file for custom styles
+  styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
   isAuthenticated = false;
@@ -35,5 +35,9 @@ export class HeaderComponent {
 
   navigateToCompleteUser() {
     this.router.navigate([`/complete_user/${this.authService.getUserId()}`]);
+  }
+
+  navigateTo(route: string) {
+    this.router.navigate([route]);
   }
 }

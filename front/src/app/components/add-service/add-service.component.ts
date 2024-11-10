@@ -17,6 +17,7 @@ import { ICategory } from "../../interfaces/category.interface";
 import { IService } from "../../interfaces/service.interface";
 import { ISubCategory } from "../../interfaces/subCategory.interface";
 import { SharedModule } from "../../shared/shared.module";
+import { ToastrService } from "ngx-toastr";
 
 @Component({
   selector: "app-add-service",
@@ -60,7 +61,8 @@ export class AddServiceComponent implements OnInit {
     private locationService: LocationAsyncService,
     private categoriesService: CategoriesService,
     private servicesService: ServicesService,
-    private authService: AuthService
+    private authService: AuthService,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit() {
@@ -114,7 +116,6 @@ export class AddServiceComponent implements OnInit {
     this.locationService
       .getAllLocalitiesByDepartments(departmentName)
       .then((response) => {
-        // console.log("response.localidades", response.localidades);
         this.localityList = response.localidades;
       })
       .catch((error) => {
@@ -126,7 +127,6 @@ export class AddServiceComponent implements OnInit {
     this.categoriesService
       .getSubCategories(categoryId)
       .then((response) => {
-        console.log(response);
         this.subCategoryList = response;
       })
       .catch((error) => console.log(JSON.stringify(error)));
@@ -153,8 +153,15 @@ export class AddServiceComponent implements OnInit {
     const category = new Object(
       this.resourceForm.getRawValue().selectedCategory
     ) as ICategory;
-    console.log(category);
     this.loadSubCategoryList(category.id);
+  }
+
+  showSuccess() {
+    this.toastr.success("Se creo el servicio exitosamente!");
+  }
+
+  showError() {
+    this.toastr.error("Algo salio mal");
   }
 
   onSubmit() {
@@ -197,9 +204,12 @@ export class AddServiceComponent implements OnInit {
 
     this.servicesService
       .addService(service)
-      .then()
+      .then(() => this.showSuccess())
       .catch((error) => {
+        this.showError();
         console.log(error);
       });
+
+    this.resourceForm.reset();
   }
 }

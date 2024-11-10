@@ -20,6 +20,7 @@ export class AvailableSlotsComponent {
   @Input() availableSlots: string[] = [];
   @Input() serviceId: string = ''; // Add serviceId as an input
   @Output() slotSelected = new EventEmitter<{ slot: string, serviceId: string }>();
+  @Output() idServicio: any = ''; // Add serviceId as an
 
   selectSlot(slot: string) {
     this.slotSelected.emit({ slot, serviceId: this.serviceId });

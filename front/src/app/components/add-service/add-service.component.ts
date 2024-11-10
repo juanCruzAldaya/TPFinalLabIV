@@ -16,11 +16,12 @@ import { AuthService } from "../../services/auth.services";
 import { ICategory } from "../../interfaces/category.interface";
 import { IService } from "../../interfaces/service.interface";
 import { ISubCategory } from "../../interfaces/subCategory.interface";
+import { SharedModule } from "../../shared/shared.module";
 
 @Component({
   selector: "app-add-service",
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, SharedModule],
   templateUrl: "./add-service.component.html",
   styleUrl: "./add-service.component.css",
 })

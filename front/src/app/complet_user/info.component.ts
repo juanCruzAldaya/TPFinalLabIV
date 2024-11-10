@@ -40,6 +40,8 @@ export class InfoComponent implements OnInit {
     if (this.formGroup.valid) {
       const usuario: Usuarios = {
         id: this.authService.getUserId(),
+        email: this.authService.getUserEmail(),
+        password: this.authService.getUserPassword(), 
         nombre: this.formGroup.get('nombre')?.value,
         apellido: this.formGroup.get('apellido')?.value,
         contacto: this.formGroup.get('contacto')?.value,

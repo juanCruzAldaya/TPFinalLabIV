@@ -16,6 +16,7 @@ export class BookingFormComponent implements OnInit{
   selectedDate: string = '';
   userId: string | null = ''; // ID del usuario
   serviceId: string = ''; // ID del servicio
+  calendarId: number  = 0
   
 
   constructor(private fb: FormBuilder, private route: ActivatedRoute, private bookService: BookingService, private authService: AuthService) {
@@ -50,6 +51,8 @@ export class BookingFormComponent implements OnInit{
         service_id: this.serviceId,
         user_id: this.userId  // Aquí deberías obtener el ID del usuario logueado
       };
+
+        
       console.log(bookingData)
 
       this.bookService.addBooking(bookingData).subscribe(

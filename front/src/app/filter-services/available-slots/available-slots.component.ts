@@ -1,24 +1,27 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Router } from '@angular/router';
+
 @Component({
   selector: 'app-available-slots',
-  templateUrl: './available-slots.component.html',
-  styleUrl: './available-slots.component.css'
+  template: `
+    <div *ngIf="availableSlots.length > 0">
+      <h3>Seleccione un horario disponible:</h3>
+      <ul>
+        <li *ngFor="let slot of availableSlots" (click)="selectSlot(slot)">
+          {{ slot }}
+        </li>
+      </ul>
+    </div>
+    <div *ngIf="availableSlots.length === 0">
+      <p>No hay horarios disponibles para la fecha seleccionada.</p>
+    </div>
+  `
 })
-
-
 export class AvailableSlotsComponent {
-    @Input() availableSlots: string[] = [];
-    @Output() slotSelected = new EventEmitter<string>();
+  @Input() availableSlots: string[] = [];
+  @Input() serviceId: string = ''; // Add serviceId as an input
+  @Output() slotSelected = new EventEmitter<{ slot: string, serviceId: string }>();
 
-
-    constructor(private router: Router) {}
-
-
- selectSlot(slot: string): void {
-    const selectedDate = new Date().toISOString().split('T')[0]; // Aquí deberías obtener la fecha seleccionada
-    this.slotSelected.emit(slot);
-    this.router.navigate(['/booking-form'], { queryParams: { slot, date: selectedDate } });
+  selectSlot(slot: string) {
+    this.slotSelected.emit({ slot, serviceId: this.serviceId });
   }
-
 }

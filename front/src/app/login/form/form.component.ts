@@ -3,7 +3,8 @@ import { AbstractControl, FormBuilder, FormGroup, ValidatorFn, Validators } from
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.services';
-
+import { Calendario } from '../../interfaces/calendario.interface';
+import { CalendarService } from '../../services/calendar.service';
 export function matchPasswordsValidator(password: string, confirmPassword1: string): ValidatorFn {
   return (formGroup: AbstractControl): { [key: string]: any } | null => {
     const passwordControl = formGroup.get(password);
@@ -46,7 +47,9 @@ export class FormComponent implements AfterViewInit, OnInit {
     private authService: AuthService,
     private fb: FormBuilder,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private calendarService: CalendarService,
+
   ) {}
 
   @ViewChild('container') container!: ElementRef;
@@ -90,10 +93,11 @@ export class FormComponent implements AfterViewInit, OnInit {
     if (this.isRegistering) {
       this.userForm = this.fb.group({
         ...commonControls,
-        nombre:  'None',
-        apellido: 'None',
-        contacto: 'None',
-        ciudad: 'None',
+        nombre:  null,
+        apellido: null,
+        contacto: null,
+        ciudad: null,
+        nacimiento:null,
         calificacion_promedio: 0
       }, { validators: matchPasswordsValidator('password', 'confirmPassword') });
     } else {
@@ -119,6 +123,58 @@ export class FormComponent implements AfterViewInit, OnInit {
     });
   }
 
+  // onRegister(): void {
+  //   console.log("Form Valid:", this.userForm.valid);
+  //   console.log("Form Errors:", this.userForm.errors);
+  //   console.log("Form Value:", this.userForm.value);
+  
+  //   // Log each control's errors
+  //   Object.keys(this.userForm.controls).forEach(key => {
+  //     const controlErrors = this.userForm.get(key)?.errors;
+  //     if (controlErrors) {
+  //       console.log(`Control: ${key}, Errors:`, controlErrors);
+  //     }
+  //   });
+  //   console.log(this.userForm.value.email);
+  //   if (this.userForm.valid) {
+  //     const formData = {
+  //       id: this.userForm.value.id,
+  //       email: this.userForm.value.email,
+  //       password: this.userForm.value.password,
+  //       nombre: this.userForm.value.nombre,
+  //       apellido: this.userForm.value.apellido,
+  //       contacto: this.userForm.value.contacto,
+  //       ciudad: this.userForm.value.ciudad,
+  //       nacimiento: this.userForm.value.nacimiento,
+  //       calificacion_promedio: this.userForm.value.calificacion_promedio,
+
+  //       // Add other fields if needed 
+  //     };
+
+
+  //     console.log(formData);
+  //     this.http.post('http://localhost:8000/usuarios', formData)
+  //       .subscribe(response => {
+  //         console.log('User added:', response);
+  //         this.router.navigate(['/']);
+  //       }, error => {
+  //         console.error('Registration failed:', error);
+  //         if (error.status === 422) {
+  //           console.error('Validation error:', error.error);
+  //         }
+  //       });
+  //   } else {
+  //     console.log("Form is invalid, please check the errors above.");
+  //   }
+  //   this.authService.getLastUserId().subscribe(lastId => {
+  //     const newUserId = lastId + 1;
+  //     const calendario: Calendario = {
+  //       id: 0, // Este campo será asignado por el backend
+  //       usuario_id: newUserId,
+  //       eventos: []
+  //     };
+    
+  // }}
   onRegister(): void {
     console.log("Form Valid:", this.userForm.valid);
     console.log("Form Errors:", this.userForm.errors);
@@ -132,6 +188,7 @@ export class FormComponent implements AfterViewInit, OnInit {
       }
     });
     console.log(this.userForm.value.email);
+    
     if (this.userForm.valid) {
       const formData = {
         id: this.userForm.value.id,
@@ -141,17 +198,39 @@ export class FormComponent implements AfterViewInit, OnInit {
         apellido: this.userForm.value.apellido,
         contacto: this.userForm.value.contacto,
         ciudad: this.userForm.value.ciudad,
+        nacimiento: this.userForm.value.nacimiento,
         calificacion_promedio: this.userForm.value.calificacion_promedio,
-
         // Add other fields if needed 
       };
-
-
+  
       console.log(formData);
       this.http.post('http://localhost:8000/usuarios', formData)
-        .subscribe(response => {
-          console.log('User added:', response);
+        .subscribe((user: any) => {
+          console.log('User added:', user);
           this.router.navigate(['/']);
+  
+          // Obtener el último ID de usuario y crear el calendario
+          this.authService.getLastUserId().subscribe(lastId => {
+            const newUserId = lastId;
+            const calendario: Calendario = {
+              id: 0, // This field will be assigned by the backend
+              usuario_id: newUserId,
+              anio: null,
+              mes: null,
+              eventos: null // Ensure this is set to null if there are no events
+          };
+            console.log(calendario);
+            this.calendarService.createCalendar(calendario).subscribe(
+              response => {
+                  console.log('Calendario created successfully', response);
+              },
+              error => {
+                  console.error('Error creating calendario', error);
+              }
+          );
+  
+           
+          });
         }, error => {
           console.error('Registration failed:', error);
           if (error.status === 422) {
@@ -162,6 +241,8 @@ export class FormComponent implements AfterViewInit, OnInit {
       console.log("Form is invalid, please check the errors above.");
     }
   }
+  
+
   
   onLogin(): void {
     const email = this.loginForm.get('emailLogin')?.value;

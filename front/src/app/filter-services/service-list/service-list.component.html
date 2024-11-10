@@ -6,17 +6,15 @@
     </div>
     <div class="col-md-9">
       <div class="professional-list row">
-        <div *ngFor="let service of filteredServices" class="col-md-4 mb-4">
+        <div *ngFor="let serviceCard of filteredServices" class="col-md-4 mb-4">
           <div class="serviceCard">
             <div class="card-body">
-              <h5 class="card-title text-primary">{{ service.nombre }}</h5>
-              <p class="card-text">{{ service.descripcion }}</p>
-              <p class="card-text"><strong>Ciudad:</strong> {{ service.localidad }}</p>
-              <p class="card-text"><strong>Categoría:</strong> {{ service.categoria }}</p>
-              <p class="card-text"><strong>Subcategoría:</strong> {{ service.subCategoria }}</p>
-              <p class="card-text"><strong>Profesional:</strong> {{ service.nombreProfesional  }}</p>
+              <h5 class="card-title text-primary">{{ serviceCard.service.description }}</h5>
+              <p class="card-text"><strong>Ciudad:</strong> {{ serviceCard.service.locality }}</p>
+              <p class="card-text"><strong>Categoría:</strong> {{ serviceCard.category_name }}</p>
+              <p class="card-text"><strong>Profesional:</strong> {{ serviceCard.profesional_name }}</p>
               <div class="button-container">
-                <button class="btn btn-primary custom-btn" (click)="showServiceDetails(service)">Ver Detalles</button>
+                <button class="btn btn-primary custom-btn" (click)="showServiceDetails(serviceCard)">Ver Detalles</button>
               </div>
             </div>
           </div>
@@ -29,32 +27,27 @@
 
 <div class="modal" [ngClass]="{'show': isModalOpen}" (click)="closeModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
-    <span class="close" (click)="closeModal()">&times;</span>
-    <h4>{{ selectedService?.nombre }}</h4>
-    <p>{{ selectedService?.descripcion }}</p>
+    <span class="close" (click)="closeModal()">×</span>
+    
+    <h4>{{ selectedService?.service?.description }}</h4>
+    <p>{{ selectedService?.description }}</p>
 
-    <p><strong>Profesional:</strong> {{ selectedService?.nombreProfesional }}</p>
-    <p><strong>Categoría:</strong> {{ selectedService?.categoria }}</p>
-    <p><strong>Subcategoría:</strong> {{ selectedService?.subCategoria }}</p>
-    <p><strong>Ciudad:</strong> {{ selectedService?.localidad }}</p>
+    <p><strong>Profesional:</strong> {{ selectedService?.profesional_name }}</p>
+    <p><strong>Categoría:</strong> {{ selectedService?.category_name }}</p>
+    <p><strong>Ciudad:</strong> {{ selectedService?.service.locality }}</p>
     
     <p><strong>Calificación:</strong> {{ selectedService?.calificacion }}</p>
 
-    <p><strong>Precio:</strong> {{ selectedService?.precio }}</p>
-
     <div class="button-container">
-
-      <button class="btn-hire-btn" (click)="openCalendarModal(selectedService)">Ver Disponibilidad</button>
-      <button class="btn-hire-btn" (click)="hireService(selectedService)">Contratar</button>
-      
-
+      <button class="btn btn-primary" (click)="openCalendarModal(selectedService)">Ver Disponibilidad</button>
     </div>
   </div>
 </div>
+
 <div class="modal" [ngClass]="{'show': isCalendarModalOpen}" (click)="closeCalendarModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
-    <span class="close" (click)="closeCalendarModal()">&times;</span>
-    <h4>Disponibilidad de {{ selectedService?.nombreProfesional }}</h4>
+    <span class="close" (click)="closeCalendarModal()">×</span>
+    <h4>Disponibilidad de {{ selectedService?.profesional_name }}</h4>
     <div *ngIf="selectedDate">
       <h5>Día seleccionado: {{ selectedDate | date: 'fullDate' }}</h5>
     </div>
@@ -63,12 +56,14 @@
     </div>
     <div *ngIf="!showCalendar">
       <app-available-slots
-        [availableSlots]="availableSlots"
-        (slotSelected)="onSlotSelected($event)">
-      </app-available-slots>
+      [availableSlots]="availableSlots"
+      [serviceId]="selectedServiceId"
+      (slotSelected)="onSlotSelected($event)">
+    </app-available-slots>
     </div>
-    <button class="btn btn-primary" (click)="closeCalendarModal()">Cerrar</button>
+    <div *ngIf="availableSlots.length > 0">
+      <button class="btn btn-primary" (click)="hireService(selectedService)">Contratar</button>
+    </div>
   </div>
 </div>
 <app-footer></app-footer>
-  

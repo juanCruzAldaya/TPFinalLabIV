@@ -8,9 +8,11 @@ export interface Evento {
   }
   
 
-export interface Calendario {
+  export interface Calendario {
     id: number;
     usuario_id: number;
-    eventos: Evento[];
-  }
+    anio: any;
+    mes: any;
+    eventos?: Evento[] | null;
+}
   

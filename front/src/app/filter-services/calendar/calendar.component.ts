@@ -1,47 +1,49 @@
-import { Component, OnInit, Input,Output, EventEmitter} from '@angular/core';
-import { CalendarEvent, CalendarView, CalendarMonthViewDay } from 'angular-calendar';
+import { Component, OnInit, Input, Output, EventEmitter, TemplateRef, ViewChild } from '@angular/core';
+import { CalendarEvent, CalendarMonthViewDay } from 'angular-calendar';
 import { CalendarService } from '../../services/calendar.service';
 import { Evento } from '../../interfaces/calendario.interface';
-import { HttpClient } from '@angular/common/http';
-
+import { AuthService } from '../../services/auth.services';
 
 @Component({
   selector: 'app-professional-calendar',
   template: `
     <div class="calendar-container">
+      <ng-template #cellTemplate let-day="day">
+        <div [ngClass]="{'disabled-day': isDisabled(day)}">
+          {{ day.date | date: 'd' }}
+        </div>
+      </ng-template>
       <mwl-calendar-month-view
         [viewDate]="viewDate"
         [events]="calendarEvents"
-        (dayClicked)="handleDayClick($event)">
+        (dayClicked)="handleDayClick($event)"
+        [cellTemplate]="cellTemplate">
       </mwl-calendar-month-view>
     </div>
   `,
-   styles: [`
-    .calendar-container {
-      width: 100%;
-      height: 400px;
-    }
-  `]
+  styleUrls: ['./calendar.component.css']
 })
-
-
 export class CalendarComponent implements OnInit {
 
   viewDate: Date = new Date();
-  @Input () events: Evento[] = [];
+  @Input() events: Evento[] = [];
   @Output() dayClicked = new EventEmitter<{ day: CalendarMonthViewDay<any>, date: string }>();
+  @ViewChild('cellTemplate') cellTemplate!: TemplateRef<any>;
 
+  userId: any;
   calendarEvents: CalendarEvent[] = [];
+  calendarId: number = 0;
 
   constructor(private calendarService: CalendarService) {}
 
   ngOnInit(): void {
+    
+    this.loadCalendar(1); // Replace with actual user_id
   }
 
   loadCalendar(user_id: number): void {
     this.calendarService.getCalendar(user_id).subscribe(data => {
-      this.calendarEvents = data.eventos.map(event => ({
-        
+      this.calendarEvents = data.eventos!.map(event => ({
         start: new Date(event.fecha + 'T' + event.hora_inicio),
         end: new Date(event.fecha + 'T' + event.hora_fin),
         title: event.estado,
@@ -50,15 +52,20 @@ export class CalendarComponent implements OnInit {
           secondary: event.estado === 'reservado' ? '#FAE3E3' : '#D1E8FF'
         }
       }));
-      
     });
   }
 
-  onEventClick(event: { event: CalendarEvent }): void {
-    console.log('Event clicked:', event);
-  }
   handleDayClick(event: { day: CalendarMonthViewDay<any>; sourceEvent: MouseEvent | KeyboardEvent }): void {
-    const selectedDate = event.day.date.toISOString().split('T')[0];
-    this.dayClicked.emit({ day: event.day, date: selectedDate });
+    const today = new Date();
+    const selectedDate = event.day.date;
+    if (selectedDate > today) {
+      const formattedDate = selectedDate.toISOString().split('T')[0];
+      this.dayClicked.emit({ day: event.day, date: formattedDate });
+    }
+  }
+
+  isDisabled(day: CalendarMonthViewDay): boolean {
+    const today = new Date();
+    return day.date < today || day.date.toDateString() === today.toDateString();
   }
 }

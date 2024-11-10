@@ -15,6 +15,7 @@ import { ServicesService } from "../services/service-async.service";
 import { AuthService } from "../services/auth.services";
 import { ICategory } from "../interfaces/category.interface";
 import { IService } from "../interfaces/service.interface";
+import { FilterServiceModule } from "../filter-services/filter-services.module";
 
 @Component({
   selector: "app-add-service",

@@ -1,5 +1,4 @@
-/*
-CREATE TABLE profesionales (
+/*CREATE TABLE profesionales (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     zona VARCHAR(255) NOT NULL,
@@ -8,10 +7,22 @@ CREATE TABLE profesionales (
     calificacion_promedio DECIMAL(3, 2)
 );
 
+
+
+
 CREATE TABLE clientes (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE
+);
+
+CREATE TABLE servicios (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    profesional_id BIGINT,
+    nombre VARCHAR(255) NOT NULL,
+    descripcion TEXT,
+    precio DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (profesional_id) REFERENCES profesionales(id)
 );
 
 CREATE TABLE resenas (
@@ -23,6 +34,7 @@ CREATE TABLE resenas (
     FOREIGN KEY (servicio_id) REFERENCES servicios(id),
     FOREIGN KEY (cliente_id) REFERENCES clientes(id)
 );
+
 
 
 CREATE TABLE calendario (
@@ -86,4 +98,6 @@ CREATE TABLE servicios (
     subcategoria_id INT,
     FOREIGN KEY (subcategoria_id) REFERENCES subcategorias(id)
 );
+
+
 */

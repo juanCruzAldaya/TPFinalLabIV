@@ -385,17 +385,16 @@ def get_subcategoria(categoria_id: int):
         cursor.close()
         connection.close()
 
-@app.get("/subcategoria/{id}")
+@app.get("/subcategoriasById/{id}")
 def get_subcategoria(id: int):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    
     try:
-        cursor.execute("SELECT * FROM subcategorias WHERE id = %s", (id,))
+        cursor.execute("SELECT * FROM subcategorias WHERE categoria_id = %s", (id,))
         
         # Fetch all results to ensure there are no unread results
         results = cursor.fetchall()
-        
+
         if not results:
             raise HTTPException(status_code=404, detail="Subcategory not found")
         
@@ -457,13 +456,26 @@ def get_servicios():
 @app.post("/servicios")
 def add_servicio(servicio: Servicio):
     db = get_db_connection()
-    cursor = db.cursor()
-    cursor.execute("""
-        INSERT INTO servicios (profesional_id, nombre, descripcion, precio, calificacion, sub_categoria, provincia, departamento, localidad)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-    """, (servicio.profesional_id, servicio.nombre, servicio.descripcion, servicio.precio, servicio.calificacion, servicio.sub_categoria, servicio.provincia, servicio.departamento, servicio.localidad))
-    db.commit()
-    cursor.close()
+    cursor1 = db.cursor(dictionary=True)
+    cursor2 = db.cursor()
+    # Obtener el nombre de la categoría principal
+    cursor1.execute("SELECT nombre FROM categorias WHERE id = %s", (servicio.mainCategory,))
+    nombreCategoria = cursor1.fetchone()
+    if nombreCategoria:
+        nombreCategoria = nombreCategoria['nombre']  # Extraer solo el nombre
+    # Insertar en la tabla servicios
+    cursor2.execute(" INSERT INTO servicios (profesional_id, nombre, descripcion, calificacion, sub_categoria, provincia, departamento, localidad) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (
+        servicio.profesionalId,
+        nombreCategoria,
+        servicio.description,
+        0,  # Calificación inicial
+        servicio.secondaryCategory,
+        servicio.state,
+        servicio.department,
+        servicio.locality
+    ))
+    cursor1.close()
+    cursor2.close()
     db.close()
     return {"message": "Servicio added successfully"}
 

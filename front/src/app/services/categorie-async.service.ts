@@ -13,9 +13,9 @@ export class CategoriesService {
   getCategories(): Promise<ICategory[] | any> {
     return this.http.get(`${environment.LOCAL_API_URL}/categorias`).toPromise();
   }
-  getSubCategories(id: number): Promise<ISubCategory[] | any> {
+  getSubCategoriesById(id: number): Promise<ISubCategory[] | any> {
     return this.http
-      .get(`${environment.LOCAL_API_URL}/subcategorias/${id}`)
+      .get(`${environment.LOCAL_API_URL}/subcategoriasById/${id}`)
       .toPromise();
   }
 }

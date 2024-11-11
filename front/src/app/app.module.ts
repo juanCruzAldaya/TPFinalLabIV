@@ -11,6 +11,8 @@ import { appRoutes } from "./app.routes";
 import { SharedModule } from "./shared/shared.module";
 import { FilterServiceModule } from "./components/filter-services/filter-services.module";
 import { InfoComponent } from "./components/complet_user/info.component";
+import { ToastrModule } from "ngx-toastr";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [AppComponent, InfoComponent, InfoComponent],
@@ -19,12 +21,17 @@ import { InfoComponent } from "./components/complet_user/info.component";
     BrowserModule,
     AppRoutingModule,
     RouterModule.forRoot(appRoutes),
+    ToastrModule.forRoot({
+      positionClass: "toast-bottom-right",
+      preventDuplicates: true,
+    }), // ToastrModule added
     ReactiveFormsModule,
     HomeModule,
     NgbModule,
     SharedModule,
     HttpClientModule,
     FilterServiceModule,
+    BrowserAnimationsModule,
   ],
   exports: [RouterModule, InfoComponent],
 

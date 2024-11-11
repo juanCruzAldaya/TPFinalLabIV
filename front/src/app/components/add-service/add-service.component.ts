@@ -16,11 +16,12 @@ import { CategoriesService } from "../../services/categorie-async.service";
 import { LocationAsyncService } from "../../services/location-async.service";
 import { ServicesService } from "../../services/service-async.service";
 import { ISubCategory } from "../../interfaces/subCategory.interface";
+import { SharedModule } from "../../shared/shared.module";
 
 @Component({
   selector: "app-add-service",
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, SharedModule],
   templateUrl: "./add-service.component.html",
   styleUrl: "./add-service.component.css",
 })

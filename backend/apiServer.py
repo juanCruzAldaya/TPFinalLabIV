@@ -385,17 +385,16 @@ def get_subcategoria(categoria_id: int):
         cursor.close()
         connection.close()
 
-@app.get("/subcategoria/{id}")
+@app.get("/subcategoriasById/{id}")
 def get_subcategoria(id: int):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
-    
     try:
-        cursor.execute("SELECT * FROM subcategorias WHERE id = %s", (id,))
+        cursor.execute("SELECT * FROM subcategorias WHERE categoria_id = %s", (id,))
         
         # Fetch all results to ensure there are no unread results
         results = cursor.fetchall()
-        
+
         if not results:
             raise HTTPException(status_code=404, detail="Subcategory not found")
         

@@ -213,6 +213,7 @@ export class FormComponent implements AfterViewInit, OnInit {
           this.authService.getLastUserId().subscribe(lastId => {
             const newUserId = lastId;
             const calendario: Calendario = {
+              id: 0, // This field will be assigned by the backend
               usuario_id: newUserId,
               anio: null,
               mes: null,

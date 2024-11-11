@@ -1,5 +1,4 @@
-// booking-form.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,Input  } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BookingService } from '../../services/booking.service';
@@ -10,13 +9,14 @@ import { AuthService } from '../../services/auth.services';
   templateUrl: './booking-form.component.html',
   styleUrls: ['./booking-form.component.css']
 })
-export class BookingFormComponent implements OnInit{
+export class BookingFormComponent implements OnInit {
+  
   bookingForm: FormGroup;
   selectedSlot: string = '';
   selectedDate: string = '';
-  userId: string | null = ''; // ID del usuario
-  serviceId: string = ''; // ID del servicio
-  
+  userId: number | null = 0; // ID del usuario
+  @Input() serviceId: number = 0; // Receive serviceId as input
+  @Input() calendarId: number = 0; // Receive calendarId as input
 
   constructor(private fb: FormBuilder, private route: ActivatedRoute, private bookService: BookingService, private authService: AuthService) {
     this.bookingForm = this.fb.group({
@@ -32,7 +32,8 @@ export class BookingFormComponent implements OnInit{
     this.route.queryParams.subscribe(params => {
       this.selectedSlot = params['slot'];
       this.selectedDate = params['date'];
-      this.serviceId = params['serviceId']
+      this.serviceId = this.serviceId;
+      this.calendarId = this.calendarId; // Set this to the actual calendar ID if available
       this.bookingForm.patchValue({
         date: this.selectedDate,
         slot: this.selectedSlot
@@ -44,13 +45,18 @@ export class BookingFormComponent implements OnInit{
   onSubmit() {
     if (this.bookingForm.valid) {
       const bookingData = {
-        ...this.bookingForm.value,
-        date: this.selectedDate,
-        slot: this.selectedSlot,
-        service_id: this.serviceId,
-        user_id: this.userId  // Aquí deberías obtener el ID del usuario logueado
-      };
-      console.log(bookingData)
+        id: 0,  // Include id field
+        cliente_id: this.userId,
+        servicio_id: this.serviceId,
+        fecha_contratacion: this.selectedDate,
+        hora_contratacion: this.selectedSlot,
+        calendario_id: this.calendarId,
+        contacto: this.bookingForm.value.contact,
+        domicilio: this.bookingForm.value.address,
+        estado: 'pendiente',
+        comentarios: this.bookingForm.value.comments
+    };
+      console.log(bookingData);
 
       this.bookService.addBooking(bookingData).subscribe(
         response => {
@@ -61,6 +67,5 @@ export class BookingFormComponent implements OnInit{
         }
       );
     }
+  }
 }
-}
-  

@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 export class AvailableSlotsComponent {
     @Input() availableSlots: string[] = [];
     @Output() slotSelected = new EventEmitter<string>();
-
+    
 
     constructor(private router: Router) {}
 

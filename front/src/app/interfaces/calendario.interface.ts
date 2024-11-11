@@ -9,6 +9,7 @@ export interface Evento {
   
 
   export interface Calendario {
+    id: number;
     usuario_id: number;
     anio: any;
     mes: any;

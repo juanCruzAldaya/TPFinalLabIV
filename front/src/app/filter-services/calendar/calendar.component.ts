@@ -27,18 +27,25 @@ export class CalendarComponent implements OnInit {
   viewDate: Date = new Date();
   @Input() events: Evento[] = [];
   @Output() dayClicked = new EventEmitter<{ day: CalendarMonthViewDay<any>, date: string }>();
+  @Output() calendarLoaded = new EventEmitter<{ calendarId: number, serviceId: string }>(); // Emit calendarId and serviceId
   @ViewChild('cellTemplate') cellTemplate!: TemplateRef<any>;
 
+  userId: any;
   calendarEvents: CalendarEvent[] = [];
+  calendarId: number = 0;
+  serviceId: string = ''; // Add serviceId as a property
 
   constructor(private calendarService: CalendarService) {}
 
   ngOnInit(): void {
-    this.loadCalendar(1); // Replace with actual user_id
+    ;
   }
 
   loadCalendar(user_id: number): void {
     this.calendarService.getCalendar(user_id).subscribe(data => {
+      this.calendarId = data.id; // Assuming the calendar ID is part of the response
+      this.serviceId = 'someServiceId'; // Replace with actual serviceId logic
+      this.calendarLoaded.emit({ calendarId: this.calendarId, serviceId: this.serviceId }); // Emit the calendarId and serviceId
       this.calendarEvents = data.eventos!.map(event => ({
         start: new Date(event.fecha + 'T' + event.hora_inicio),
         end: new Date(event.fecha + 'T' + event.hora_fin),

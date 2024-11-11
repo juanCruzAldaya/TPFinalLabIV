@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef,Output,EventEmitter} from '@angular/core';
 import { FilterServicesService } from '../../services/filter-services.service';
 import { CalendarService } from '../../services/calendar.service';
 import { IService } from '../../service.interface';
@@ -18,10 +18,11 @@ export class ServiceListComponent implements OnInit {
   
   @ViewChild('scrollAnchor', { static: false }) scrollAnchor!: ElementRef;
   @ViewChild(CalendarComponent) calendarComponent!: CalendarComponent;
-
+  @Output() serviceSelected = new EventEmitter<{ serviceId: string}>();
   isCalendarModalOpen = false;
   services: IService[] = [];
   serviceCards: IServiceCard[] = [];
+  selectedServiceId: any;
   serviceCard: IServiceCard | undefined;
   showCalendar: boolean = false;
   filteredServices: IServiceCard[] = [];
@@ -44,6 +45,8 @@ export class ServiceListComponent implements OnInit {
 
   showServiceDetails(service: IServiceCard) {
     this.selectedService = service;
+    this.selectedServiceId = service.service.id; // Assign the real serviceId
+    this.serviceSelected.emit({ serviceId: this.selectedServiceId});
     this.isModalOpen = true;
   }
 

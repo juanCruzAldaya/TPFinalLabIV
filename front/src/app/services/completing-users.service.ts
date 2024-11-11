@@ -14,8 +14,6 @@ export class CompletingUsersService {
     private authService: AuthService // Adjust path as needed
   ) {}
 
-  private apiURL = `${environment.LOCAL_API_URL}`;
-
   updateUser(usuario: IUsuarios): Observable<IUsuarios> {
     usuario.email = this.authService.getUserEmail();
     usuario.password = this.authService.getUserPassword();

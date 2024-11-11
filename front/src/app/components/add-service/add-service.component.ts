@@ -28,18 +28,8 @@ export class AddServiceComponent implements OnInit {
   provinceList: Array<IProvince> = [];
   departmentList: Array<IDepartment> = [];
   localityList: Array<ILocality> = [];
-  mainCategoryList: Array<ICategory> = [
-    // "Reparación y mantenimiento",
-    // "Servicios de limpieza",
-    // "Servicios de jardinería y paisajismo",
-  ];
-  subCategoryList: Array<ISubCategory> = [
-    // "Limpieza de hogares",
-    // "Limpieza de oficinas",
-    // "Limpieza de ventanas",
-    // "Limpieza de alfombras",
-    // "Servicios de desinfección",
-  ];
+  mainCategoryList: Array<ICategory> = [];
+  subCategoryList: Array<ISubCategory> = [];
 
   resourceForm = new FormGroup({
     description: new FormControl("", [

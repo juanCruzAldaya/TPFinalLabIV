@@ -8,15 +8,18 @@ import { environment } from "../../enviroments/enviroments";
   providedIn: "root",
 })
 export class ReseñasService {
-  private apiUrl = `${environment.LOCAL_API_URL}/resenas`; // Cambia al endpoint de FastAPI
-
   constructor(private http: HttpClient) {}
 
   obtenerReseñas(servicio_id: number): Observable<IReseña[]> {
-    return this.http.get<IReseña[]>(`${this.apiUrl}/${servicio_id}`);
+    return this.http.get<IReseña[]>(
+      `${environment.LOCAL_API_URL}/resenas/${servicio_id}`
+    );
   }
 
   agregarReseña(reseña: IReseña): Observable<IReseña> {
-    return this.http.post<IReseña>(this.apiUrl, reseña);
+    return this.http.post<IReseña>(
+      `${environment.LOCAL_API_URL}/resenas`,
+      reseña
+    );
   }
 }

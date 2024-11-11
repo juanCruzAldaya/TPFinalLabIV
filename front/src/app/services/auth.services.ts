@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable, throwError } from "rxjs";
+import { BehaviorSubject, Observable, throwError, map } from "rxjs";
 import { catchError, tap } from "rxjs/operators";
 import { environment } from "../../enviroments/enviroments";
 
@@ -16,7 +16,6 @@ interface AuthResponse {
 })
 export class AuthService {
   private authStatus = new BehaviorSubject<boolean>(false);
-  private apiUrl = `${environment.LOCAL_API_URL}`;
   private userId: number | null = null;
   private email: string | null = null;
   private password: string | null = null;
@@ -28,22 +27,28 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, { email, password }, {
-      headers: { 'Content-Type': 'application/json' }
-    }).pipe(
-      tap((response: AuthResponse) => {
-        if (response && response.token) {
-          console.log(response)
-          localStorage.setItem('token', response.token);
-          localStorage.setItem('userId', response.userId);
-          localStorage.setItem('email', response.email);
-          localStorage.setItem('password', response.password);
-          this.userId = response.userId; // Store userId for future requests
-          this.email = response.email;
-          this.password = response.password;
-          this.authStatus.next(true);
+    return this.http
+      .post<AuthResponse>(
+        `${environment.LOCAL_API_URL}/login`,
+        { email, password },
+        {
+          headers: { "Content-Type": "application/json" },
         }
-      }),
+      )
+      .pipe(
+        tap((response: AuthResponse) => {
+          if (response && response.token) {
+            console.log(response);
+            localStorage.setItem("token", response.token);
+            localStorage.setItem("userId", response.userId);
+            localStorage.setItem("email", response.email);
+            localStorage.setItem("password", response.password);
+            this.userId = response.userId; // Store userId for future requests
+            this.email = response.email;
+            this.password = response.password;
+            this.authStatus.next(true);
+          }
+        }),
         catchError((error) => {
           console.error("Login error", error);
           this.authStatus.next(false);
@@ -53,7 +58,9 @@ export class AuthService {
   }
 
   getUserId(): any {
-    return this.userId ? this.userId.toString() : localStorage.getItem('userId'); // Ensure userId is a string
+    return this.userId
+      ? this.userId.toString()
+      : localStorage.getItem("userId"); // Ensure userId is a string
   }
 
   getUserEmail(): string | null {
@@ -82,23 +89,23 @@ export class AuthService {
     });
   }
   getLastUserId(): Observable<number> {
-    return this.http.get<{ id: number }>(`${this.apiUrl}/usuarios/ultimo_id`).pipe(
-      map(response => {
-        if (response && response.id !== undefined) {
-          return response.id;
-        } else {
-          throw new Error('Invalid response format');
-        }
-      }),
-      tap(lastId => {
-        
-        localStorage.setItem('lastUserId', lastId.toString());
-      }),  // Store lastUserId for future requests
-      catchError(error => {
-        console.error('Get last user id error', error);
-        return throwError(error);
-      }),
-    );
+    return this.http
+      .get<{ id: number }>(`${environment.LOCAL_API_URL}/usuarios/ultimo_id`)
+      .pipe(
+        map((response) => {
+          if (response && response.id !== undefined) {
+            return response.id;
+          } else {
+            throw new Error("Invalid response format");
+          }
+        }),
+        tap((lastId) => {
+          localStorage.setItem("lastUserId", lastId.toString());
+        }), // Store lastUserId for future requests
+        catchError((error) => {
+          console.error("Get last user id error", error);
+          return throwError(error);
+        })
+      );
   }
-
 }

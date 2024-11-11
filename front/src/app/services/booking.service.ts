@@ -8,13 +8,15 @@ import { environment } from "../../enviroments/enviroments";
   providedIn: "root",
 })
 export class BookingService {
-  private apiUrl = `${environment.LOCAL_API_URL}/contrataciones`;
-
   constructor(private http: HttpClient) {}
 
   addBooking(bookingData: any): Observable<any> {
-    return this.http.post<any>(this.apiUrl, bookingData, {
-      headers: { "Content-Type": "application/json" },
-    });
+    return this.http.post<any>(
+      `${environment.LOCAL_API_URL}/contrataciones`,
+      bookingData,
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 }

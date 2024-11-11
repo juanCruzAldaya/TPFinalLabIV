@@ -3,7 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { CalendarEvent } from "angular-calendar";
 import { map } from "rxjs/operators";
-import { Calendario, ICalendario } from "../interfaces/calendario.interface";
+import { ICalendario } from "../interfaces/calendario.interface";
 import { environment } from "../../enviroments/enviroments";
 
 @Injectable({
@@ -12,14 +12,14 @@ import { environment } from "../../enviroments/enviroments";
 export class CalendarService {
   constructor(private http: HttpClient) {}
 
-  getCalendar(userId: number): Observable<Calendario> {
-    return this.http.get<Calendario>(
+  getCalendar(userId: number): Observable<ICalendario> {
+    return this.http.get<ICalendario>(
       `${environment.LOCAL_API_URL}/calendarios/${userId}`
     );
   }
 
-  createCalendar(calendario: Calendario): Observable<Calendario> {
-    return this.http.post<Calendario>(
+  createCalendar(calendario: ICalendario): Observable<ICalendario> {
+    return this.http.post<ICalendario>(
       `${environment.LOCAL_API_URL}/calendarios`,
       calendario
     );

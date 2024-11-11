@@ -7,10 +7,9 @@ export interface IEvento {
   estado: string;
 }
 
-  export interface Calendario {
-    usuario_id: number;
-    anio: any;
-    mes: any;
-    eventos?: Evento[] | null;
+export interface ICalendario {
+  usuario_id: number;
+  anio: any;
+  mes: any;
+  eventos?: IEvento[] | null;
 }
-  

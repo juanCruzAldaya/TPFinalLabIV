@@ -147,11 +147,13 @@ class Contratacion(BaseModel):
     id: Optional[int]
     cliente_id: int
     servicio_id: int
-    fecha_contratacion: Optional[str]  
-    calendario_id: int
+    fecha_contratacion: str
+    hora_contratacion: str
+    calendario_id: Optional[int]
     contacto: str
-    domicilio: Optional[str]
-    estado: Optional[str] = 'pendiente'
+    domicilio: str
+    estado: str
+    comentarios: Optional[str]
 
 class MetodoDePago(BaseModel):
     id: Optional[int]
@@ -515,12 +517,13 @@ def get_contrataciones():
 
 @app.post("/contrataciones")
 def add_contratacion(contratacion: Contratacion):
+    print(f"Received contratacion: {contratacion}")
     db = get_db_connection()
     cursor = db.cursor()
     cursor.execute("""
-        INSERT INTO contrataciones (cliente_id, servicio_id, fecha_contratacion, calendario_id,contacto, domicilio, estado) 
-        VALUES (%s, %s, %s, %s, %s)
-    """, (contratacion.cliente_id, contratacion.servicio_id, contratacion.fecha_contratacion, contratacion.calendario_id, contratacion.domicilio, contratacion.contacto, contratacion.estado))
+        INSERT INTO contrataciones (cliente_id, servicio_id, fecha_contratacion, calendario_id, contacto, domicilio, estado, comentarios, hora_contratacion) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+    """, (contratacion.cliente_id, contratacion.servicio_id, contratacion.fecha_contratacion, contratacion.calendario_id, contratacion.contacto, contratacion.domicilio, contratacion.estado, contratacion.comentarios, contratacion.hora_contratacion))
     db.commit()
     cursor.close()
     db.close()

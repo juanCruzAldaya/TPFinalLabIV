@@ -297,6 +297,23 @@ def add_usuario(usuario: Usuario):
         db.close()  
         return {"message": "Usuario added successfully"}
 
+
+
+
+@app.get("/calendarByUsername/{user_id}")
+def get_calendarByUserId(user_id: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT id FROM calendarios WHERE usuario_id = %s", (user_id,))
+    result = cursor.fetchone()
+    cursor.close()
+    db.close()
+    
+    if result is None:
+        raise HTTPException(status_code=404, detail="Calendar not found")
+    
+    return {"calendar_id": result["id"]}
+
 @app.get("/categorias")
 def get_categorias():
     db = get_db_connection()

@@ -5,9 +5,9 @@ import { IService } from '../../service.interface';
 import { IServiceCard } from '../../../interfaces/IServiceCard.interface';
 import { CalendarComponent } from '../calendar/calendar.component';
 import { CalendarMonthViewDay } from 'angular-calendar';
-import { Calendario } from '../../../interfaces/calendario.interface';
-import { AuthService } from '../../../services/auth.services';
-
+import { Calendario } from '../../interfaces/calendario.interface';
+import { AuthService } from '../../services/auth.services';
+import { SharedService } from '../../services/shared.service';
 
 @Component({
   selector: 'app-service-list',
@@ -18,7 +18,7 @@ export class ServiceListComponent implements OnInit {
   
   @ViewChild('scrollAnchor', { static: false }) scrollAnchor!: ElementRef;
   @ViewChild(CalendarComponent) calendarComponent!: CalendarComponent;
-  @Output() serviceSelected = new EventEmitter<{ serviceId: string}>();
+
   isCalendarModalOpen = false;
   services: IService[] = [];
   serviceCards: IServiceCard[] = [];
@@ -41,12 +41,11 @@ export class ServiceListComponent implements OnInit {
     nombreProfesional: ''
   };
 
-  constructor(private filterService: FilterServicesService, private calendarService: CalendarService, private authService: AuthService) {}
+  constructor(private filterService: FilterServicesService, private calendarService: CalendarService, private authService: AuthService, private sharedService: SharedService) {}
 
   showServiceDetails(service: IServiceCard) {
     this.selectedService = service;
-    this.selectedServiceId = service.service.id; // Assign the real serviceId
-    this.serviceSelected.emit({ serviceId: this.selectedServiceId});
+    this.sharedService.setServiceId(parseInt(this.selectedService.service.id))
     this.isModalOpen = true;
   }
 

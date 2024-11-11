@@ -13,6 +13,14 @@ export class CalendarService {
 
   constructor(private http: HttpClient) {}
 
+
+  getCalendarByUserId(userId: number): Observable<number> {
+    return this.http.get<any>(environment.LOCAL_API_URL + `/calendarByUsername/${userId}`)
+      .pipe(
+        map(response => response.calendario_id.calendar_id)
+      );
+  }
+
   getCalendar(userId: number): Observable<Calendario> {
     return this.http.get<Calendario>(environment.LOCAL_API_URL + `/calendarios/${userId}`);
   }

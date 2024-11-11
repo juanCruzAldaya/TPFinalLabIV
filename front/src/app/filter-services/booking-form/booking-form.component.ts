@@ -51,8 +51,10 @@ export class BookingFormComponent implements OnInit {
     if (this.userId !== null) {
       this.calendarService.getCalendarByUserId(this.userId).subscribe(
         calendar_Id => {
-          this.calendarId = calendar_Id;
-        
+          let parsedResponse = JSON.stringify(calendar_Id);
+          let parsedJson = JSON.parse(parsedResponse);
+          this.calendarId = parsedJson['calendar_id'];
+
       });
     }
   }
@@ -60,7 +62,7 @@ export class BookingFormComponent implements OnInit {
   onSubmit() {
     if (this.bookingForm.valid) {
       const bookingData = {
-        id: 0,  // Include id field
+        id: 0,
         cliente_id: this.userId,
         servicio_id: this.sharedService.getServiceId(),
         fecha_contratacion: this.selectedDate,

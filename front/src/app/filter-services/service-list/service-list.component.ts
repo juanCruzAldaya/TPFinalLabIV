@@ -45,7 +45,8 @@ export class ServiceListComponent implements OnInit {
 
   showServiceDetails(service: IServiceCard) {
     this.selectedService = service;
-    this.sharedService.setServiceId(parseInt(this.selectedService.service.id))
+    this.sharedService.setServiceId(this.selectedService.service.id);
+    console.log(this.sharedService.getServiceId());
     this.isModalOpen = true;
   }
 

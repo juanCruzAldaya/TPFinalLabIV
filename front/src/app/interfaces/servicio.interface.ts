@@ -1,4 +1,4 @@
-export interface Servicio {
+export interface IServicio {
   id: number;
   profesional_id: number;
   nombre: string;

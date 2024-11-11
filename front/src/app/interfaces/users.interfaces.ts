@@ -1,5 +1,5 @@
-export interface Usuarios {
-  id?: any;  
+export interface IUsuarios {
+  id?: any;
   email: any;
   password: any;
   nombre?: string;
@@ -8,5 +8,4 @@ export interface Usuarios {
   contacto?: string;
   nacimiento?: Date;
   calificacion_promedio?: number;
-  }
-  
+}

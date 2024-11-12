@@ -235,12 +235,8 @@ export class FormComponent implements AfterViewInit, OnInit {
           // Obtener el último ID de usuario y crear el calendario
           this.authService.getLastUserId().subscribe((lastId) => {
             const newUserId = lastId;
-<<<<<<< HEAD:front/src/app/components/login/form/form.component.ts
             const calendario: ICalendario = {
-=======
-            const calendario: Calendario = {
-              id: 0, // This field will be assigned by the backend
->>>>>>> 90e25d6 (contratacion agregada bien):front/src/app/login/form/form.component.ts
+              id: 0,
               usuario_id: newUserId,
               anio: null,
               mes: null,

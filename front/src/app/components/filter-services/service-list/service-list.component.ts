@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild, ElementRef,Output,EventEmitter} from '@angular/core';
 import { FilterServicesService } from '../../../services/filter-services.service';
 import { CalendarService } from '../../../services/calendar.service';
-import { IService } from '../../service.interface';
+import { IService } from '../../../interfaces/service.interface';
 import { IServiceCard } from '../../../interfaces/IServiceCard.interface';
 import { CalendarComponent } from '../calendar/calendar.component';
 import { CalendarMonthViewDay } from 'angular-calendar';
-import { Calendario } from '../../interfaces/calendario.interface';
-import { AuthService } from '../../services/auth.services';
-import { SharedService } from '../../services/shared.service';
+import { ICalendario } from '../../../interfaces/calendario.interface';
+import { AuthService } from '../../../services/auth.services';
+import { SharedService } from '../../../services/shared.service';
 
 @Component({
   selector: 'app-service-list',
@@ -133,7 +133,7 @@ export class ServiceListComponent implements OnInit {
     this.showCalendar = false;
   
     this.calendarService.getCalendar(this.authService.getUserId()).subscribe(
-      (calendario: Calendario) => {
+      (calendario: ICalendario) => {
         this.selectedService.eventos = calendario.eventos;
         this.showCalendar = true;
       },

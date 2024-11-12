@@ -1,10 +1,10 @@
 import { Component, OnInit,Input  } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { BookingService } from '../../services/booking.service';
-import { AuthService } from '../../services/auth.services';
-import { CalendarService } from '../../services/calendar.service';
-import { SharedService } from '../../services/shared.service';
+import { BookingService } from '../../../services/booking.service';
+import { AuthService } from '../../../services/auth.services';
+import { CalendarService } from '../../../services/calendar.service';
+import { SharedService } from '../../../services/shared.service';
 
 @Component({
   selector: 'app-booking-form',
@@ -12,7 +12,6 @@ import { SharedService } from '../../services/shared.service';
   styleUrls: ['./booking-form.component.css']
 })
 export class BookingFormComponent implements OnInit {
-  
   bookingForm: FormGroup;
   selectedSlot: string = '';
   selectedDate: string = '';
@@ -51,8 +50,10 @@ export class BookingFormComponent implements OnInit {
     if (this.userId !== null) {
       this.calendarService.getCalendarByUserId(this.userId).subscribe(
         calendar_Id => {
-          this.calendarId = calendar_Id;
-        
+          let parsedResponse = JSON.stringify(calendar_Id);
+          let parsedJson = JSON.parse(parsedResponse);
+          this.calendarId = parsedJson['calendar_id'];
+
       });
     }
   }
@@ -60,7 +61,7 @@ export class BookingFormComponent implements OnInit {
   onSubmit() {
     if (this.bookingForm.valid) {
       const bookingData = {
-        id: 0,  // Include id field
+        id: 0,
         cliente_id: this.userId,
         servicio_id: this.sharedService.getServiceId(),
         fecha_contratacion: this.selectedDate,
@@ -71,6 +72,7 @@ export class BookingFormComponent implements OnInit {
         estado: 'pendiente',
         comentarios: this.bookingForm.value.comments
     };
+
       console.log(bookingData);
 
       this.bookService.addBooking(bookingData).subscribe(

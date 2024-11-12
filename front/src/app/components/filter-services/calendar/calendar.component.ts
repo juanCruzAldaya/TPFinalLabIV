@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, TemplateRef, ViewChild } from '@angular/core';
 import { CalendarEvent, CalendarMonthViewDay } from 'angular-calendar';
 import { CalendarService } from '../../../services/calendar.service';
-import { Evento } from '../../../interfaces/calendario.interface';
+import { IEvento } from '../../../interfaces/calendario.interface';
 
 @Component({
   selector: 'app-professional-calendar',
@@ -25,7 +25,7 @@ import { Evento } from '../../../interfaces/calendario.interface';
 export class CalendarComponent implements OnInit {
 
   viewDate: Date = new Date();
-  @Input() events: Evento[] = [];
+  @Input() events: IEvento[] = [];
   @Output() dayClicked = new EventEmitter<{ day: CalendarMonthViewDay<any>, date: string }>();
   @Output() calendarLoaded = new EventEmitter<{ calendarId: number}>(); // Emit calendarId and serviceId
   @ViewChild('cellTemplate') cellTemplate!: TemplateRef<any>;

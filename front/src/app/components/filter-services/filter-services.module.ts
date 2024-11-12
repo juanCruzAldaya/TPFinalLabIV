@@ -11,7 +11,7 @@ import { CalendarService } from '../../services/calendar.service';
 import { AvailableSlotsComponent } from './available-slots/available-slots.component';
 import { BookingFormComponent } from './booking-form/booking-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ContractsComponent } from './contracts/contracts.component';
+// import { ContractsComponent } from './contracts/contracts.component';
 
 
 
@@ -24,8 +24,8 @@ import { ContractsComponent } from './contracts/contracts.component';
     CalendarComponent,
     AvailableSlotsComponent,
     BookingFormComponent,
-    ContractsComponent,
-
+    
+// ContractsComponent,
     
   ],
   imports: [

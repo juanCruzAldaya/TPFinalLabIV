@@ -13,11 +13,16 @@ import { FilterServiceModule } from "./components/filter-services/filter-service
 import { InfoComponent } from "./components/complet_user/info.component";
 import { ToastrModule } from "ngx-toastr";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { ReseñasComponent } from "./components/resenia/resenia.component";
+import { FormsModule } from '@angular/forms'; // Import FormsModule if needed
+
+
 
 @NgModule({
-  declarations: [AppComponent, InfoComponent, InfoComponent],
+  declarations: [AppComponent, InfoComponent, InfoComponent, ReseñasComponent],
 
   imports: [
+    FormsModule,
     BrowserModule,
     AppRoutingModule,
     RouterModule.forRoot(appRoutes),

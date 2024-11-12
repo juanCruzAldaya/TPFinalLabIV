@@ -1,13 +1,20 @@
-import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
-
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  Output,
+  EventEmitter,
+} from "@angular/core";
 import { CalendarComponent } from "./../calendar/calendar.component";
 import { CalendarMonthViewDay } from "angular-calendar";
-import { ICalendario } from "../../../interfaces/calendario.interface";
 import { IServiceCard } from "../../../interfaces/IServiceCard.interface";
 import { IService } from "../../../interfaces/service.interface";
 import { AuthService } from "../../../services/auth.services";
 import { CalendarService } from "../../../services/calendar.service";
 import { FilterServicesService } from "../../../services/filter-services.service";
+import { SharedService } from "../../../services/shared.service";
+import { ICalendario } from "../../../interfaces/calendario.interface";
 
 @Component({
   selector: "app-service-list",
@@ -21,6 +28,7 @@ export class ServiceListComponent implements OnInit {
   isCalendarModalOpen = false;
   services: IService[] = [];
   serviceCards: IServiceCard[] = [];
+  selectedServiceId: any;
   serviceCard: IServiceCard | undefined;
   showCalendar: boolean = false;
   filteredServices: IServiceCard[] = [];
@@ -42,11 +50,14 @@ export class ServiceListComponent implements OnInit {
   constructor(
     private filterService: FilterServicesService,
     private calendarService: CalendarService,
-    private authService: AuthService
+    private authService: AuthService,
+    private sharedService: SharedService
   ) {}
 
   showServiceDetails(service: IServiceCard) {
     this.selectedService = service;
+    this.sharedService.setServiceId(this.selectedService.service.id);
+    console.log(this.sharedService.getServiceId());
     this.isModalOpen = true;
   }
 

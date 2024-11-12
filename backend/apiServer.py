@@ -147,11 +147,13 @@ class Contratacion(BaseModel):
     id: Optional[int]
     cliente_id: int
     servicio_id: int
-    fecha_contratacion: Optional[str]  
-    calendario_id: int
+    fecha_contratacion: str
+    hora_contratacion: str
+    calendario_id: Optional[int]
     contacto: str
-    domicilio: Optional[str]
-    estado: Optional[str] = 'pendiente'
+    domicilio: str
+    estado: str
+    comentarios: Optional[str]
 
 class MetodoDePago(BaseModel):
     id: Optional[int]
@@ -295,6 +297,23 @@ def add_usuario(usuario: Usuario):
         db.close()  
         return {"message": "Usuario added successfully"}
 
+
+
+
+@app.get("/calendarByUsername/{user_id}")
+def get_calendarByUserId(user_id: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT id FROM calendarios WHERE usuario_id = %s", (user_id,))
+    result = cursor.fetchone()
+    cursor.close()
+    db.close()
+    
+    if result is None:
+        raise HTTPException(status_code=404, detail="Calendar not found")
+    
+    return {"calendar_id": result["id"]}
+
 @app.get("/categorias")
 def get_categorias():
     db = get_db_connection()
@@ -389,12 +408,13 @@ def get_subcategoria(categoria_id: int):
 def get_subcategoria(id: int):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
+    
     try:
         cursor.execute("SELECT * FROM subcategorias WHERE categoria_id = %s", (id,))
         
         # Fetch all results to ensure there are no unread results
         results = cursor.fetchall()
-
+        
         if not results:
             raise HTTPException(status_code=404, detail="Subcategory not found")
         
@@ -515,12 +535,13 @@ def get_contrataciones():
 
 @app.post("/contrataciones")
 def add_contratacion(contratacion: Contratacion):
+    print(f"Received contratacion: {contratacion}")
     db = get_db_connection()
     cursor = db.cursor()
     cursor.execute("""
-        INSERT INTO contrataciones (cliente_id, servicio_id, fecha_contratacion, calendario_id,contacto, domicilio, estado) 
-        VALUES (%s, %s, %s, %s, %s)
-    """, (contratacion.cliente_id, contratacion.servicio_id, contratacion.fecha_contratacion, contratacion.calendario_id, contratacion.domicilio, contratacion.contacto, contratacion.estado))
+        INSERT INTO contrataciones (cliente_id, servicio_id, fecha_contratacion, calendario_id, contacto, domicilio, estado, comentarios, hora_contratacion) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+    """, (contratacion.cliente_id, contratacion.servicio_id, contratacion.fecha_contratacion, contratacion.calendario_id, contratacion.contacto, contratacion.domicilio, contratacion.estado, contratacion.comentarios, contratacion.hora_contratacion))
     db.commit()
     cursor.close()
     db.close()

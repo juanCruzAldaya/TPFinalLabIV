@@ -9,17 +9,14 @@ import {
   AbstractControl,
   FormBuilder,
   FormGroup,
-  ReactiveFormsModule,
   ValidatorFn,
   Validators,
 } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
-import { AuthService } from "../../../services/auth.services";
-import { ICalendario } from "../../../interfaces/calendario.interface";
 import { CalendarService } from "../../../services/calendar.service";
-import { CommonModule } from "@angular/common";
-
+import { AuthService } from "../facebook-sign-in/facebook-sign-in.component";
+import { ICalendario } from "../../../interfaces/calendario.interface";
 export function matchPasswordsValidator(
   password: string,
   confirmPassword1: string
@@ -55,10 +52,8 @@ export function matchPasswordsValidator(
 
 @Component({
   selector: "app-form",
-  standalone: true,
   templateUrl: "./form.component.html",
   styleUrls: ["./form.component.css"],
-  imports: [ReactiveFormsModule, CommonModule],
 })
 export class FormComponent implements AfterViewInit, OnInit {
   isRegistering: boolean = false;
@@ -138,11 +133,11 @@ export class FormComponent implements AfterViewInit, OnInit {
   onGoogleSignIn(): void {
     this.authService
       .signInWithGoogle()
-      .then((googleUser) => {
+      .then((googleUser: any) => {
         console.log("User signed in:", googleUser);
         this.router.navigate(["/"]);
       })
-      .catch((error) => {
+      .catch((error: any) => {
         console.error("Error during sign-in:", error);
       });
   }
@@ -233,9 +228,10 @@ export class FormComponent implements AfterViewInit, OnInit {
           this.router.navigate(["/"]);
 
           // Obtener el último ID de usuario y crear el calendario
-          this.authService.getLastUserId().subscribe((lastId) => {
+          this.authService.getLastUserId().subscribe((lastId: any) => {
             const newUserId = lastId;
             const calendario: ICalendario = {
+              id: 0, // This field will be assigned by the backend
               usuario_id: newUserId,
               anio: null,
               mes: null,
@@ -272,12 +268,12 @@ export class FormComponent implements AfterViewInit, OnInit {
       console.log(email);
       console.log(password);
       this.authService.login(email, password).subscribe(
-        (response) => {
+        (response: any) => {
           if (response) {
             this.router.navigate(["/home"]);
           }
         },
-        (error) => {
+        (error: any) => {
           console.error("Login failed:", error);
         }
       );

@@ -12,6 +12,12 @@ import { environment } from "../../enviroments/enviroments";
 export class CalendarService {
   constructor(private http: HttpClient) {}
 
+  getCalendarByUserId(userId: number): Observable<any> {
+    return this.http
+      .get<any>(environment.LOCAL_API_URL + `/calendarByUsername/${userId}`)
+      .pipe(map((response) => response));
+  }
+
   getCalendar(userId: number): Observable<ICalendario> {
     return this.http.get<ICalendario>(
       environment.LOCAL_API_URL + `/calendarios/${userId}`
@@ -49,9 +55,11 @@ export class CalendarService {
       map((calendario) => {
         const formattedDate = date;
         const events = calendario.eventos!.filter(
-          (event) => event.fecha === formattedDate
+          (event: { fecha: string }) => event.fecha === formattedDate
         );
-        const blockedTimes = events.map((event) => event.hora_inicio); // Asume que cada evento tiene una propiedad 'hora_inicio'
+        const blockedTimes = events.map(
+          (event: { hora_inicio: any }) => event.hora_inicio
+        ); // Asume que cada evento tiene una propiedad 'hora_inicio'
         const allPossibleTimes = this.generatePossibleTimes();
         return allPossibleTimes.filter((time) => !blockedTimes.includes(time));
       })

@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ReseñasService } from "../../services/resenia.service";
-import { Reseña } from "../../interfaces/resenia.interface";
+import { IReseña } from "../../interfaces/resenia.interface";
 import { FormsModule } from "@angular/forms";
 
 @Component({
@@ -9,8 +9,8 @@ import { FormsModule } from "@angular/forms";
   styleUrls: ["./resenia.component.css"],
 })
 export class ReseñasComponent implements OnInit {
-  resenias: Reseña[] = [];
-  nuevaResenia: Reseña = {
+  resenias: IReseña[] = [];
+  nuevaResenia: IReseña = {
     usuario_id: 0,
     servicio_id: 0,
     calificacion: 5,

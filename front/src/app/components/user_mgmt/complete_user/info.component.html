@@ -1,5 +1,3 @@
-
-<app-header></app-header>
 <body>
     <div class="container">
         <form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
@@ -28,12 +26,22 @@
             </div>
               
            
+
+
             <p>Número de contacto</p>
             <input type="text" class="form-control" id="contacto" formControlName="contacto">
             <div *ngIf="formGroup.get('contacto')?.invalid && (formGroup.get('contacto')?.dirty || formGroup.get('contacto')?.touched)" class="text-danger">
                 <div *ngIf="formGroup.get('contacto')?.errors?.['required']">El campo debe estar completo</div>
                 <div *ngIf="formGroup.get('contacto')?.errors?.['telefonoInvalido']">Debes ingresar un numero real</div>
             </div>
+
+            <p>Ciudad</p>
+            <input type="text" class="form-control" id="ciudad" formControlName="ciudad">
+            <div *ngIf="formGroup.get('ciudad')?.invalid && (formGroup.get('ciudad')?.dirty || formGroup.get('ciudad')?.touched)" class="text-danger">
+                <div *ngIf="formGroup.get('ciudad')?.errors?.['required']">El campo debe estar completo</div>
+            </div>
+
+          
             
             <button type="submit" class="btn btn-primary" [disabled]="isCompleting || formGroup.invalid">Guardar</button>
 

@@ -81,9 +81,7 @@ def get_user_credentials(email):
     
     query = "SELECT * FROM usuarios WHERE email = %s"
     result = cursor.execute(query, (email,))  # Asegúrate de que 'email' está en una tupla
-    print(result)
     user = cursor.fetchone()
-    print(user)
     cursor.close()
     db.close()
     
@@ -168,10 +166,6 @@ class Direccion(BaseModel):
     ciudad: str
     codigo_postal: str
 
-class User_Incompleto(BaseModel):
-    id: int
-    email: str
-    password: str
 
 class EventoBase(BaseModel):
     calendario_id: int
@@ -381,26 +375,32 @@ def add_categoria(categoria: Categoria):
 
 
 
-@app.get("/subcategorias/{categoria_id}")
-def get_subcategoria(categoria_id: int):
+
+
+
+
+@app.get("/subcategoria/{subcategoria_id}")
+def get_subcategoria(subcategoria_id: int):
+    print(subcategoria_id)
+
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
     
     try:
-        cursor.execute("SELECT * FROM subcategorias WHERE categoria_id = %s", (categoria_id,))
+        cursor.execute("SELECT * FROM subcategorias WHERE id = %s", (subcategoria_id,))
         
         # Fetch all results to ensure there are no unread results
-        results = cursor.fetchone()
-        
-        if not results:
+        result = cursor.fetchone()
+        if not result:
             raise HTTPException(status_code=404, detail="Subcategories not found")
         
-        return results
+        return result
         
     except mysql.connector.Error as err:
         print(f"Error: {err}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
     finally:
+        
         cursor.close()
         connection.close()
 
@@ -534,17 +534,52 @@ def get_contrataciones():
 
 @app.post("/contrataciones")
 def add_contratacion(contratacion: Contratacion):
-    print(f"Received contratacion: {contratacion}")
     db = get_db_connection()
     cursor = db.cursor()
     cursor.execute("""
         INSERT INTO contrataciones (cliente_id, servicio_id, fecha_contratacion, calendario_id, contacto, domicilio, estado, comentarios, hora_contratacion) 
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-    """, (contratacion.cliente_id, contratacion.servicio_id, contratacion.fecha_contratacion, contratacion.calendario_id, contratacion.contacto, contratacion.domicilio, contratacion.estado, contratacion.comentarios, contratacion.hora_contratacion))
+    """, (contratacion.cliente_id, 
+            contratacion.servicio_id, 
+            contratacion.fecha_contratacion, 
+            contratacion.calendario_id, 
+            contratacion.contacto, 
+            contratacion.domicilio, 
+            contratacion.estado, 
+            contratacion.comentarios, 
+            contratacion.hora_contratacion))
     db.commit()
     cursor.close()
     db.close()
     return {"message": "Contratacion added successfully"}
+
+
+@app.get("/contrataciones_clientes/{id_usuario}")
+def add_contratacion(id_usuario: int):
+    db = get_db_connection()
+    cursor = db.cursor()
+    nombre_procedimiento = "contrataciones_clientes"
+    parametros = (id_usuario,)
+    cursor.callproc(nombre_procedimiento,parametros)
+    result = cursor.fetchall()
+
+    cursor.close()
+    db.close()
+    return result
+
+@app.get("/usuarios/{id}")
+def get_profesional(id: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT nombre, apellido FROM usuarios WHERE id = %s", (id,))
+    result = cursor.fetchone()
+    cursor.close()
+    db.close()
+    if result is None:
+        raise HTTPException(status_code=404, detail="Profesional no encontrado")
+    return result
+
+
 
 @app.get("/metodos_de_pago")
 def get_metodos_de_pago():
@@ -747,7 +782,6 @@ def update_user(user_id: int, usuario: Usuario):
         email, password = result
         usuario.email = email
         usuario.password = password
-    print(usuario)  
     # Update user information
     update_query = """
     UPDATE usuarios

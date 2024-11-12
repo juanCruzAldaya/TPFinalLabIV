@@ -199,9 +199,6 @@ export class FormComponent implements AfterViewInit, OnInit {
 
   // }}
   onRegister(): void {
-    console.log("Form Valid:", this.userForm.valid);
-    console.log("Form Errors:", this.userForm.errors);
-    console.log("Form Value:", this.userForm.value);
 
     // Log each control's errors
     Object.keys(this.userForm.controls).forEach((key) => {
@@ -210,7 +207,6 @@ export class FormComponent implements AfterViewInit, OnInit {
         console.log(`Control: ${key}, Errors:`, controlErrors);
       }
     });
-    console.log(this.userForm.value.email);
 
     if (this.userForm.valid) {
       const formData = {
@@ -270,8 +266,6 @@ export class FormComponent implements AfterViewInit, OnInit {
     const password = this.loginForm.get("passwordLogin")?.value;
 
     if (email && password) {
-      console.log(email);
-      console.log(password);
       this.authService.login(email, password).subscribe(
         (response) => {
           if (response) {

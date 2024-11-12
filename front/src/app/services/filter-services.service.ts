@@ -17,11 +17,16 @@ export class FilterServicesService {
     return this.http.get( environment.LOCAL_API_URL+`/categoria/${categoriaId}`);
   }
 
+
+  
   getSubCategoria(subCategoriaId: number): Observable<any> {
-    return this.http.get( environment.LOCAL_API_URL+`/subcategoria/${subCategoriaId}`);
-  }
+    return this.http.get( environment.LOCAL_API_URL + `/subcategoria/${subCategoriaId}`);
+}
 
   getProfesional(profesionalId: any): Observable<any> {
     return this.http.get( environment.LOCAL_API_URL+`/usuarios/${profesionalId}`);
   }
 }
+
+
+

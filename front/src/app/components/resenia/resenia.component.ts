@@ -3,8 +3,6 @@ import { ReseñasService } from "../../services/resenia.service";
 import { IReseña } from "../../interfaces/resenia.interface";
 import { FormsModule } from "@angular/forms";
 
-
-
 @Component({
   selector: "app-resenia",
   templateUrl: "./resenia.component.html",

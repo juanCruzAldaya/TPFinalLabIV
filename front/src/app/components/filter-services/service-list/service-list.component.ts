@@ -54,8 +54,10 @@ export class ServiceListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log("estoy abriendo la pagina de mostrar servicios")
     this.filterService.getServices().subscribe(
       (data: IService[]) => {
+        console.log(data)
         this.services = data;
         this.loadAdditionalData();
       },
@@ -67,27 +69,27 @@ export class ServiceListComponent implements OnInit {
 
   loadAdditionalData(): void {
     this.services.forEach(service => {
-      this.filterService.getCategoria(service.mainCategory).subscribe(categoria => {
-        const serviceCard: IServiceCard = {
-          service,
-          category_name: categoria.nombre,
-          subCategory_name: '',
-          profesional_name: ''
-        };
-        this.filterService.getSubCategoria(service.secondaryCategory).subscribe(subCategoria => {
-          serviceCard.subCategory_name = subCategoria.nombre;
-          this.filterService.getProfesional(service.profesionalId).subscribe(profesional => {
-            serviceCard.profesional_name = profesional.nombre + " " + profesional.apellido;
-            this.serviceCards.push(serviceCard);
-            if (this.serviceCards.length === this.services.length) {
-              this.loadServices();
-              this.setupIntersectionObserver();
-            }
-          });
+        this.filterService.getCategoria(service.mainCategory).subscribe(categoria => {
+            const serviceCard: IServiceCard = {
+                service,
+                category_name: categoria.nombre,
+                subCategory_name: '',
+                profesional_name: ''
+            };
+            this.filterService.getSubCategoria(service.secondaryCategory).subscribe(subCategoria => {
+                serviceCard.subCategory_name = subCategoria.nombre;
+                this.filterService.getProfesional(service.profesionalId).subscribe(profesional => {
+                    serviceCard.profesional_name = profesional.nombre + " " + profesional.apellido;
+                    this.serviceCards.push(serviceCard);
+                    if (this.serviceCards.length === this.services.length) {
+                        this.loadServices();
+                        this.setupIntersectionObserver();
+                    }
+                });
+            });
         });
-      });
     });
-  }
+}
 
   updateFilter(criteria: any): void {
     this.filterCriteria = criteria;

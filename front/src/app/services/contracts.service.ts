@@ -15,7 +15,9 @@ export class ContractsService {
 
 
   get_contrataciones_clientes(id_user: any): Observable<any> {
-    return this.http.get<any>(`${environment.LOCAL_API_URL}/contrataciones_clientes/${id_user}`);
+    const url = `${environment.LOCAL_API_URL}/contrataciones_clientes/${id_user}`;
+    console.log('Fetching contracts from URL:', url);  // Debugging line
+    return this.http.get<any>(url);
   }
 
 }  

@@ -18,6 +18,7 @@ export class FilterServicesService {
   }
 
 
+
   
   getSubCategoria(subCategoriaId: number): Observable<any> {
     return this.http.get( environment.LOCAL_API_URL + `/subcategoria/${subCategoriaId}`);

@@ -21,7 +21,7 @@ const routes: Routes = [
   { path: "complete_user/:id", component: InfoComponent, canActivate: [AuthGuard]},
   { path: "reviews", component: ReseñasComponent,canActivate: [AuthGuard]},
   { path: "login", component: FormComponent },
-  { path: "contracts", component: ContractsComponent},
+  { path: "contracts", component: ContractsComponent, canActivate: [AuthGuard]},
   { path: "add-service", component: AddServiceComponent, canActivate: [AuthGuard]},
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
   { path: "", component: HomePageComponent },

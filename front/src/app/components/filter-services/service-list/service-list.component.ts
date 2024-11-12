@@ -57,7 +57,6 @@ export class ServiceListComponent implements OnInit {
     console.log("estoy abriendo la pagina de mostrar servicios")
     this.filterService.getServices().subscribe(
       (data: IService[]) => {
-        console.log(data)
         this.services = data;
         this.loadAdditionalData();
       },

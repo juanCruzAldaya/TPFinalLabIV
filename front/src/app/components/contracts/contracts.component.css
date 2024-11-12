@@ -1,24 +1,21 @@
-.contracts-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-  }
-  
-  .contract-card {
-    background-color: #e0f7fa;
-    border: 1px solid #00796b;
-    border-radius: 8px;
-    padding: 20px;
-    width: 300px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .contract-card h3 {
-    margin-top: 0;
-    color: #00796b;
-  }
-  
-  .contract-card p {
-    margin: 5px 0;
-  }
-  
+.contract-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.contract-card .card-title {
+  color: blue;
+}
+
+.status-pending {
+  border-left: 5px solid yellow;
+}
+
+.status-canceled {
+  border-left: 5px solid red;
+}
+
+.status-accepted {
+  border-left: 5px solid green;
+}

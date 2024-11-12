@@ -236,6 +236,36 @@ app.add_middleware(
 )
 
 
+@app.post("/login", response_model=AuthResponse)
+def login(request: LoginRequest):
+    
+    user = get_user_credentials(request.email)
+        
+    if not user or not verify_password(request.password, user['password']):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+
+
+
+    token = jwt.encode({"sub": request.email}, SECRET_KEY, algorithm=ALGORITHM)
+    
+
+
+
+    return {"token": token, "userId": int(user['id']), 'email': str(user['email']), 'password': str(user['password'])}
+
+
+@app.get("/usuarios/{id}")
+def get_profesional(id: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT nombre, apellido FROM usuarios WHERE id = %s", (id,))
+    result = cursor.fetchone()
+    cursor.close()
+    db.close()
+    if result is None:
+        raise HTTPException(status_code=404, detail="Profesional no encontrado")
+    return result
 
 
 @app.put("/usuarios/{user_id}")
@@ -342,24 +372,6 @@ def get_categoria(categoria_id: int):
         cursor.close()
         connection.close()
 
-@app.post("/login", response_model=AuthResponse)
-def login(request: LoginRequest):
-    
-    user = get_user_credentials(request.email)
-        
-    if not user or not verify_password(request.password, user['password']):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    
-
-
-
-    token = jwt.encode({"sub": request.email}, SECRET_KEY, algorithm=ALGORITHM)
-    
-
-
-
-    return {"token": token, "userId": int(user['id']), 'email': str(user['email']), 'password': str(user['password'])}
-
 
 
 @app.post("/categorias")
@@ -377,32 +389,55 @@ def add_categoria(categoria: Categoria):
 
 
 
-
-
-@app.get("/subcategoria/{subcategoria_id}")
-def get_subcategoria(subcategoria_id: int):
-    print(subcategoria_id)
-
+@app.get("/subcategorias/{categoria_id}")
+def get_subcategoria(categoria_id: int):
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
     
     try:
-        cursor.execute("SELECT * FROM subcategorias WHERE id = %s", (subcategoria_id,))
+        cursor.execute("SELECT * FROM subcategorias WHERE categoria_id = %s", (categoria_id,))
         
         # Fetch all results to ensure there are no unread results
-        result = cursor.fetchone()
-        if not result:
+        results = cursor.fetchone()
+        
+        if not results:
             raise HTTPException(status_code=404, detail="Subcategories not found")
         
-        return result
+        return results
         
     except mysql.connector.Error as err:
         print(f"Error: {err}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
     finally:
-        
         cursor.close()
         connection.close()
+
+@app.get("/subcategoria/{id}")
+def get_subcategoria(id: int):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    
+    try:
+        cursor.execute("SELECT * FROM subcategorias WHERE id = %s", (id,))
+        
+        # Fetch all results to ensure there are no unread results
+        results = cursor.fetchall()
+        
+        if not results:
+            raise HTTPException(status_code=404, detail="Subcategory not found")
+        
+        return results
+        
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    finally:
+        cursor.close()
+        connection.close()
+
+
+
+        
 
 @app.get("/subcategoriasById/{id}")
 def get_subcategoria(id: int):
@@ -427,18 +462,6 @@ def get_subcategoria(id: int):
         connection.close()
 
 
-
-@app.get("/usuarios/{id}")
-def get_profesional(id: int):
-    db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT nombre, apellido FROM usuarios WHERE id = %s", (id,))
-    result = cursor.fetchone()
-    cursor.close()
-    db.close()
-    if result is None:
-        raise HTTPException(status_code=404, detail="Profesional no encontrado")
-    return result
 
 
 @app.get("/subcategorias")
@@ -555,17 +578,21 @@ def add_contratacion(contratacion: Contratacion):
 
 
 @app.get("/contrataciones_clientes/{id_usuario}")
-def add_contratacion(id_usuario: int):
+def get_contrataciones(id_usuario: int):
     db = get_db_connection()
-    cursor = db.cursor()
-    nombre_procedimiento = "contrataciones_clientes"
-    parametros = (id_usuario,)
-    cursor.callproc(nombre_procedimiento,parametros)
-    result = cursor.fetchall()
-
-    cursor.close()
-    db.close()
-    return result
+    cursor = db.cursor(dictionary=True)
+    try:
+        cursor.callproc('contrataciones_clientes', [id_usuario])
+        for result in cursor.stored_results():
+            data = result.fetchall()
+        cursor.close()
+        db.close()
+        return data
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        cursor.close()
+        db.close()
+        return {"error": str(err)}
 
 @app.get("/usuarios/{id}")
 def get_profesional(id: int):

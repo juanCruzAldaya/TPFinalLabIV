@@ -7,7 +7,7 @@ export interface IContract {
     estado: string;
     comentarios: string;
     servicio_nombre: string;
-    nombre_profesional: string;
-    apellido_profesional: string;
+    profesional_apellido: string;
+    profesional_nombre: string;
 
   }

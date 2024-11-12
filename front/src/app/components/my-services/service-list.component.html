@@ -1,0 +1,17 @@
+<app-header></app-header>
+<div class="service-list">
+  <div *ngFor="let service of services" class="card">
+    <div class="card-content">
+      <h3>ID: {{ service.id }}</h3>
+      <p><strong>Description:</strong> {{ service.description }}</p>
+      <p><strong>Main Category:</strong> {{ service.mainCategory }}</p>
+      <p>
+        <strong>Secondary Category:</strong> {{ service.secondaryCategory }}
+      </p>
+      <p><strong>State:</strong> {{ service.state }}</p>
+      <p><strong>Department:</strong> {{ service.department }}</p>
+      <p><strong>Locality:</strong> {{ service.locality }}</p>
+      <p><strong>Professional ID:</strong> {{ service.profesionalId }}</p>
+    </div>
+  </div>
+</div>

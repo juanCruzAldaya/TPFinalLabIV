@@ -453,6 +453,16 @@ def get_servicios():
     db.close()
     return results
 
+@app.get("/misServicios/{profesionalId}")
+def get_servicios(profesionalId: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM servicios WHERE profesional_id = %s", (profesionalId))
+    results = cursor.fetchall()
+    cursor.close()
+    db.close()
+    return results
+
 @app.post("/servicios")
 def add_servicio(servicio: Servicio):
     db = get_db_connection()

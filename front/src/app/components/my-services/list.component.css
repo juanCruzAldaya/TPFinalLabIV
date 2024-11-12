@@ -1,0 +1,25 @@
+.service-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+}
+
+.card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  width: 250px;
+  background-color: #fff;
+}
+
+.card-content h3 {
+  margin: 0;
+  font-size: 1.25em;
+}
+
+.card-content p {
+  margin: 8px 0;
+  font-size: 0.9em;
+}

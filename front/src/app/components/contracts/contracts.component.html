@@ -1,0 +1,15 @@
+
+<app-header></app-header>
+<div class="contracts-container">
+    <div *ngFor="let contract of contracts" class="contract-card">
+      <h3>{{ contract.servicio_nombre }}</h3>
+      <p><strong>Profesional:</strong> {{ contract.nombre_profesional }} {{ contract.apellido_profesional }}</p>
+      <p><strong>Fecha:</strong> {{ contract.fecha_contratacion | date }}</p>
+      <p><strong>Hora:</strong> {{ contract.hora_contratacion }}</p>
+      <p><strong>Contacto:</strong> {{ contract.contacto }}</p>
+      <p><strong>Domicilio:</strong> {{ contract.domicilio }}</p>
+      <p><strong>Estado:</strong> {{ contract.estado }}</p>
+      <p><strong>Comentarios:</strong> {{ contract.comentarios }}</p>
+    </div>
+  </div>
+  

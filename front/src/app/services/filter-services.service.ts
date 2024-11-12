@@ -1,29 +1,32 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Servicio } from '../interfaces/servicio.interface';
-
+import { IService } from '../../app/interfaces/service.interface';
+import { environment } from '../../enviroments/enviroments';
 @Injectable({
   providedIn: 'root'
 })
 export class FilterServicesService {
-  private apiUrl = 'http://127.0.0.1:8000/servicios'; // Use HTTP for local development
-
   constructor(private http: HttpClient) {}
 
-  getServices(): Observable<Servicio[]> {
-    return this.http.get<Servicio[]>(this.apiUrl);
+  getServices(): Observable<IService[]> {
+    return this.http.get<IService[]>(environment.LOCAL_API_URL+'/servicios');
   }
 
-  getCategoria(subCategoriaId: number): Observable<any> {
-    return this.http.get(`http://127.0.0.1:8000/categorias/${subCategoriaId}`);
+  getCategoria(categoriaId: number): Observable<any> {
+    return this.http.get( environment.LOCAL_API_URL+`/categoria/${categoriaId}`);
   }
 
+
+  
   getSubCategoria(subCategoriaId: number): Observable<any> {
-    return this.http.get(`http://127.0.0.1:8000/subcategorias/${subCategoriaId}`);
-  }
+    return this.http.get( environment.LOCAL_API_URL + `/subcategoria/${subCategoriaId}`);
+}
 
-  getProfesional(profesionalId: number): Observable<any> {
-    return this.http.get(`http://127.0.0.1:8000/usuarios/${profesionalId}`);
+  getProfesional(profesionalId: any): Observable<any> {
+    return this.http.get( environment.LOCAL_API_URL+`/usuarios/${profesionalId}`);
   }
 }
+
+
+

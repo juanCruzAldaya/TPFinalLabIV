@@ -16,7 +16,6 @@ ALGORITHM = "HS256"
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
-
 app = FastAPI()
 
 
@@ -81,10 +80,8 @@ def get_user_credentials(email):
     cursor = db.cursor(dictionary=True)
     
     query = "SELECT * FROM usuarios WHERE email = %s"
-    cursor.execute(query, (email,))  # Asegúrate de que 'email' está en una tupla
-    
+    result = cursor.execute(query, (email,))  # Asegúrate de que 'email' está en una tupla
     user = cursor.fetchone()
-    print(user)
     cursor.close()
     db.close()
     
@@ -105,12 +102,12 @@ class Usuario(BaseModel):
     id: Optional[int]
     email: EmailStr
     password: str
-    nombre: Optional[str]
-    apellido: Optional[str]
-    contacto: Optional[str]
-    ciudad: Optional[str]
-    nacimiento: Optional[date]
-    calificacion_promedio: Optional[Decimal]
+    nombre: Optional[str] = None
+    apellido: Optional[str] = None
+    contacto: Optional[str] = None
+    ciudad: Optional[str] = None
+    nacimiento: Optional[date] = None
+    calificacion_promedio: Optional[Decimal] = None
 
 
 class Categoria(BaseModel):
@@ -123,15 +120,13 @@ class SubCategoria(BaseModel):
 
 class Servicio(BaseModel):
     id: Optional[int]
-    profesional_id: Optional[int]
-    nombre: str
-    descripcion: Optional[str]
-    precio: Decimal = Field(..., max_digits=10, decimal_places=2)
-    calificacion: int = Field(..., ge=1, le=5)
-    sub_categoria: int
-    provincia: str
-    departamento: str
-    localidad: str
+    profesionalId: Optional[str]
+    description: Optional[str]
+    mainCategory: int
+    secondaryCategory: int
+    state: Optional[str]
+    department: Optional[str]
+    locality: Optional[str]
 
 class Resena(BaseModel):
     id: Optional[int]
@@ -142,21 +137,21 @@ class Resena(BaseModel):
 
 class Calendario(BaseModel):
     id: Optional[int]
-    profesional_id: int
-    fecha: str
-    hora_inicio: str
-    hora_fin: str
-    estado: Optional[str] = 'disponible'
+    profesional_id: Optional[int]
+    anio: Optional[int]
+    mes: Optional[int]
 
 class Contratacion(BaseModel):
     id: Optional[int]
     cliente_id: int
     servicio_id: int
-    fecha_contratacion: Optional[str]  
-    calendario_id: int
+    fecha_contratacion: str
+    hora_contratacion: str
+    calendario_id: Optional[int]
     contacto: str
-    domicilio: Optional[str]
-    estado: Optional[str] = 'pendiente'
+    domicilio: str
+    estado: str
+    comentarios: Optional[str]
 
 class MetodoDePago(BaseModel):
     id: Optional[int]
@@ -171,10 +166,6 @@ class Direccion(BaseModel):
     ciudad: str
     codigo_postal: str
 
-class User_Incompleto(BaseModel):
-    id: int
-    email: str
-    password: str
 
 class EventoBase(BaseModel):
     calendario_id: int
@@ -195,7 +186,6 @@ class EventoUpdate(BaseModel):
 
 
 
-
 class EventoResponse(EventoBase):
     id: int
 
@@ -204,10 +194,11 @@ class EventoResponse(EventoBase):
 
 
 class CalendarioBase(BaseModel):
-    usuario_id: int
-    anio: int
-    mes: int
-    eventos: List[EventoBase] = []
+    usuario_id: Optional[int] = None
+    anio: Optional[int] = None
+    mes: Optional[int] = None
+    eventos: Optional[List[EventoBase]] = None
+
 
 class CalendarioCreate(CalendarioBase):
     pass
@@ -226,6 +217,8 @@ class LoginRequest(BaseModel):
 class AuthResponse(BaseModel):
     token: str
     userId: int
+    email: str
+    password: str
 
 
 origins = [
@@ -245,39 +238,29 @@ app.add_middleware(
 
 
 
-@app.put("/usuarios/{id}")
-def update_usuario(user_id: int):
+@app.put("/usuarios/{user_id}")
+def update_usuario(user_id: int, usuario: Usuario):
     db = get_db_connection()
     if db:
-        return update_user(db, user_id)
+        
+        try:
+            update_user(user_id, usuario)
+            return {"message": "Usuario actualizado correctamente"}
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+        finally:
+            db.close()
     else:
         raise HTTPException(status_code=500, detail="Error al conectar a la base de datos")
-
-
-
-@app.get("/users_incompletos")
-def get_users_incompletos():
+@app.get("/usuarios/ultimo_id")
+def get_lastId():
     db = get_db_connection()
     cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM users_incompletos")
-    results = cursor.fetchall()
+    cursor.execute("SELECT id FROM usuarios ORDER BY id DESC LIMIT 1")
+    result = cursor.fetchone()
     cursor.close()
     db.close()
-    return results
-
-@app.post("/users_incompletos")
-def add_user_incompleto(user_incompleto: User_Incompleto):
-    db = get_db_connection()
-
-    cursor = db.cursor()
-    cursor.execute("""
-        INSERT INTO users_incompletos (email, password)
-        VALUES (%s, %s)
-    """, (user_incompleto.email, user_incompleto.password))
-    db.commit()
-    cursor.close()
-    db.close()
-    return {"message": "User Incompleto added successfully"}
+    return result
 
 @app.get("/usuarios")
 def get_usuarios():
@@ -297,7 +280,7 @@ def add_usuario(usuario: Usuario):
         db.get_server_info()
         cursor = db.cursor()
         hashed_password = pwd_context.hash(usuario.password)
-    
+
         cursor.execute("""
             INSERT INTO usuarios (email, password) 
             VALUES (%s, %s)
@@ -307,6 +290,23 @@ def add_usuario(usuario: Usuario):
         cursor.close()
         db.close()  
         return {"message": "Usuario added successfully"}
+
+
+
+
+@app.get("/calendarByUsername/{user_id}")
+def get_calendarByUserId(user_id: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT id FROM calendarios WHERE usuario_id = %s", (user_id,))
+    result = cursor.fetchone()
+    cursor.close()
+    db.close()
+    
+    if result is None:
+        raise HTTPException(status_code=404, detail="Calendar not found")
+    
+    return {"calendar_id": result["id"]}
 
 @app.get("/categorias")
 def get_categorias():
@@ -319,31 +319,53 @@ def get_categorias():
     return results
 
 
-
+@app.get("/categoria/{categoria_id}")
+def get_categoria(categoria_id: int):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    
+    try:
+        cursor.execute("SELECT * FROM categorias WHERE id = %s", (categoria_id,))
+        
+        # Fetch all results to ensure there are no unread results
+        results = cursor.fetchone()
+        
+        if not results:
+            raise HTTPException(status_code=404, detail="Subcategories not found")
+        
+        return results
+        
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    finally:
+        cursor.close()
+        connection.close()
 
 @app.post("/login", response_model=AuthResponse)
 def login(request: LoginRequest):
     
     user = get_user_credentials(request.email)
-    
-    user['password'] = pwd_context.hash(user['password'])
-    
-
-
-    
+        
     if not user or not verify_password(request.password, user['password']):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
+
+
+
     token = jwt.encode({"sub": request.email}, SECRET_KEY, algorithm=ALGORITHM)
     
-    return {"token": token, "userId": int(user['id'])}
+
+
+
+    return {"token": token, "userId": int(user['id']), 'email': str(user['email']), 'password': str(user['password'])}
 
 
 
 @app.post("/categorias")
 def add_categoria(categoria: Categoria):
     db = get_db_connection()
-    cursor = db.cursor()
+    cursor = db.cursor()    
     cursor.execute("INSERT INTO categwaorias (nombre) VALUES (%s)", (categoria.nombre,))
     db.commit()
     cursor.close()
@@ -353,29 +375,58 @@ def add_categoria(categoria: Categoria):
 
 
 
-@app.get("/subcategorias/{id}")
-def get_subcategoria(id: int):
-    db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT nombre FROM subcategorias WHERE id = %s", (id,))
-    result = cursor.fetchone()
-    cursor.close()
-    db.close()
-    if result is None:
-        raise HTTPException(status_code=404, detail="Subcategoría no encontrada")
-    return result
 
-@app.get("/categorias/{id}")
-def get_categoria(id: int):
-    db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT nombre FROM categorias WHERE id = %s", (id,))
-    result = cursor.fetchone()
-    cursor.close()
-    db.close()
-    if result is None:
-        raise HTTPException(status_code=404, detail="Categoría no encontrada")
-    return result
+
+
+
+@app.get("/subcategoria/{subcategoria_id}")
+def get_subcategoria(subcategoria_id: int):
+    print(subcategoria_id)
+
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    
+    try:
+        cursor.execute("SELECT * FROM subcategorias WHERE id = %s", (subcategoria_id,))
+        
+        # Fetch all results to ensure there are no unread results
+        result = cursor.fetchone()
+        if not result:
+            raise HTTPException(status_code=404, detail="Subcategories not found")
+        
+        return result
+        
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    finally:
+        
+        cursor.close()
+        connection.close()
+
+@app.get("/subcategoriasById/{id}")
+def get_subcategoria(id: int):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    try:
+        cursor.execute("SELECT * FROM subcategorias WHERE categoria_id = %s", (id,))
+        
+        # Fetch all results to ensure there are no unread results
+        results = cursor.fetchall()
+
+        if not results:
+            raise HTTPException(status_code=404, detail="Subcategory not found")
+        
+        return results
+        
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    finally:
+        cursor.close()
+        connection.close()
+
+
 
 @app.get("/usuarios/{id}")
 def get_profesional(id: int):
@@ -400,6 +451,7 @@ def get_subcategorias():
     db.close()
     return results
 
+
 @app.post("/subcategorias")
 def add_subcategoria(subcategoria: SubCategoria):
     db = get_db_connection()
@@ -423,13 +475,26 @@ def get_servicios():
 @app.post("/servicios")
 def add_servicio(servicio: Servicio):
     db = get_db_connection()
-    cursor = db.cursor()
-    cursor.execute("""
-        INSERT INTO servicios (profesional_id, nombre, descripcion, precio, calificacion, sub_categoria, provincia, departamento, localidad)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-    """, (servicio.profesional_id, servicio.nombre, servicio.descripcion, servicio.precio, servicio.calificacion, servicio.sub_categoria, servicio.provincia, servicio.departamento, servicio.localidad))
-    db.commit()
-    cursor.close()
+    cursor1 = db.cursor(dictionary=True)
+    cursor2 = db.cursor()
+    # Obtener el nombre de la categoría principal
+    cursor1.execute("SELECT nombre FROM categorias WHERE id = %s", (servicio.mainCategory,))
+    nombreCategoria = cursor1.fetchone()
+    if nombreCategoria:
+        nombreCategoria = nombreCategoria['nombre']  # Extraer solo el nombre
+    # Insertar en la tabla servicios
+    cursor2.execute(" INSERT INTO servicios (profesional_id, nombre, descripcion, calificacion, sub_categoria, provincia, departamento, localidad) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (
+        servicio.profesionalId,
+        nombreCategoria,
+        servicio.description,
+        0,  # Calificación inicial
+        servicio.secondaryCategory,
+        servicio.state,
+        servicio.department,
+        servicio.locality
+    ))
+    cursor1.close()
+    cursor2.close()
     db.close()
     return {"message": "Servicio added successfully"}
 
@@ -472,13 +537,49 @@ def add_contratacion(contratacion: Contratacion):
     db = get_db_connection()
     cursor = db.cursor()
     cursor.execute("""
-        INSERT INTO contrataciones (cliente_id, servicio_id, fecha_contratacion, calendario_id,contacto, domicilio, estado) 
-        VALUES (%s, %s, %s, %s, %s)
-    """, (contratacion.cliente_id, contratacion.servicio_id, contratacion.fecha_contratacion, contratacion.calendario_id, contratacion.domicilio, contratacion.contacto, contratacion.estado))
+        INSERT INTO contrataciones (cliente_id, servicio_id, fecha_contratacion, calendario_id, contacto, domicilio, estado, comentarios, hora_contratacion) 
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+    """, (contratacion.cliente_id, 
+            contratacion.servicio_id, 
+            contratacion.fecha_contratacion, 
+            contratacion.calendario_id, 
+            contratacion.contacto, 
+            contratacion.domicilio, 
+            contratacion.estado, 
+            contratacion.comentarios, 
+            contratacion.hora_contratacion))
     db.commit()
     cursor.close()
     db.close()
     return {"message": "Contratacion added successfully"}
+
+
+@app.get("/contrataciones_clientes/{id_usuario}")
+def add_contratacion(id_usuario: int):
+    db = get_db_connection()
+    cursor = db.cursor()
+    nombre_procedimiento = "contrataciones_clientes"
+    parametros = (id_usuario,)
+    cursor.callproc(nombre_procedimiento,parametros)
+    result = cursor.fetchall()
+
+    cursor.close()
+    db.close()
+    return result
+
+@app.get("/usuarios/{id}")
+def get_profesional(id: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT nombre, apellido FROM usuarios WHERE id = %s", (id,))
+    result = cursor.fetchone()
+    cursor.close()
+    db.close()
+    if result is None:
+        raise HTTPException(status_code=404, detail="Profesional no encontrado")
+    return result
+
+
 
 @app.get("/metodos_de_pago")
 def get_metodos_de_pago():
@@ -562,7 +663,21 @@ def delete_direccion(direccion_id: int):
     db.close()
     return {"message": "Direccion deleted successfully"}
 
+# @app.post("/calendarios", response_model=CalendarioResponse)
+# async def create_calendario(calendario: CalendarioCreate):
+#     db = get_db_connection()
+#     cursor = db.cursor()
+#     cursor.execute("""INSERT INTO calendarios (usuario_id, anio, mes) VALUES (%s, %s, %s)
+        
+#     """, (calendario.usuario_id, calendario.mes, calendario.anio))
+#     db.commit()
+    
+#     cursor.close()
 
+#     db.close()
+
+#     return {"message": "Calendario created successfully"}
+    
 
 
 @app.get("/calendario")
@@ -575,33 +690,44 @@ def get_calendario():
     db.close()
     return results
 
-@app.post("/calendario")
-def add_calendario(calendario: Calendario):
-    db = get_db_connection()
-    cursor = db.cursor()
-    cursor.execute("""
-        INSERT INTO calendario (profesional_id, fecha, hora_inicio, hora_fin, estado) 
-        VALUES (%s, %s, %s, %s, %s)
-    """, (calendario.profesional_id, calendario.fecha, calendario.hora_inicio, calendario.hora_fin, calendario.estado))
-    db.commit()
-    cursor.close()
-    db.close()
-    return {"message": "Calendario added successfully"}
+@app.post("/calendarios", response_model=CalendarioResponse)
+async def create_calendario(calendario: CalendarioBase):
+    try:
+        db = get_db_connection()
+        cursor = db.cursor()
+        cursor.execute("""
+            INSERT INTO calendarios (usuario_id, mes, anio) 
+            VALUES (%s, %s, %s)
+        """, (calendario.usuario_id, calendario.anio, calendario.mes))
+        db.commit()
+        calendario_id = cursor.lastrowid
+        cursor.close()
+        db.close()
+        return {
+            "usuario_id": calendario.usuario_id,
+            "anio": calendario.anio,
+            "mes": calendario.mes,
+            "id": calendario_id
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 
 
 
 
-def create_calendario(calendario: CalendarioCreate):
-    db = get_db_connection()
-    cursor = db.cursor()
-    query = "INSERT INTO calendarios (usuario_id, anio, mes) VALUES (%s, %s, %s)"
-    cursor.execute(query, (calendario.usuario_id, calendario.anio, calendario.mes))
-    db.commit()
-    calendario_id = cursor.lastrowid
-    cursor.close()
-    return {**calendario.model_dump(), "id": calendario_id, "eventos": []}
+# def create_calendario(calendario: CalendarioCreate):
+#     db = get_db_connection()
+#     cursor = db.cursor()
+#     cursor.execute("""
+#         INSERT INTO calendarios (usuario_id, anio, mes) 
+#         VALUES (?, ?, ?)
+#     """, (calendario.usuario_id, calendario.anio, calendario.mes))
+#     db.commit()
+#     calendario_id = cursor.lastrowid
+#     cursor.close()
+#     return {**calendario.model_dump(), "id": calendario_id, "eventos": []}
 
 
 
@@ -644,12 +770,26 @@ def delete_evento(evento_id: int):
 def update_user(user_id: int, usuario: Usuario):
     db = get_db_connection()
     cursor = db.cursor()
-    query = """
-    UPDATE usuarios
-    SET nombre = %s, apellido = %s, contacto = %s, nacimiento = %s, ciudad = %s
+    
+    # Fetch existing email and password
+    select_query = """
+    SELECT email, password FROM usuarios 
     WHERE id = %s
     """
-    cursor.execute(query, (usuario.nombre, usuario.apellido, usuario.contacto,usuario.nacimiento, usuario.ciudad, user_id))
+    cursor.execute(select_query, (user_id,))
+    result = cursor.fetchone()
+    if result:
+        email, password = result
+        usuario.email = email
+        usuario.password = password
+    # Update user information
+    update_query = """
+    UPDATE usuarios
+    SET nombre = %s, apellido = %s, contacto = %s, nacimiento = %s, ciudad = %s, calificacion_promedio = %s
+    WHERE id = %s
+    """
+    cursor.execute(update_query, (usuario.nombre, usuario.apellido, usuario.contacto, usuario.nacimiento, usuario.ciudad, usuario.calificacion_promedio, user_id))
+    
     db.commit()
     cursor.close()
 

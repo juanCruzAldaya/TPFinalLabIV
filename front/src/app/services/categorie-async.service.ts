@@ -8,14 +8,14 @@ import { ICategory } from "../interfaces/category.interface";
   providedIn: "root",
 })
 export class CategoriesService {
-  private apiUrl = environment.LOCAL_API_URL;
-
   constructor(private http: HttpClient) {}
 
   getCategories(): Promise<ICategory[] | any> {
-    return this.http.get(`${this.apiUrl}/categorias`).toPromise();
+    return this.http.get(`${environment.LOCAL_API_URL}/categorias`).toPromise();
   }
-  getSubCategories(id: number): Promise<ISubCategory[] | any> {
-    return this.http.get(`${this.apiUrl}/subcategorias/${id}`).toPromise();
+  getSubCategoriesById(id: number): Promise<ISubCategory[] | any> {
+    return this.http
+      .get(`${environment.LOCAL_API_URL}/subcategoriasById/${id}`)
+      .toPromise();
   }
 }

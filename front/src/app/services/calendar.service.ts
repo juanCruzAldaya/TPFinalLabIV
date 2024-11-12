@@ -3,32 +3,41 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CalendarEvent } from 'angular-calendar';
 import { map } from 'rxjs/operators';
-import {Calendario} from '../interfaces/calendario.interface'
-
+import {ICalendario} from '../interfaces/calendario.interface'
+import { environment } from '../../enviroments/enviroments';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CalendarService {
-  private apiUrl = 'http://127.0.0.1:8000/';
 
   constructor(private http: HttpClient) {}
 
-  getCalendar(userId: number): Observable<Calendario> {
-    return this.http.get<Calendario>(`${this.apiUrl}calendarios/${userId}`);
+
+  getCalendarByUserId(userId: number): Observable<any> {
+    return this.http.get<any>(environment.LOCAL_API_URL + `/calendarByUsername/${userId}`)
+      .pipe(
+        map(response => response)
+      );
   }
- 
+
+  getCalendar(userId: number): Observable<ICalendario> {
+    return this.http.get<ICalendario>(environment.LOCAL_API_URL + `/calendarios/${userId}`);
+  }
+  createCalendar(calendario: ICalendario): Observable<ICalendario> {
+    return this.http.post<ICalendario>(environment.LOCAL_API_URL + `/calendarios`, calendario);
+}
 
   createEvent(event: CalendarEvent): Observable<CalendarEvent> {
-    return this.http.post<CalendarEvent>(`${this.apiUrl}eventos`, event);
+    return this.http.post<CalendarEvent>(environment.LOCAL_API_URL + `/eventos`, event);
   }
 
   updateEvent(event: CalendarEvent): Observable<CalendarEvent> {
-    return this.http.put<CalendarEvent>(`${this.apiUrl}eventos/${event.id}`, event);
+    return this.http.put<CalendarEvent>(environment.LOCAL_API_URL + `/eventos/${event.id}`, event);
   }
 
   deleteEvent(eventId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}eventos/${eventId}`);
+    return this.http.delete<void>(environment.LOCAL_API_URL + `/eventos/${eventId}`);
   }
 
 
@@ -39,7 +48,7 @@ export class CalendarService {
     return this.getCalendar(profesionalId).pipe(
       map(calendario => {
         const formattedDate = date;
-        const events = calendario.eventos.filter(event => event.fecha === formattedDate);
+        const events = calendario.eventos!.filter(event => event.fecha === formattedDate);
         const blockedTimes = events.map(event => event.hora_inicio); // Asume que cada evento tiene una propiedad 'hora_inicio'
         const allPossibleTimes = this.generatePossibleTimes();
         return allPossibleTimes.filter(time => !blockedTimes.includes(time));

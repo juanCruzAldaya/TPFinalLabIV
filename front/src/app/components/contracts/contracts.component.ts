@@ -21,7 +21,7 @@ export class ContractsComponent implements OnInit {
   constructor(private contractService: ContractsService, private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.contractService.get_contrataciones_clientes(parseInt(this.authService.getUserId())).subscribe({
+    this.contractService.get_contrataciones_clientes().subscribe({
       next: (data: any) => {
         if (Array.isArray(data)) {
           this.contracts = data;
@@ -76,10 +76,8 @@ export class ContractsComponent implements OnInit {
     this.isModalOpen = true;
   }
   updateFilter(criteria: any): void {
-    // Implement your filter logic here
     this.filteredContracts = this.contracts.filter(contract => {
-      // Apply your filter criteria
-      return true; // Replace with actual filter logic
+      return true; 
     });
   }
 

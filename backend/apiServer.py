@@ -608,6 +608,26 @@ def get_profesional(id: int):
 
 
 
+
+
+@app.get("/get_profesional_id_by_service/{id}")
+def get_profesional(id: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT profesionalId FROM servicios WHERE id = %s", (id,))
+    result = cursor.fetchone()
+    cursor.close()
+    db.close()
+    if result is None:
+        raise HTTPException(status_code=404, detail="Profesional no encontrado")
+    return result
+
+
+
+
+
+
+
 @app.get("/metodos_de_pago")
 def get_metodos_de_pago():
     db = get_db_connection()

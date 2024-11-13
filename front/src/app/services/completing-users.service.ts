@@ -28,4 +28,7 @@ export class CompletingUsersService {
   getUserData(userId: number): Observable<IUsuarios> {
     return this.http.get<IUsuarios>(`${this.apiURL}/usuariosC/${userId}`);
   }
+  deleteUser(userId: number): Observable<IUsuarios> {
+    return this.http.delete<IUsuarios>(`${this.apiURL}/usuarios/${userId}`);
+  }
 }

@@ -3,6 +3,8 @@ import { AuthService } from '../../../services/auth.services';
 import { Router } from '@angular/router';
 import { CompletingUsersService } from '../../../services/completing-users.service';
 import { IUsuarios } from '../../../interfaces/users.interfaces';
+import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-user-profile',
@@ -35,4 +37,33 @@ export class ProfileComponent implements OnInit {
     navigateTo(route: string) {
       this.router.navigate([route]);
     }
+    deleteProfile(): void {
+      this.servis.deleteUser(this.authService.getUserId()).subscribe(
+        () => {
+          this.authService.logout();
+          this.router.navigate(['/login']);
+        },
+        error => {
+          console.error('Error al eliminar el usuario:', error);
+        }
+      );
+    }
+    
+
+confirmDelete(): void {
+  Swal.fire({
+    title: '¿Estás seguro?',
+    text: 'Esta acción no se puede deshacer.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, borrar',
+    cancelButtonText: 'Cancelar'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.deleteProfile();
+    }
+  });
+}
+
+    
 }

@@ -7,4 +7,5 @@ export interface IUsuarios {
   contacto?: string;
   nacimiento?: Date;
   calificacion_promedio?: number;
+  foto?:Blob;
 }

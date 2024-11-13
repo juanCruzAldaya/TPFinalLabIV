@@ -67,6 +67,18 @@
     display: inline-block;
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
+.text-decoration-none-danger {
+  text-decoration: none; /* Elimina el subrayado predeterminado */
+  margin-left: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 5px;
+  background-color: red;
+  color: #fff;
+  display: inline-block;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
 
 .text-decoration-none:hover {
     background-color: #0056b3;
@@ -76,6 +88,15 @@
 .text-decoration-none:active {
     background-color: #0056b3;
     transform: translateY(1px);
+}
+.text-decoration-none-danger:hover {
+  background-color: red;
+  transform: translateY(-3px);
+}
+
+.text-decoration-none-danger:active {
+  background-color: red;
+  transform: translateY(1px);
 }
 
 

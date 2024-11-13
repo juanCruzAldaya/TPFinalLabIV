@@ -267,6 +267,16 @@ def get_profesional(id: int):
         raise HTTPException(status_code=404, detail="Profesional no encontrado")
     return result
 
+@app.delete("/usuarios/{id}")
+def delete_usuarios(id: int):
+    db = get_db_connection()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM usuarios WHERE id = %s", (id,))
+    db.commit()
+    cursor.close()
+    db.close()
+    return {"message": "usuarios deleted successfully"}
+
 @app.get("/usuariosC/{id}")
 def get_profesional(id: int):
     db = get_db_connection()

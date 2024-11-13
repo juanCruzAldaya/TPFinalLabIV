@@ -25,4 +25,7 @@ export class CompletingUsersService {
       usuario
     );
   }
+  getUserData(userId: number): Observable<IUsuarios> {
+    return this.http.get<IUsuarios>(`${this.apiURL}/usuariosC/${userId}`);
+  }
 }

@@ -267,6 +267,18 @@ def get_profesional(id: int):
         raise HTTPException(status_code=404, detail="Profesional no encontrado")
     return result
 
+@app.get("/usuariosC/{id}")
+def get_profesional(id: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM usuarios WHERE id = %s", (id,))
+    result = cursor.fetchone()
+    cursor.close()
+    db.close()
+    if result is None:
+        raise HTTPException(status_code=404, detail="Profesional no encontrado")
+    return result
+
 
 @app.put("/usuarios/{user_id}")
 def update_usuario(user_id: int, usuario: Usuario):
@@ -605,6 +617,26 @@ def get_profesional(id: int):
     if result is None:
         raise HTTPException(status_code=404, detail="Profesional no encontrado")
     return result
+
+
+
+
+
+@app.get("/get_profesional_id_by_service/{id}")
+def get_profesional(id: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT profesionalId FROM servicios WHERE id = %s", (id,))
+    result = cursor.fetchone()
+    cursor.close()
+    db.close()
+    if result is None:
+        raise HTTPException(status_code=404, detail="Profesional no encontrado")
+    return result
+
+
+
+
 
 
 

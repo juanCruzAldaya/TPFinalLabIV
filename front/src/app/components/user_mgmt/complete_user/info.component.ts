@@ -55,9 +55,9 @@ export class InfoComponent implements OnInit {
 
   ngOnInit(): void {
     this.initializeForm();
+    this.loadUserData();
   }
 
-  // Inicializa el formulario con las validaciones necesarias
   initializeForm(): void {
     this.formGroup = this.fb.group({
       id: [0],
@@ -69,6 +69,42 @@ export class InfoComponent implements OnInit {
     });
   }
 
+  loadUserData(): void {
+    const userId = this.authService.getUserId();
+    this.servis.getUserData(userId).subscribe(
+      (usuario: IUsuarios) => {
+        if (usuario) {
+
+          let fechaNacimientoISO = '';
+          if (usuario.nacimiento) {
+            const fechaNacimiento = new Date(usuario.nacimiento);
+            if (!isNaN(fechaNacimiento.getTime())) {
+              // Convertir la fecha a formato YYYY-MM-DD
+              fechaNacimientoISO = fechaNacimiento.toISOString().split('T')[0];
+            }
+          }
+  
+          this.formGroup.patchValue({
+            nombre: usuario.nombre,
+            apellido: usuario.apellido,
+            contacto: usuario.contacto ? usuario.contacto : '',
+            nacimiento: fechaNacimientoISO,
+            calificacion_promedio: usuario.calificacion_promedio
+          });
+        }
+      },
+      error => {
+        console.error('Error al cargar los datos del usuario:', error);
+      }
+    );
+  }
+  
+  
+  
+  
+  
+  
+  
   onSubmit(): void {
     if (this.formGroup.valid) {
       const usuario : IUsuarios = {

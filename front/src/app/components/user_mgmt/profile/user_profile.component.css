@@ -62,19 +62,19 @@
     font-size: 16px;
     font-weight: bold;
     border-radius: 5px;
-    background-color: #28a745;
+    background-color: #0056b3;
     color: #fff;
     display: inline-block;
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .text-decoration-none:hover {
-    background-color: #218838;
+    background-color: #0056b3;
     transform: translateY(-3px);
 }
 
 .text-decoration-none:active {
-    background-color: #1e7e34;
+    background-color: #0056b3;
     transform: translateY(1px);
 }
 

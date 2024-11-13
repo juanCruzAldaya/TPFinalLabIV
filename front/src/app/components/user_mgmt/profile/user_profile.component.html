@@ -8,7 +8,7 @@
         
   
     </div>
-    <span>click to edit</span>
+    <span class="desc">click image to edit</span>
     <input type="file" #fileInput hidden (change)="onFileSelected($event)"/>
     </div>
     
@@ -25,24 +25,38 @@
   </div>
 
   <div class="profile-header d-flex align-items-center mb-4">
-    
+
     <button class="btn btn-primary btn-sm mt-2 text-decoration-none" (click)="navigateTo('/add-service')">Ofrecer servicio</button>
   </div>  
+
 
   <div class="profile-info ms-2">
     <h2>Reseñas que te han hecho:</h2>
   </div>
   <div class="box">
-    Calificacion promedio: ({{user?.calificacion_promedio}})
-    <ul>
-      <li *ngFor="let resenia of resenias">
-          <div class="estrellas">
-              <ng-container *ngFor="let estrella of [1, 2, 3, 4, 5]">
-                <span [class.selected]="estrella <= resenia.calificacion">★</span>
-              </ng-container>
-            </div>
-          <p>{{ resenia.comentario }}</p>
-          <small>{{ resenia.fecha | date }}</small>
-      </li>
+    <div class="estrellas-promedio">
+      <span>Tu calificacion promedio:  </span>
+      <ng-container *ngFor="let estrella of [1, 2, 3, 4, 5]">
+        <span [class.selected]="estrella <= calcularPromedioCalificacion()">★</span>
+      </ng-container>
+      <small> ({{ calcularPromedioCalificacion() }} de 5) de ({{user?.calificacion_promedio}}) </small>
+    </div>
+    <div class="profile-header d-flex align-items-center mb-4"></div> 
+
+    <div *ngIf="resenias.length === 0">
+      <p>No hay reseñas aún.</p>
+    </div>
+
+      <ul *ngIf="resenias.length > 0">
+        <li *ngFor="let resenia of resenias">
+            <div class="estrellas">
+                <ng-container *ngFor="let estrella of [1, 2, 3, 4, 5]">
+                  <span [class.selected]="estrella <= resenia.calificacion">★</span>
+                </ng-container>
+              </div>
+            <p>{{ resenia.comentario }}</p>
+            <small>{{ resenia.fecha | date }}</small>
+            <div class="profile-header d-flex align-items-center mb-4"></div> 
+        </li>
       </ul>
   </div>

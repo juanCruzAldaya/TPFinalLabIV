@@ -14,12 +14,12 @@ import { IReseña } from '../../../interfaces/resenia.interface';
   styleUrls: ['./user_profile.component.css']
 })
 export class ProfileComponent implements OnInit {
-  profileImageUrl: string = 'front/src/assets/images/home/image-user.png'; // URL de la imagen por defecto o de perfil actual
+  profileImageUrl: string = 'front/src/assets/images/home/image-user.png';  
   @ViewChild('fileInput') fileInput!: ElementRef;
  
 
   changeProfilePicture(): void {
-    this.fileInput.nativeElement.click(); // Abre el selector de archivos al hacer clic en el marco
+    this.fileInput.nativeElement.click();
   }
 
   onFileSelected(event: Event): void {
@@ -33,11 +33,8 @@ export class ProfileComponent implements OnInit {
       };
       reader.readAsDataURL(file);
     }
+  
   }
-  onEditClick(): void {
-    
-    console.log("Editar imagen de perfil");
-}
 
   resenias: IReseña[] = [];
   nuevaResenia: IReseña = {
@@ -92,6 +89,12 @@ export class ProfileComponent implements OnInit {
           console.error('Error al eliminar el usuario:', error);
         }
       );
+    }
+    
+    calcularPromedioCalificacion(): number {
+      if (this.resenias.length === 0) return 0;
+      const sumaCalificaciones = this.resenias.reduce((sum, resenia) => sum + resenia.calificacion, 0);
+      return Math.round(sumaCalificaciones / this.resenias.length); 
     }
     
 

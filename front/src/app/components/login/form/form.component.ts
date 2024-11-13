@@ -279,5 +279,6 @@ export class FormComponent implements AfterViewInit, OnInit {
     } else {
       console.error("Email or password is missing");
     }
+    
   }
 }

@@ -32,7 +32,22 @@
 .edit-icon:hover {
   background-color: #0056b3; /* Cambio de color al pasar el ratón */
 }
-span{
+
+.estrellas span {
+  font-size: 24px;
+  color: #ccc; 
+  cursor: pointer;
+}
+
+.estrellas span.selected {
+  color: gold; 
+}
+
+.estrellas-promedio {
+  display: flex;
+  align-items: center;
+}
+.desc{
   font-size: 12px;
   padding-left: 42px;
   margin-top: 0;
@@ -269,23 +284,13 @@ span{
   font-family: Arial, sans-serif;
   margin-top: 7px;
   margin-bottom: 52px;
-  border-radius: 3px;
+  border-radius: 10px;
   padding-left: 30px;
   padding-top: 20px;
   padding-bottom: 20px;
   .estrellas {
     display: inline-block;
   }
-  
-  .estrellas span {
-    font-size: 24px;
-    color: #ccc; 
-    cursor: pointer;
-  }
-  
-  .estrellas span.selected {
-    color: gold; 
-  }
-  
+ 
 
 }

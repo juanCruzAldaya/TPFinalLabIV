@@ -12,11 +12,13 @@ export class ReseñasService {
 
   constructor(private http: HttpClient) {}
 
-  obtenerReseñas(servicio_id: number): Observable<IReseña[]> {
+  getReseñas(servicio_id: number): Observable<IReseña[]> {
     return this.http.get<IReseña[]>(`${this.apiUrl}/${servicio_id}`);
   }
 
-  agregarReseña(reseña: IReseña): Observable<IReseña> {
-    return this.http.post<IReseña>(this.apiUrl, reseña);
+  addReseña(data: any): Observable<IReseña> {
+    return this.http.post<IReseña>(environment.LOCAL_API_URL+"/resena", data, {
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }

@@ -20,6 +20,20 @@
     <button class="btn btn-primary btn-sm mt-2 text-decoration-none" (click)="navigateTo('/add-service')">Ofrecer servicio</button>
   </div>  
 
-  <div>
-    
+  <div class="profile-info ms-2">
+    <h2>Reseñas que te han hecho:</h2>
+  </div>
+  <div class="box">
+    Calificacion promedio: ({{user?.calificacion_promedio}})
+    <ul>
+      <li *ngFor="let resenia of resenias">
+          <div class="estrellas">
+              <ng-container *ngFor="let estrella of [1, 2, 3, 4, 5]">
+                <span [class.selected]="estrella <= resenia.calificacion">★</span>
+              </ng-container>
+            </div>
+          <p>{{ resenia.comentario }}</p>
+          <small>{{ resenia.fecha | date }}</small>
+      </li>
+      </ul>
   </div>

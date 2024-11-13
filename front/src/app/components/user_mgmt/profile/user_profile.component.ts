@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { CompletingUsersService } from '../../../services/completing-users.service';
 import { IUsuarios } from '../../../interfaces/users.interfaces';
 import Swal from 'sweetalert2';
+import { ReseñasService } from '../../../services/resenia.service';
+import { IReseña } from '../../../interfaces/resenia.interface';
 
 
 @Component({
@@ -12,10 +14,21 @@ import Swal from 'sweetalert2';
   styleUrls: ['./user_profile.component.css']
 })
 export class ProfileComponent implements OnInit {
-  constructor(private authService: AuthService, private router: Router,private servis: CompletingUsersService,) {
+
+  resenias: IReseña[] = [];
+  nuevaResenia: IReseña = {
+    usuario_id: 0,
+    servicio_id: 0,
+    calificacion: 5,
+    comentario: "",
+  };
+  
+  constructor(private authService: AuthService, private router: Router,private servis: CompletingUsersService,private reseñasService: ReseñasService) {
   }
   ngOnInit(): void {
     this.loadUserData();
+    const servicio_id = 1; // ID del servicio específico
+    this.obtenerResenias(servicio_id);
   }
     user : IUsuarios | undefined ;
     loadUserData(): void {
@@ -30,7 +43,15 @@ export class ProfileComponent implements OnInit {
         }
       );
     }
-    
+  
+
+
+  obtenerResenias(servicio_id: number): void {
+    this.reseñasService.getReseñas(servicio_id).subscribe((data) => {
+      this.resenias = data;
+    });
+  }
+
     navigateToCompleteUser() {
       this.router.navigate([`/complete_user/${this.authService.getUserId()}`]);
     }

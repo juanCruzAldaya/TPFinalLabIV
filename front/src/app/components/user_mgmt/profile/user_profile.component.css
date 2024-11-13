@@ -223,4 +223,29 @@
   background-color: #0056b3;
 }
 
+.box{
+  background-color: #cfd1d36c;
+  max-width: 900px;
+  min-height: auto;
+  margin: auto;
+  font-family: Arial, sans-serif;
+  margin-top: 7px;
+  margin-bottom: 52px;
+  border-radius: 3px;
+  padding-left: 30px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  .estrellas {
+    display: inline-block;
+  }
   
+  .estrellas span {
+    font-size: 24px;
+    color: #ccc; 
+    cursor: pointer;
+  }
+  
+  .estrellas span.selected {
+    color: gold; 
+  }
+}

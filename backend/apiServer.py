@@ -543,11 +543,11 @@ def add_servicio(servicio: Servicio):
     db.close()
     return {"message": "Servicio added successfully"}
 
-@app.get("/resenas")
+@app.get("/resenas{id}")
 def get_resenas():
     db = get_db_connection()
     cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM resenas")
+    cursor.execute("SELECT * FROM resenas where id = servico_id")
     results = cursor.fetchall()
     cursor.close()
     db.close()
@@ -558,7 +558,7 @@ def add_resena(resena: Resena):
     db = get_db_connection()
     cursor = db.cursor()
     cursor.execute("""
-        INSERT INTO resenas (servicio_id, cliente_id, calificacion, comentario) 
+        INSERT INTO resenas (servicio_id, cliente_id, calificacion, comentario)
         VALUES (%s, %s, %s, %s)
     """, (resena.servicio_id, resena.cliente_id, resena.calificacion, resena.comentario))
     db.commit()

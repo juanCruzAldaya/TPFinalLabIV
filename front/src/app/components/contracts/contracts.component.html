@@ -1,13 +1,14 @@
 <app-header></app-header>
-<div class="container mt-4">
+<div class="container-fluid mt-4" [ngClass]="{'blur-background': isModalOpen}">
   <div class="row">
     <div *ngFor="let contract of contracts" class="col-md-4 mb-4">
-      <div class="card contract-card" [ngClass]="getStatusClass(contract.estado)">
+      <div class="contract-card" [ngClass]="getStatusClass(contract.estado)">
         <div class="card-body">
-          <h5 class="card-title">{{ contract.servicio_nombre }}</h5>
+          <h5 class="card-title text-primary">{{ contract.servicio_nombre }}</h5>
           <p class="card-text"><strong>Profesional:</strong> {{ contract.profesional_nombre }} {{ contract.profesional_apellido }}</p>
+          <p class="card-text"><strong>Estado:</strong> {{ contract.estado }}</p>
           <div class="button-container">
-            <button class="btn btn-primary" (click)="openBasicDetails(contract)">See Details</button>
+            <button class="btn btn-primary custom-btn" (click)="showContractDetails(contract)">Ver Detalles</button>
           </div>
         </div>
       </div>
@@ -15,42 +16,14 @@
   </div>
 </div>
 
-<!-- Basic Details Modal -->
-<div class="modal fade" id="basicDetailsModal" tabindex="-1" aria-labelledby="basicDetailsModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="basicDetailsModalLabel">Basic Details</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">×</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p><strong>Profesional:</strong> {{ selectedContract?.profesional_nombre }} {{ selectedContract?.profesional_apellido }}</p>
-        <p><strong>Servicio:</strong> {{ selectedContract?.servicio_nombre }}</p>
-        <div class="button-container">
-          <button class="btn btn-secondary" (click)="openProfessionalDetails()">More Details</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Professional Details Modal -->
-<div class="modal fade" id="professionalDetailsModal" tabindex="-1" aria-labelledby="professionalDetailsModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="professionalDetailsModalLabel">Professional Details</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">×</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <!-- Add professional details like ratings and reviews here -->
-        <p><strong>Rating:</strong> {{ selectedContract?.fecha_contratacion }}</p>
-        <p><strong>Reviews:</strong> {{ selectedContract?.hora_contratacion }}</p>
-      </div>
-    </div>
+<div class="modal" [ngClass]="{'show': isModalOpen}" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <span class="close" (click)="closeModal()">×</span>
+    
+    <h4>{{ selectedContract?.servicio_nombre }}</h4>
+    <p><strong>Profesional:</strong> {{ selectedContract?.profesional_nombre }} {{ selectedContract?.profesional_apellido }}</p>
+    <p><strong>Estado:</strong> {{ selectedContract?.estado }}</p>
+    <p><strong>Fecha de Contratación:</strong> {{ selectedContract?.fecha_contratacion }}</p>
+    <p><strong>Hora de Contratación:</strong> {{ selectedContract?.hora_contratacion }}</p>
   </div>
 </div>

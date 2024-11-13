@@ -31,6 +31,7 @@ export class ServiceListComponent implements OnInit {
   availableSlots: string[] = [];
   selectedDate: string | null = null;
   selectedService: any;
+  profesional_id: string | null = null;
   isModalOpen = false;
   filterCriteria = {
     localidad: '',
@@ -45,8 +46,10 @@ export class ServiceListComponent implements OnInit {
 
   showServiceDetails(service: IServiceCard) {
     this.selectedService = service;
+    this.profesional_id = service.service.profesionalId;
     this.sharedService.setServiceId(parseInt(this.selectedService.service.id))
     this.isModalOpen = true;
+ 
   }
 
   closeModal() {
@@ -54,7 +57,6 @@ export class ServiceListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("estoy abriendo la pagina de mostrar servicios")
     this.filterService.getServices().subscribe(
       (data: IService[]) => {
         this.services = data;
@@ -149,7 +151,7 @@ export class ServiceListComponent implements OnInit {
   handleDayClick(event: { day: CalendarMonthViewDay<any>, date: string }) {
     this.selectedDate = event.date;
     this.showCalendar = false;
-    this.calendarService.getAvailableSlots(this.authService.getUserId(), this.selectedDate).subscribe(
+    this.calendarService.getAvailableSlots(parseInt(this.profesional_id!), this.selectedDate).subscribe(
       (availableSlots: string[]) => {
         this.availableSlots = availableSlots;
       },
@@ -159,19 +161,10 @@ export class ServiceListComponent implements OnInit {
     );
   }
   
-
   hireService(service: any) {
     
     console.log('Contratando servicio:', service);
   }
-
- //More code...
-  // Pagination logic...
-  // Filter and sorting logic...
-  // etc.
-
-
-
 closeCalendarModal() {
   this.isCalendarModalOpen = false;
 }

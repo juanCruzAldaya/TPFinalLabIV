@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ContractsService } from '../../services/contracts.service';
 import { IContract } from '../../interfaces/IContracts.interface';
 import { AuthService } from '../../services/auth.services';
+
+
 
 @Component({
   selector: 'app-contracts',
@@ -10,7 +12,11 @@ import { AuthService } from '../../services/auth.services';
 })
 export class ContractsComponent implements OnInit {
   contracts: IContract[] = [];
+  filteredContracts: any[] = [];
+
   selectedContract: IContract | null = null;
+  isModalOpen = false;
+  isProfessionalModalOpen = false;
 
   constructor(private contractService: ContractsService, private authService: AuthService) {}
 
@@ -53,39 +59,33 @@ export class ContractsComponent implements OnInit {
     }
   } 
 
-  openBasicDetails(contract: IContract): void {
+  openBasicDetails(contract: any) {
     this.selectedContract = contract;
-    this.showModal('basicDetailsModal');
+    this.isModalOpen = true;
   }
 
-  openProfessionalDetails(): void {
-    this.hideModal('basicDetailsModal');
-    this.showModal('professionalDetailsModal');
+  openProfessionalDetails() {
+    this.isProfessionalModalOpen = true;
+  }
+  
+  closeModal() {
+    this.isModalOpen = false;
+  }
+  showContractDetails(contract: any) {
+    this.selectedContract = contract;
+    this.isModalOpen = true;
+  }
+  updateFilter(criteria: any): void {
+    // Implement your filter logic here
+    this.filteredContracts = this.contracts.filter(contract => {
+      // Apply your filter criteria
+      return true; // Replace with actual filter logic
+    });
   }
 
-  showModal(modalId: string): void {
-    const modalElement = document.getElementById(modalId);
-    if (modalElement) {
-      modalElement.classList.add('show');
-      modalElement.style.display = 'block';
-      modalElement.removeAttribute('aria-hidden');
-      modalElement.setAttribute('aria-modal', 'true');
-    } else {
-      console.error(`Element with id "${modalId}" not found.`);
-    }
-  }
 
-  hideModal(modalId: string): void {
-    const modalElement = document.getElementById(modalId);
-    if (modalElement) {
-      modalElement.classList.remove('show');
-      modalElement.style.display = 'none';
-      modalElement.setAttribute('aria-hidden', 'true');
-      modalElement.removeAttribute('aria-modal');
-    } else {
-      console.error(`Element with id "${modalId}" not found.`);
-    }
+  closeProfessionalModal() {
+    this.isProfessionalModalOpen = false;
   }
-
   
 }

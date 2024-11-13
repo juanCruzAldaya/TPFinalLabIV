@@ -5,6 +5,8 @@ import { BookingService } from '../../../services/booking.service';
 import { AuthService } from '../../../services/auth.services';
 import { CalendarService } from '../../../services/calendar.service';
 import { SharedService } from '../../../services/shared.service';
+import { IService } from '../../../interfaces/service.interface';
+
 
 @Component({
   selector: 'app-booking-form',
@@ -17,7 +19,8 @@ export class BookingFormComponent implements OnInit {
   selectedDate: string = '';
   userId: number | null = 0; // ID del usuario
   serviceId: number = 0;
-  calendarId: number = 0; // Receive calendarId as input
+  calendarId: number = 0;
+  profesionalId: any; // ID del profesional
 
   constructor(private fb: FormBuilder, 
     private route: ActivatedRoute, 
@@ -25,8 +28,10 @@ export class BookingFormComponent implements OnInit {
     private authService: AuthService, 
     private calendarService: CalendarService, 
     private sharedService: SharedService) {
-   
+      
+      
       this.bookingForm = this.fb.group({
+        
         contact: ['', Validators.required],
         address: ['', Validators.required],
         comments: [''],
@@ -36,6 +41,15 @@ export class BookingFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.serviceId = this.sharedService.getServiceId();
+    this.sharedService.getProfesionalByServiceId(this.serviceId).then(objectProfesionalId => {
+
+    // Directly access the profesionalId
+    this.profesionalId = objectProfesionalId.profesionalId;
+    }).catch(error => {
+        console.error('Error fetching profesionalId:', error);
+    });
+    
     this.route.queryParams.subscribe(params => {
       this.selectedSlot = params['slot'];
       this.selectedDate = params['date'];
@@ -46,9 +60,24 @@ export class BookingFormComponent implements OnInit {
         slot: this.selectedSlot
       });
     });
+
+  
+
     this.userId = this.authService.getUserId();
+
+
+
     if (this.userId !== null) {
-      this.calendarService.getCalendarByUserId(this.userId).subscribe(
+
+      this.serviceId = this.sharedService.getServiceId();
+      this.sharedService.getProfesionalByServiceId(this.serviceId).then(objectProfesionalId => {
+  
+      // Directly access the profesionalId
+      this.profesionalId = objectProfesionalId.profesionalId;
+      }).catch(error => {
+          console.error('Error fetching profesionalId:', error);
+      });
+      this.calendarService.getCalendarByUserId(this.profesionalId).subscribe( //PASARLE PROFESIONAL ID EN VEZ DE EL ID DEL
         calendar_Id => {
           let parsedResponse = JSON.stringify(calendar_Id);
           let parsedJson = JSON.parse(parsedResponse);

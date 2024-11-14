@@ -1,0 +1,51 @@
+<app-header></app-header>
+<div class="container-fluid mt-4" [ngClass]="{'blur-background': isModalOpen}">
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <select class="form-select" (change)="onContractTypeChange($event)">
+        <option value="solicitadas">Contrataciones Solicitadas</option>
+        <option value="profesional">Contrataciones como Profesional</option>
+      </select>
+    </div>
+  </div>
+  <div class="row">
+    <div *ngFor="let contract of contracts" class="col-md-4 mb-4">
+      <div class="contract-card" [ngClass]="getStatusClass(contract.estado)">
+        <div class="card-body">
+          <h5 class="card-title text-primary">{{ contract.servicio_nombre }}</h5>
+          <p class="card-text"><strong>Profesional:</strong> {{ contract.profesional_nombre }} {{ contract.profesional_apellido }}</p>
+          <p class="card-text"><strong>Estado:</strong> {{ contract.estado }}</p>
+          <div class="button-container">
+            <button class="btn btn-primary custom-btn" (click)="showContractDetails(contract)">Ver Detalles</button>
+            <button *ngIf="isProfessionalView" class="btn btn-success custom-btn" (click)="openConfirmModal('aceptar', contract)">Aceptar</button>
+            <button *ngIf="isProfessionalView" class="btn btn-danger custom-btn" (click)="openConfirmModal('rechazar', contract)">Rechazar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" [ngClass]="{'show': isModalOpen}" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <span class="close" (click)="closeModal()">×</span>
+    
+    <h4>{{ selectedContract?.servicio_nombre }}</h4>
+    <p><strong>Profesional:</strong> {{ selectedContract?.profesional_nombre }} {{ selectedContract?.profesional_apellido }}</p>
+    <p><strong>Estado:</strong> {{ selectedContract?.estado }}</p>
+    <p><strong>Fecha de Contratación:</strong> {{ selectedContract?.fecha_contratacion }}</p>
+    <p><strong>Hora de Contratación:</strong> {{ selectedContract?.hora_contratacion }}</p>
+  </div>
+</div>
+
+<div class="modal" [ngClass]="{'show': isConfirmModalOpen}" (click)="closeConfirmModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <span class="close" (click)="closeConfirmModal()">×</span>
+    <h4>Confirmar Acción</h4>
+    <p>¿Estás seguro de que deseas {{ confirmAction }} este contrato?</p>
+    <div class="button-container">
+      <button class="btn btn-primary custom-confirm-btn" (click)="confirmActionHandler()">Confirmar</button>
+      <button class="btn btn-secondary custom-cancel-btn" (click)="closeConfirmModal()">Cancelar</button>
+    </div>
+  </div>
+</div>

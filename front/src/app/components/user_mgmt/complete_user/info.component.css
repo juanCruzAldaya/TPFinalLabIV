@@ -14,7 +14,7 @@ body{
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    height: 100vh;
+    height: 90vh;
 }
 
 .container{
@@ -23,9 +23,9 @@ body{
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
     position: relative;
     overflow: hidden;
-    width: 768px;
+    width: 700px;
     max-width: 100%;
-    min-height: 750px;
+    min-height: 630px;
 }
 
 .container p{

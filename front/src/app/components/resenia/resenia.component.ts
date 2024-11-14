@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ReseñasService } from "../../services/resenia.service";
-import { Reseña } from "../../interfaces/resenia.interface";
+import { IReseña } from "../../interfaces/resenia.interface";
 import { FormsModule } from "@angular/forms";
 
 @Component({
@@ -9,8 +9,8 @@ import { FormsModule } from "@angular/forms";
   styleUrls: ["./resenia.component.css"],
 })
 export class ReseñasComponent implements OnInit {
-  resenias: Reseña[] = [];
-  nuevaResenia: Reseña = {
+  resenias: IReseña[] = [];
+  nuevaResenia: IReseña = {
     usuario_id: 0,
     servicio_id: 0,
     calificacion: 5,
@@ -20,19 +20,18 @@ export class ReseñasComponent implements OnInit {
   constructor(private reseñasService: ReseñasService) {}
 
   ngOnInit(): void {
-    // Suponiendo que tienes el servicio_id, puedes reemplazarlo aquí
-    const servicio_id = 1; // ID del servicio específico
-    this.obtenerResenias(servicio_id);
+    const servicio_id = 1;
+    this.getResenias(servicio_id);
   }
 
-  obtenerResenias(servicio_id: number): void {
-    this.reseñasService.obtenerReseñas(servicio_id).subscribe((data) => {
+  getResenias(servicio_id: number): void {
+    this.reseñasService.getReseñas(servicio_id).subscribe((data) => {
       this.resenias = data;
     });
   }
 
-  agregarResenia(): void {
-    this.reseñasService.agregarReseña(this.nuevaResenia).subscribe((data) => {
+  addResenia(): void {
+    this.reseñasService.addReseña(this.resenias).subscribe((data) => {
       this.resenias.push(data);
       this.nuevaResenia = {
         usuario_id: 0,

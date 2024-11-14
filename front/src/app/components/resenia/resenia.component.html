@@ -1,8 +1,10 @@
 
+
+<app-header></app-header>
 <body>
     <div class="container">
       <h3>Agregar una Reseña</h3>
-        <form (ngSubmit)="agregarResenia()">
+        <form (ngSubmit)="addResenia()">
         <p for="calificacion">Calificación:</p>
         <div class="estrellas">
             <ng-container *ngFor="let estrella of [1, 2, 3, 4, 5]">
@@ -15,7 +17,7 @@
           </div>
         <p for="comentario">Comentario:</p>
         <textarea [(ngModel)]="nuevaResenia.comentario" name="comentario" required  rows="10" cols="40"></textarea>
-    
+          
         <button type="submit" class="btn-primary">Enviar</button>
         </form>
 

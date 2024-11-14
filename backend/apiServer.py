@@ -23,7 +23,7 @@ def get_db_connection():
     db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="root",
+    password="1234",
     database="laburappdb")
     
     return db
@@ -81,9 +81,7 @@ def get_user_credentials(email):
     
     query = "SELECT * FROM usuarios WHERE email = %s"
     result = cursor.execute(query, (email,))  # Asegúrate de que 'email' está en una tupla
-    print(result)
     user = cursor.fetchone()
-    print(user)
     cursor.close()
     db.close()
     
@@ -144,14 +142,16 @@ class Calendario(BaseModel):
     mes: Optional[int]
 
 class Contratacion(BaseModel):
-    id: Optional[int]
+    id: int
     cliente_id: int
     servicio_id: int
-    fecha_contratacion: Optional[str]  
+    fecha_contratacion: str # Should be a string
+    hora_contratacion: str # Should be a string
     calendario_id: int
-    contacto: str
-    domicilio: Optional[str]
-    estado: Optional[str] = 'pendiente'
+    contacto: str  # Should be a string
+    domicilio: str  # Should be a string
+    estado: str  # Should be a string
+    comentarios: str
 
 class MetodoDePago(BaseModel):
     id: Optional[int]
@@ -166,10 +166,6 @@ class Direccion(BaseModel):
     ciudad: str
     codigo_postal: str
 
-class User_Incompleto(BaseModel):
-    id: int
-    email: str
-    password: str
 
 class EventoBase(BaseModel):
     calendario_id: int
@@ -240,6 +236,58 @@ app.add_middleware(
 )
 
 
+@app.post("/login", response_model=AuthResponse)
+def login(request: LoginRequest):
+    
+    user = get_user_credentials(request.email)
+        
+    if not user or not verify_password(request.password, user['password']):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+
+
+
+    token = jwt.encode({"sub": request.email}, SECRET_KEY, algorithm=ALGORITHM)
+    
+
+
+
+    return {"token": token, "userId": int(user['id']), 'email': str(user['email']), 'password': str(user['password'])}
+
+
+@app.get("/usuarios/{id}")
+def get_profesional(id: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT nombre, apellido FROM usuarios WHERE id = %s", (id,))
+    result = cursor.fetchone()
+    cursor.close()
+    db.close()
+    if result is None:
+        raise HTTPException(status_code=404, detail="Profesional no encontrado")
+    return result
+
+@app.delete("/usuarios/{id}")
+def delete_usuarios(id: int):
+    db = get_db_connection()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM usuarios WHERE id = %s", (id,))
+    db.commit()
+    cursor.close()
+    db.close()
+    return {"message": "usuarios deleted successfully"}
+
+@app.get("/usuariosC/{id}")
+def get_profesional(id: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM usuarios WHERE id = %s", (id,))
+    result = cursor.fetchone()
+    cursor.close()
+    db.close()
+    if result is None:
+        raise HTTPException(status_code=404, detail="Profesional no encontrado")
+    return result
 
 
 @app.put("/usuarios/{user_id}")
@@ -295,6 +343,23 @@ def add_usuario(usuario: Usuario):
         db.close()  
         return {"message": "Usuario added successfully"}
 
+
+
+
+@app.get("/calendarByUsername/{user_id}")
+def get_calendarByUserId(user_id: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT id FROM calendarios WHERE usuario_id = %s", (user_id,))
+    result = cursor.fetchone()
+    cursor.close()
+    db.close()
+    
+    if result is None:
+        raise HTTPException(status_code=404, detail="Calendar not found")
+    
+    return {"calendar_id": result["id"]}
+
 @app.get("/categorias")
 def get_categorias():
     db = get_db_connection()
@@ -329,24 +394,6 @@ def get_categoria(categoria_id: int):
         cursor.close()
         connection.close()
 
-@app.post("/login", response_model=AuthResponse)
-def login(request: LoginRequest):
-    
-    user = get_user_credentials(request.email)
-        
-    if not user or not verify_password(request.password, user['password']):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    
-
-
-
-    token = jwt.encode({"sub": request.email}, SECRET_KEY, algorithm=ALGORITHM)
-    
-
-
-
-    return {"token": token, "userId": int(user['id']), 'email': str(user['email']), 'password': str(user['password'])}
-
 
 
 @app.post("/categorias")
@@ -358,6 +405,8 @@ def add_categoria(categoria: Categoria):
     cursor.close()
     db.close()
     return {"message": "Categoria added successfully"}
+
+
 
 
 
@@ -385,6 +434,33 @@ def get_subcategoria(categoria_id: int):
         cursor.close()
         connection.close()
 
+@app.get("/subcategoria/{id}")
+def get_subcategoria(id: int):
+    connection = get_db_connection()
+    cursor = connection.cursor(dictionary=True)
+    
+    try:
+        cursor.execute("SELECT * FROM subcategorias WHERE id = %s", (id,))
+        
+        # Fetch all results to ensure there are no unread results
+        results = cursor.fetchall()
+        
+        if not results:
+            raise HTTPException(status_code=404, detail="Subcategory not found")
+        
+        return results
+        
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    finally:
+        cursor.close()
+        connection.close()
+
+
+
+        
+
 @app.get("/subcategoriasById/{id}")
 def get_subcategoria(id: int):
     connection = get_db_connection()
@@ -408,18 +484,6 @@ def get_subcategoria(id: int):
         connection.close()
 
 
-
-@app.get("/usuarios/{id}")
-def get_profesional(id: int):
-    db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT nombre, apellido FROM usuarios WHERE id = %s", (id,))
-    result = cursor.fetchone()
-    cursor.close()
-    db.close()
-    if result is None:
-        raise HTTPException(status_code=404, detail="Profesional no encontrado")
-    return result
 
 
 @app.get("/subcategorias")
@@ -479,11 +543,11 @@ def add_servicio(servicio: Servicio):
     db.close()
     return {"message": "Servicio added successfully"}
 
-@app.get("/resenas")
+@app.get("/resenas{id}")
 def get_resenas():
     db = get_db_connection()
     cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM resenas")
+    cursor.execute("SELECT * FROM resenas where id = servico_id")
     results = cursor.fetchall()
     cursor.close()
     db.close()
@@ -494,7 +558,7 @@ def add_resena(resena: Resena):
     db = get_db_connection()
     cursor = db.cursor()
     cursor.execute("""
-        INSERT INTO resenas (servicio_id, cliente_id, calificacion, comentario) 
+        INSERT INTO resenas (servicio_id, cliente_id, calificacion, comentario)
         VALUES (%s, %s, %s, %s)
     """, (resena.servicio_id, resena.cliente_id, resena.calificacion, resena.comentario))
     db.commit()
@@ -515,16 +579,126 @@ def get_contrataciones():
 
 @app.post("/contrataciones")
 def add_contratacion(contratacion: Contratacion):
+    try:
+        db = get_db_connection()
+        cursor = db.cursor()
+        cursor.execute("""
+            INSERT INTO contrataciones (id, cliente_id, servicio_id, fecha_contratacion, calendario_id, contacto, domicilio, estado, comentarios, hora_contratacion) 
+            VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                       
+        """, (
+                contratacion.id,
+                contratacion.cliente_id, 
+                contratacion.servicio_id, 
+                contratacion.fecha_contratacion, 
+                contratacion.calendario_id, 
+                contratacion.contacto, 
+                contratacion.domicilio, 
+                contratacion.estado, 
+                contratacion.comentarios, 
+                contratacion.hora_contratacion))
+        db.commit()
+        return {"message": "Contratacion added successfully"}
+    except Exception as e:
+        db.rollback()
+        return {"error": str(e)}
+    finally:
+        cursor.close()
+        db.close()
+
+
+@app.get("/contrataciones_clientes/{id_usuario}")
+def get_contrataciones(id_usuario: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    try:
+        cursor.callproc('contrataciones_clientes', [id_usuario])
+        for result in cursor.stored_results():
+            data = result.fetchall()
+        cursor.close()
+        db.close()
+        return data
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        cursor.close()
+        db.close()
+        return {"error": str(err)}
+
+@app.get("/contrataciones_profesionales/{id_usuario}")
+def get_contrataciones(id_usuario: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    try:
+        cursor.callproc('contrataciones_profesionales', [id_usuario])
+        for result in cursor.stored_results():
+            data = result.fetchall()
+        cursor.close()
+        db.close()
+        return data
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        cursor.close()
+        db.close()
+        return {"error": str(err)}
+
+
+
+
+@app.put("/contracts_status/{contract_id}")
+def update_contract_status(contract_id: int, status_update: StatusUpdate):
     db = get_db_connection()
     cursor = db.cursor()
-    cursor.execute("""
-        INSERT INTO contrataciones (cliente_id, servicio_id, fecha_contratacion, calendario_id,contacto, domicilio, estado) 
-        VALUES (%s, %s, %s, %s, %s)
-    """, (contratacion.cliente_id, contratacion.servicio_id, contratacion.fecha_contratacion, contratacion.calendario_id, contratacion.domicilio, contratacion.contacto, contratacion.estado))
-    db.commit()
+    try:
+        update_query = """
+        UPDATE contrataciones
+        SET estado = %s
+        WHERE id = %s
+        """
+        cursor.execute(update_query, (status_update.estado, contract_id))
+        db.commit()
+        cursor.close()
+        db.close()
+        return {"message": "Contract status updated successfully"}
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        cursor.close()
+        db.close()
+        raise HTTPException(status_code=500, detail=str(err))
+
+
+@app.get("/usuarios/{id}")
+def get_profesional(id: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT nombre, apellido FROM usuarios WHERE id = %s", (id,))
+    result = cursor.fetchone()
     cursor.close()
     db.close()
-    return {"message": "Contratacion added successfully"}
+    if result is None:
+        raise HTTPException(status_code=404, detail="Profesional no encontrado")
+    return result
+
+
+
+
+
+@app.get("/get_profesional_id_by_service/{id}")
+def get_profesional(id: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT profesionalId FROM servicios WHERE id = %s", (id,))
+    result = cursor.fetchone()
+    cursor.close()
+    db.close()
+    if result is None:
+        raise HTTPException(status_code=404, detail="Profesional no encontrado")
+    return result
+
+
+
+
+
+
 
 @app.get("/metodos_de_pago")
 def get_metodos_de_pago():
@@ -727,7 +901,6 @@ def update_user(user_id: int, usuario: Usuario):
         email, password = result
         usuario.email = email
         usuario.password = password
-    print(usuario)  
     # Update user information
     update_query = """
     UPDATE usuarios

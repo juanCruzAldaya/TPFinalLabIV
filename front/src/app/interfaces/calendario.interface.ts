@@ -8,6 +8,7 @@ export interface IEvento {
 }
 
 export interface ICalendario {
+  id: number;
   usuario_id: number;
   anio: any;
   mes: any;

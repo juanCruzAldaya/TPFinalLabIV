@@ -14,7 +14,7 @@ body{
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    height: 100vh;
+    height: 85vh;
 }
 
 .container{
@@ -25,7 +25,7 @@ body{
     overflow: hidden;
     width: 768px;
     max-width: 100%;
-    min-height: 750px;
+    min-height: auto;
 }
 
 .container p{
@@ -47,8 +47,8 @@ h1{
 }
 h3{
     font-size: 26px;
-    margin-top: 20px;
-    margin-left: 15px;
+    margin-top: 60px;
+    margin-left: 65px;
 }
 
 .container a{

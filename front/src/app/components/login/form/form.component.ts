@@ -29,7 +29,7 @@ export function matchPasswordsValidator(
     const confirmPasswordControl = formGroup.get(confirmPassword1);
 
     if (!passwordControl || !confirmPasswordControl) {
-      console.log("Password or Confirm Password control is missing");
+      
       return null;
     }
 
@@ -37,7 +37,7 @@ export function matchPasswordsValidator(
       confirmPasswordControl.errors &&
       !confirmPasswordControl.errors["passwordMismatch"]
     ) {
-      console.log("Other validation errors exist on Confirm Password");
+      
       return null;
     }
 
@@ -199,9 +199,6 @@ export class FormComponent implements AfterViewInit, OnInit {
 
   // }}
   onRegister(): void {
-    console.log("Form Valid:", this.userForm.valid);
-    console.log("Form Errors:", this.userForm.errors);
-    console.log("Form Value:", this.userForm.value);
 
     // Log each control's errors
     Object.keys(this.userForm.controls).forEach((key) => {
@@ -210,7 +207,6 @@ export class FormComponent implements AfterViewInit, OnInit {
         console.log(`Control: ${key}, Errors:`, controlErrors);
       }
     });
-    console.log(this.userForm.value.email);
 
     if (this.userForm.valid) {
       const formData = {
@@ -236,6 +232,7 @@ export class FormComponent implements AfterViewInit, OnInit {
           this.authService.getLastUserId().subscribe((lastId) => {
             const newUserId = lastId;
             const calendario: ICalendario = {
+              id: 0,
               usuario_id: newUserId,
               anio: null,
               mes: null,
@@ -269,8 +266,6 @@ export class FormComponent implements AfterViewInit, OnInit {
     const password = this.loginForm.get("passwordLogin")?.value;
 
     if (email && password) {
-      console.log(email);
-      console.log(password);
       this.authService.login(email, password).subscribe(
         (response) => {
           if (response) {
@@ -284,5 +279,6 @@ export class FormComponent implements AfterViewInit, OnInit {
     } else {
       console.error("Email or password is missing");
     }
+    
   }
 }

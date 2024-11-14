@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../enviroments/enviroments';
+import { IContract } from '../interfaces/IContracts.interface';
 
 @Injectable({
   providedIn: 'root'

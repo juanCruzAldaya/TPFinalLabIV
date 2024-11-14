@@ -23,6 +23,7 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   isAuthenticated(): Observable<boolean> {
+    
     return this.authStatus.asObservable();
   }
 
@@ -38,7 +39,6 @@ export class AuthService {
       .pipe(
         tap((response: AuthResponse) => {
           if (response && response.token) {
-            console.log(response);
             localStorage.setItem("token", response.token);
             localStorage.setItem("userId", response.userId);
             localStorage.setItem("email", response.email);

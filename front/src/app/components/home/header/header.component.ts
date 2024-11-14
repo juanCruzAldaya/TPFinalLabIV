@@ -1,6 +1,8 @@
 import { Component, Input } from "@angular/core";
 import { Router } from "@angular/router";
 import { AuthService } from "../../../services/auth.services";
+import { IUsuarios } from "../../../interfaces/users.interfaces";
+import { CompletingUsersService } from "../../../services/completing-users.service";
 
 @Component({
   selector: "app-header",
@@ -11,7 +13,7 @@ export class HeaderComponent {
   isAuthenticated = false;
   @Input() showSearch: boolean = true;
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(private authService: AuthService, private router: Router,private servis :CompletingUsersService) {
     this.authService.isAuthenticated().subscribe((authStatus) => {
       this.isAuthenticated = authStatus;
     });
@@ -33,11 +35,24 @@ export class HeaderComponent {
     this.router.navigate(["/profile"]);
   }
 
-  navigateToCompleteUser() {
-    this.router.navigate([`/complete_user/${this.authService.getUserId()}`]);
-  }
-
   navigateTo(route: string) {
     this.router.navigate([route]);
   }
+  ngOnInit(): void {
+    this.loadUserData();
+  }
+    user : IUsuarios | undefined ;
+    loadUserData(): void {
+      const userId = this.authService.getUserId();
+      console.log(userId);
+      this.servis.getUserData(userId).subscribe(
+        (usuario: IUsuarios) => {
+          this.user=usuario;
+        },
+        error => {
+          console.error('Error al cargar los datos del usuario:', error);
+        }
+      );
+    }
+    
 }

@@ -6,6 +6,7 @@ import { AuthService } from '../../../services/auth.services';
 import { CalendarService } from '../../../services/calendar.service';
 import { SharedService } from '../../../services/shared.service';
 import { IService } from '../../../interfaces/service.interface';
+import { IBackendContract } from '../../../interfaces/IContracts.interface';
 
 
 @Component({
@@ -17,10 +18,10 @@ export class BookingFormComponent implements OnInit {
   bookingForm: FormGroup;
   selectedSlot: string = '';
   selectedDate: string = '';
-  userId: number | null = 0; // ID del usuario
+  userId: number = 0; // ID del usuario
   serviceId: number = 0;
   calendarId: number = 0;
-  profesionalId: any; // ID del profesional
+  profesionalId: number = 0; // ID del profesional
 
   constructor(private fb: FormBuilder, 
     private route: ActivatedRoute, 
@@ -42,10 +43,12 @@ export class BookingFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.serviceId = this.sharedService.getServiceId();
-    this.sharedService.getProfesionalByServiceId(this.serviceId).then(objectProfesionalId => {
 
-    // Directly access the profesionalId
-    this.profesionalId = objectProfesionalId.profesionalId;
+    this.sharedService.getProfesionalByServiceId(this.serviceId).then(objectProfesionalId => {
+    
+
+    const profesional_id = objectProfesionalId.profesionalId;
+    
     }).catch(error => {
         console.error('Error fetching profesionalId:', error);
     });
@@ -63,7 +66,7 @@ export class BookingFormComponent implements OnInit {
 
   
 
-    this.userId = this.authService.getUserId();
+    this.userId = parseInt(this.authService.getUserId());
 
 
 
@@ -72,11 +75,9 @@ export class BookingFormComponent implements OnInit {
       this.serviceId = this.sharedService.getServiceId();
       this.sharedService.getProfesionalByServiceId(this.serviceId).then(objectProfesionalId => {
   
-      // Directly access the profesionalId
+
       this.profesionalId = objectProfesionalId.profesionalId;
-      }).catch(error => {
-          console.error('Error fetching profesionalId:', error);
-      });
+      
       this.calendarService.getCalendarByUserId(this.profesionalId).subscribe( //PASARLE PROFESIONAL ID EN VEZ DE EL ID DEL
         calendar_Id => {
           let parsedResponse = JSON.stringify(calendar_Id);
@@ -84,34 +85,39 @@ export class BookingFormComponent implements OnInit {
           this.calendarId = parsedJson['calendar_id'];
 
       });
+
+      }).catch(error => {
+          console.error('Error fetching profesionalId:', error);
+      });
+
     }
   }
 
   onSubmit() {
     if (this.bookingForm.valid) {
-      const bookingData = {
-        id: 0,
-        cliente_id: this.userId,
-        servicio_id: this.sharedService.getServiceId(),
-        fecha_contratacion: this.selectedDate,
-        hora_contratacion: this.selectedSlot,
-        calendario_id: this.calendarId,
-        contacto: this.bookingForm.value.contact,
-        domicilio: this.bookingForm.value.address,
-        estado: 'pendiente',
-        comentarios: this.bookingForm.value.comments
-    };
+        const bookingData: IBackendContract = {
+            id: 0,
+            cliente_id: this.userId,
+            servicio_id: this.sharedService.getServiceId(),
+            fecha_contratacion: this.selectedDate,
+            hora_contratacion: this.selectedSlot,
+            calendario_id: this.calendarId,
+            contacto: this.bookingForm.value.contact,
+            domicilio: this.bookingForm.value.address,
+            estado: 'pendiente',
+            comentarios: this.bookingForm.value.comments
+        };
 
-      console.log(bookingData);
+        console.log(bookingData);
 
-      this.bookService.addBooking(bookingData).subscribe(
-        response => {
-          console.log('Reserva enviada con éxito', response);
-        },
-        error => {
-          console.error('Error al enviar la reserva', error);
-        }
-      );
+        this.bookService.addBooking(bookingData).subscribe(
+            response => {
+                console.log('Reserva enviada con éxito', response);
+            },
+            error => {
+                console.error('Error al enviar la reserva', error);
+            }
+        );
     }
-  }
+}
 }

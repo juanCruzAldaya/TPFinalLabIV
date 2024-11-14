@@ -142,16 +142,16 @@ class Calendario(BaseModel):
     mes: Optional[int]
 
 class Contratacion(BaseModel):
-    id: Optional[int]
+    id: int
     cliente_id: int
     servicio_id: int
-    fecha_contratacion: str
-    hora_contratacion: str
-    calendario_id: Optional[int]
-    contacto: str
-    domicilio: str
-    estado: str
-    comentarios: Optional[str]
+    fecha_contratacion: str # Should be a string
+    hora_contratacion: str # Should be a string
+    calendario_id: int
+    contacto: str  # Should be a string
+    domicilio: str  # Should be a string
+    estado: str  # Should be a string
+    comentarios: str
 
 class MetodoDePago(BaseModel):
     id: Optional[int]
@@ -579,24 +579,32 @@ def get_contrataciones():
 
 @app.post("/contrataciones")
 def add_contratacion(contratacion: Contratacion):
-    db = get_db_connection()
-    cursor = db.cursor()
-    cursor.execute("""
-        INSERT INTO contrataciones (cliente_id, servicio_id, fecha_contratacion, calendario_id, contacto, domicilio, estado, comentarios, hora_contratacion) 
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-    """, (contratacion.cliente_id, 
-            contratacion.servicio_id, 
-            contratacion.fecha_contratacion, 
-            contratacion.calendario_id, 
-            contratacion.contacto, 
-            contratacion.domicilio, 
-            contratacion.estado, 
-            contratacion.comentarios, 
-            contratacion.hora_contratacion))
-    db.commit()
-    cursor.close()
-    db.close()
-    return {"message": "Contratacion added successfully"}
+    try:
+        db = get_db_connection()
+        cursor = db.cursor()
+        cursor.execute("""
+            INSERT INTO contrataciones (id, cliente_id, servicio_id, fecha_contratacion, calendario_id, contacto, domicilio, estado, comentarios, hora_contratacion) 
+            VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                       
+        """, (
+                contratacion.id,
+                contratacion.cliente_id, 
+                contratacion.servicio_id, 
+                contratacion.fecha_contratacion, 
+                contratacion.calendario_id, 
+                contratacion.contacto, 
+                contratacion.domicilio, 
+                contratacion.estado, 
+                contratacion.comentarios, 
+                contratacion.hora_contratacion))
+        db.commit()
+        return {"message": "Contratacion added successfully"}
+    except Exception as e:
+        db.rollback()
+        return {"error": str(e)}
+    finally:
+        cursor.close()
+        db.close()
 
 
 @app.get("/contrataciones_clientes/{id_usuario}")
@@ -615,6 +623,48 @@ def get_contrataciones(id_usuario: int):
         cursor.close()
         db.close()
         return {"error": str(err)}
+
+@app.get("/contrataciones_profesionales/{id_usuario}")
+def get_contrataciones(id_usuario: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    try:
+        cursor.callproc('contrataciones_profesionales', [id_usuario])
+        for result in cursor.stored_results():
+            data = result.fetchall()
+        cursor.close()
+        db.close()
+        return data
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        cursor.close()
+        db.close()
+        return {"error": str(err)}
+
+
+
+
+@app.put("/contracts_status/{contract_id}")
+def update_contract_status(contract_id: int, status_update: StatusUpdate):
+    db = get_db_connection()
+    cursor = db.cursor()
+    try:
+        update_query = """
+        UPDATE contrataciones
+        SET estado = %s
+        WHERE id = %s
+        """
+        cursor.execute(update_query, (status_update.estado, contract_id))
+        db.commit()
+        cursor.close()
+        db.close()
+        return {"message": "Contract status updated successfully"}
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        cursor.close()
+        db.close()
+        raise HTTPException(status_code=500, detail=str(err))
+
 
 @app.get("/usuarios/{id}")
 def get_profesional(id: int):

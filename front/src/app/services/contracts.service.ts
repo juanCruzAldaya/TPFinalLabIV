@@ -5,19 +5,32 @@ import { AuthService } from "./auth.services";
 import { environment } from "../../enviroments/enviroments";
 import { IContract } from "../interfaces/IContracts.interface";
 
+
+
+
 @Injectable({
   providedIn: "root",
 })
 export class ContractsService {
   constructor(
     private http: HttpClient,
+    private authService: AuthService,
   ) {}
 
 
-  get_contrataciones_clientes(id_user: any): Observable<any> {
-    const url = `${environment.LOCAL_API_URL}/contrataciones_clientes/${id_user}`;
-    console.log('Fetching contracts from URL:', url);  // Debugging line
+  get_contrataciones_clientes(): Observable<any> {
+    const url = `${environment.LOCAL_API_URL}/contrataciones_clientes/${this.authService.getUserId()}`;
     return this.http.get<any>(url);
+  }
+
+
+
+  get_contrataciones_profesionales(): Observable<any> {
+    const url = `${environment.LOCAL_API_URL}/contrataciones_profesionales/${this.authService.getUserId()}`;
+    return this.http.get<any>(url);
+  }
+  updateContractStatus(contractId: number, status: string): Observable<any> {
+    return this.http.put(`${environment.LOCAL_API_URL}/contracts_status/${contractId}`, { estado: status });
   }
 
 }  

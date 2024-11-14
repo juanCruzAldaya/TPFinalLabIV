@@ -1,6 +1,6 @@
 import { Injectable, } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, catchError, throwError  } from 'rxjs';
 import { CalendarEvent } from 'angular-calendar';
 import { map } from 'rxjs/operators';
 import {ICalendario} from '../interfaces/calendario.interface'
@@ -24,9 +24,15 @@ export class CalendarService {
   getCalendar(userId: number): Observable<ICalendario> {
     return this.http.get<ICalendario>(environment.LOCAL_API_URL + `/calendarios/${userId}`);
   }
+  
   createCalendar(calendario: ICalendario): Observable<ICalendario> {
-    return this.http.post<ICalendario>(environment.LOCAL_API_URL + `/calendarios`, calendario);
-}
+    return this.http.post<ICalendario>(environment.LOCAL_API_URL + '/calendarios', calendario).pipe(
+      catchError(error => {
+        console.error('Error creating calendario:', error);
+        return throwError(error);
+      })
+    );
+  }
 
   createEvent(event: CalendarEvent): Observable<CalendarEvent> {
     return this.http.post<CalendarEvent>(environment.LOCAL_API_URL + `/eventos`, event);

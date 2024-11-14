@@ -22,11 +22,16 @@ export class ContractsService {
     const url = `${environment.LOCAL_API_URL}/contrataciones_clientes/${this.authService.getUserId()}`;
     return this.http.get<any>(url);
   }
-  get_contrataciones_professionals(): Observable<any> {
+
+
+
+  get_contrataciones_profesionales(): Observable<any> {
     const url = `${environment.LOCAL_API_URL}/contrataciones_profesionales/${this.authService.getUserId()}`;
     return this.http.get<any>(url);
   }
-
+  updateContractStatus(contractId: number, status: string): Observable<any> {
+    return this.http.put(`${environment.LOCAL_API_URL}/contracts_status/${contractId}`, { estado: status });
+  }
 
 }  
 

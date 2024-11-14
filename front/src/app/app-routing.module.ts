@@ -3,7 +3,7 @@ import { RouterModule, Routes } from "@angular/router";
 import { HomePageComponent } from "./components/home/home-page/home-page.component";
 import { ServiceListComponent } from "./components/filter-services/service-list/service-list.component";
 import { BookingFormComponent } from "./components/filter-services/booking-form/booking-form.component";
-import { InfoComponent } from "./components/user_mgmt/complet_user/complete_user/info.component";
+import { InfoComponent } from "./components/user_mgmt/complete_user/info.component";
 import { AddServiceComponent } from "./components/add-service/add-service.component";
 import { FormComponent } from "./components/login/form/form.component";
 import { ReactiveFormsModule } from "@angular/forms";
@@ -11,7 +11,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { ReseñasComponent } from "./components/resenia/resenia.component";
 import { AuthGuard } from './services/auth.guard';
 import { ContractsComponent } from "./components/contracts/contracts.component";
-import { ProfileComponent } from "./components/user_mgmt/complet_user/profile/user_profile.component";
+import { ProfileComponent } from "./components/user_mgmt/profile/user_profile.component";
 
 
 const routes: Routes = [

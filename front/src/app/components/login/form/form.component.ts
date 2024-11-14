@@ -64,6 +64,8 @@ export class FormComponent implements AfterViewInit, OnInit {
   isRegistering: boolean = false;
   userForm!: FormGroup;
   loginForm!: FormGroup;
+  calendario!: ICalendario;
+  
 
   constructor(
     private authService: AuthService,
@@ -199,7 +201,6 @@ export class FormComponent implements AfterViewInit, OnInit {
 
   // }}
   onRegister(): void {
-
     // Log each control's errors
     Object.keys(this.userForm.controls).forEach((key) => {
       const controlErrors = this.userForm.get(key)?.errors;
@@ -207,7 +208,7 @@ export class FormComponent implements AfterViewInit, OnInit {
         console.log(`Control: ${key}, Errors:`, controlErrors);
       }
     });
-
+  
     if (this.userForm.valid) {
       const formData = {
         id: this.userForm.value.id,
@@ -221,33 +222,16 @@ export class FormComponent implements AfterViewInit, OnInit {
         calificacion_promedio: this.userForm.value.calificacion_promedio,
         // Add other fields if needed
       };
-
-      console.log(formData);
+  
       this.http.post("http://localhost:8000/usuarios", formData).subscribe(
         (user: any) => {
+
+          this.createCalendar();
           console.log("User added:", user);
           this.router.navigate(["/"]);
-
-          // Obtener el último ID de usuario y crear el calendario
-          this.authService.getLastUserId().subscribe((lastId) => {
-            const newUserId = lastId;
-            const calendario: ICalendario = {
-              id: 0,
-              usuario_id: newUserId,
-              anio: null,
-              mes: null,
-              eventos: null, // Ensure this is set to null if there are no events
-            };
-            console.log(calendario);
-            this.calendarService.createCalendar(calendario).subscribe(
-              (response) => {
-                console.log("Calendario created successfully", response);
-              },
-              (error) => {
-                console.error("Error creating calendario", error);
-              }
-            );
-          });
+  
+          
+          
         },
         (error) => {
           console.error("Registration failed:", error);
@@ -260,6 +244,7 @@ export class FormComponent implements AfterViewInit, OnInit {
       console.log("Form is invalid, please check the errors above.");
     }
   }
+  
 
   onLogin(): void {
     const email = this.loginForm.get("emailLogin")?.value;
@@ -280,4 +265,41 @@ export class FormComponent implements AfterViewInit, OnInit {
       console.error("Email or password is missing");
     }
   }
+
+
+  createCalendar() {
+    this.authService.getLastUserId().subscribe({
+      next: (response: { id: number }) => {
+        const newUserId = response.id;
+        const jsonUserId = JSON.stringify({ id: newUserId });
+        const parsedUserId = JSON.parse(jsonUserId).id;
+        console.log(parsedUserId)
+        this.calendario = {
+          id: 0,
+          usuario_id: parseInt(parsedUserId),
+          anio: null,
+          mes: null,// Ensure this is set to null if there are no events
+        };
+        console.log(this.calendario)
+        this.calendarService.createCalendar(this.calendario).subscribe(
+          (response: ICalendario) => {
+            console.log('Calendario created successfully', response);
+          },
+          (error: any) => {
+            console.error('Error creating calendario', error);
+          }
+        );
+      },
+      error: (error: any) => {
+        console.error('Error fetching last user ID:', error);
+      }
+    });
+  }
+
+
+
+
+
+
+
 }

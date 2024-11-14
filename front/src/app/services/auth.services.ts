@@ -43,7 +43,7 @@ export class AuthService {
             localStorage.setItem("userId", response.userId);
             localStorage.setItem("email", response.email);
             localStorage.setItem("password", response.password);
-            this.userId = response.userId; // Store userId for future requests
+            this.userId = response.userId;
             this.email = response.email;
             this.password = response.password;
             this.authStatus.next(true);
@@ -88,24 +88,12 @@ export class AuthService {
       resolve({ user: "Google User" });
     });
   }
-  getLastUserId(): Observable<number> {
-    return this.http
-      .get<{ id: number }>(`${environment.LOCAL_API_URL}/usuarios/ultimo_id`)
-      .pipe(
-        map((response) => {
-          if (response && response.id !== undefined) {
-            return response.id;
-          } else {
-            throw new Error("Invalid response format");
-          }
-        }),
-        tap((lastId) => {
-          localStorage.setItem("lastUserId", lastId.toString());
-        }), // Store lastUserId for future requests
-        catchError((error) => {
-          console.error("Get last user id error", error);
-          return throwError(error);
-        })
-      );
+  getLastUserId(): Observable<{ id: number }> {
+    return this.http.get<{ id: number }>( environment.LOCAL_API_URL + '/ultimo_id').pipe(
+      catchError(error => {
+        console.error('Error fetching last user ID:', error);
+        return throwError(error);
+      })
+    );
   }
 }

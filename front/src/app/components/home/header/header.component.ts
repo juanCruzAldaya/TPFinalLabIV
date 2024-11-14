@@ -33,10 +33,6 @@ export class HeaderComponent {
     this.router.navigate(["/profile"]);
   }
 
-  navigateToCompleteUser() {
-    this.router.navigate([`/complete_user/${this.authService.getUserId()}`]);
-  }
-
   navigateTo(route: string) {
     this.router.navigate([route]);
   }

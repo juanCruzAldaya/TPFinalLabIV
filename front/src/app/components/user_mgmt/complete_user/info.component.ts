@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { CompletingUsersService } from '../../../../services/completing-users.service';
-import { IUsuarios } from '../../../../interfaces/users.interfaces';
+import { CompletingUsersService } from '../../../services/completing-users.service';
+import { IUsuarios } from '../../../interfaces/users.interfaces';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { AuthService } from '../../../../services/auth.services';
+import { AuthService } from '../../../services/auth.services';
 
 
 export function mayorEdad(): ValidatorFn {
@@ -65,7 +65,6 @@ export class InfoComponent implements OnInit {
       apellido: ['', [Validators.required, soloLetras()]],
       contacto: ['', [Validators.required, validarTelefono()]],
       nacimiento: ['', [Validators.required,mayorEdad()]],
-      ciudad: ['', Validators.required],
       calificacion_promedio: [0]
     });
   }
@@ -78,7 +77,6 @@ export class InfoComponent implements OnInit {
         apellido: this.formGroup.get('apellido')?.value,
         contacto: this.formGroup.get('contacto')?.value,
         nacimiento: this.formGroup.get('nacimiento')?.value,
-        ciudad: this.formGroup.get('ciudad')?.value,
         calificacion_promedio: this.formGroup.get('calificacion_promedio')?.value
       };
       this.servis.updateUser(usuario).subscribe(

@@ -220,6 +220,12 @@ class AuthResponse(BaseModel):
     email: str
     password: str
 
+class ContractStatusUpdate(BaseModel):
+    id: int
+    estado: str
+class StatusUpdate(BaseModel):
+    estado: str
+
 
 origins = [
     "http://localhost:4200",

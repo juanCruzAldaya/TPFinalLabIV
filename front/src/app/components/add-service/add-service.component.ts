@@ -10,7 +10,7 @@ import { ICategory } from "../../interfaces/category.interface";
 import { IDepartment } from "../../interfaces/department";
 import { ILocality } from "../../interfaces/locality";
 import { IProvince } from "../../interfaces/province";
-import { IService } from "../../interfaces/service.interface";
+import { IService, IServiceFilled } from "../../interfaces/service.interface";
 import { AuthService } from "../../services/auth.services";
 import { CategoriesService } from "../../services/categorie-async.service";
 import { LocationAsyncService } from "../../services/location-async.service";
@@ -18,6 +18,8 @@ import { ServicesService } from "../../services/service-async.service";
 import { ISubCategory } from "../../interfaces/subCategory.interface";
 import { SharedModule } from "../../shared/shared.module";
 import { ToastrService } from "ngx-toastr";
+import { ActivatedRoute } from "@angular/router";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "app-add-service",
@@ -32,30 +34,36 @@ export class AddServiceComponent implements OnInit {
   localityList: Array<ILocality> = [];
   mainCategoryList: Array<ICategory> = [];
   subCategoryList: Array<ISubCategory> = [];
-
-  resourceForm = new FormGroup({
-    description: new FormControl("", [
-      Validators.required,
-      Validators.maxLength(500),
-    ]),
-    selectedCategory: new FormControl(""),
-    selectedSubCategory: new FormControl(""),
-    selectedProvince: new FormControl(this.provinceList, [Validators.required]),
-    selectedDepartment: new FormControl(this.departmentList, [
-      Validators.required,
-    ]),
-    selectedLocality: new FormControl(this.localityList, [Validators.required]),
-  });
+  resourceForm!: FormGroup;
+  isAuthenticated: boolean = false;
+  private authSubscription: Subscription = new Subscription();
+  myService: IService = {
+    id: 0,
+    descripcion: "",
+    categoria: 0,
+    sub_categoria: 0,
+    provincia: "",
+    departamento: "",
+    localidad: "",
+    profesional_id: 0,
+  };
 
   constructor(
     private locationService: LocationAsyncService,
     private categoriesService: CategoriesService,
     private servicesService: ServicesService,
     private authService: AuthService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit() {
+    this.authSubscription = this.authService
+      .isAuthenticated()
+      .subscribe((authStatus: boolean) => {
+        this.isAuthenticated = authStatus;
+      });
+    const id = this.route.snapshot.paramMap.get("id");
     if (this.authService.isAuthenticated()) {
       this.categoriesService
         .getCategories()
@@ -83,8 +91,59 @@ export class AddServiceComponent implements OnInit {
         .catch((error) => {
           console.log(JSON.stringify(error));
         });
+      this.initializeForm(id);
     } else {
       window.location.href = "/login";
+    }
+  }
+
+  initializeForm(id: string | null) {
+    if (id) {
+      this.servicesService
+        .getService(parseInt(id))
+        .then((response) => {
+          console.log("response", response);
+          this.myService = response;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      console.log("servicio", this.myService);
+      this.resourceForm = new FormGroup({
+        description: new FormControl(this.myService.descripcion, [
+          Validators.required,
+          Validators.maxLength(500),
+        ]),
+        selectedCategory: new FormControl(this.myService.categoria),
+        selectedSubCategory: new FormControl(this.myService.sub_categoria),
+        selectedProvince: new FormControl(this.myService.provincia, [
+          Validators.required,
+        ]),
+        selectedDepartment: new FormControl(this.myService.departamento, [
+          Validators.required,
+        ]),
+        selectedLocality: new FormControl(this.myService.localidad, [
+          Validators.required,
+        ]),
+      });
+    } else {
+      this.resourceForm = new FormGroup({
+        description: new FormControl("", [
+          Validators.required,
+          Validators.maxLength(500),
+        ]),
+        selectedCategory: new FormControl(""),
+        selectedSubCategory: new FormControl(""),
+        selectedProvince: new FormControl(this.provinceList, [
+          Validators.required,
+        ]),
+        selectedDepartment: new FormControl(this.departmentList, [
+          Validators.required,
+        ]),
+        selectedLocality: new FormControl(this.localityList, [
+          Validators.required,
+        ]),
+      });
     }
   }
 
@@ -159,14 +218,14 @@ export class AddServiceComponent implements OnInit {
 
   onSubmit() {
     let service: IService = {
-      id: "",
-      description: "",
-      mainCategory: 0,
-      secondaryCategory: 0,
-      state: "",
-      department: "",
-      locality: "",
-      profesionalId: "",
+      id: 1,
+      descripcion: "",
+      categoria: 0,
+      sub_categoria: 0,
+      provincia: "",
+      departamento: "",
+      localidad: "",
+      profesional_id: 0,
     };
     const description = this.resourceForm.getRawValue().description as string;
     const mainCategory = new Object(
@@ -186,15 +245,15 @@ export class AddServiceComponent implements OnInit {
     ) as ILocality;
     const profesionalId = this.authService.getUserId();
 
-    service.id = "1";
-    service.description = description;
-    service.mainCategory = mainCategory.id;
-    service.secondaryCategory = secondaryCategory.id;
-    service.state = province.nombre;
-    service.department = department.nombre;
-    service.locality = locality.nombre;
-    service.profesionalId = profesionalId || ""; //aca necesito traerme el id del usuario actual
+    service.descripcion = description;
+    service.categoria = mainCategory.id;
+    service.sub_categoria = secondaryCategory.id;
+    service.provincia = province.nombre;
+    service.departamento = department.nombre;
+    service.localidad = locality.nombre;
+    service.profesional_id = parseInt(profesionalId); //aca necesito traerme el id del usuario actual
 
+    console.log("SERVICIO: ", service);
     this.servicesService
       .addService(service)
       .then()

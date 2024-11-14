@@ -30,10 +30,4 @@ export class FilterServicesService {
       `${environment.LOCAL_API_URL}/usuarios/${profesionalId}`
     );
   }
-
-  getServicesByProfesionalId(profesionalId: number): Observable<any> {
-    return this.http.get(
-      `${environment.LOCAL_API_URL}/misServicios/${profesionalId}`
-    );
-  }
 }

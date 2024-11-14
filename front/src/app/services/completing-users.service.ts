@@ -25,4 +25,10 @@ export class CompletingUsersService {
       usuario
     );
   }
+
+  getUser(): Observable<IUsuarios> {
+    return this.http.get<IUsuarios>(
+      `${environment.LOCAL_API_URL}/usuario/${this.authService.getUserId()}`
+    );
+  }
 }

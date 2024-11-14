@@ -1,16 +1,16 @@
 export interface IService {
-  id: string;
-  description: string;
-  mainCategory: number;
-  secondaryCategory: number;
-  state: string;
-  department: string;
-  locality: string;
-  profesionalId: string;
+  id: number;
+  descripcion: string;
+  categoria: number;
+  sub_categoria: number;
+  provincia: string;
+  departamento: string;
+  localidad: string;
+  profesional_id: number;
 }
 
 export interface IServiceFilled extends IService {
-  category_name: string;
-  subCategory_name: string;
-  profesional_name: string;
+  nombre_categoria: string;
+  nombre_subcategoria: string;
+  nombre_profesional: string;
 }

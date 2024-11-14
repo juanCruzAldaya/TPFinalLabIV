@@ -1,0 +1,5 @@
+button:disabled {
+  background-color: grey;
+  border: 1 px solid;
+  border-color: gray;
+}

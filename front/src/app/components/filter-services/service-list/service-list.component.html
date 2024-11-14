@@ -9,8 +9,8 @@
         <div *ngFor="let serviceCard of filteredServices" class="col-md-4 mb-4">
           <div class="serviceCard">
             <div class="card-body">
-              <h5 class="card-title text-primary">{{ serviceCard.service.description }}</h5>
-              <p class="card-text"><strong>Ciudad:</strong> {{ serviceCard.service.locality }}</p>
+              <h5 class="card-title text-primary">{{ serviceCard.service.descripcion }}</h5>
+              <p class="card-text"><strong>Ciudad:</strong> {{ serviceCard.service.localidad }}</p>
               <p class="card-text"><strong>Categoría:</strong> {{ serviceCard.category_name }}</p>
               <p class="card-text"><strong>Profesional:</strong> {{ serviceCard.profesional_name }}</p>
               <div class="button-container">

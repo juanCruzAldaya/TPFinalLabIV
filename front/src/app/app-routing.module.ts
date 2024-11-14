@@ -8,6 +8,7 @@ import { AddServiceComponent } from "./components/add-service/add-service.compon
 import { FormComponent } from "./components/login/form/form.component";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
+import { MyServiceListComponent } from "./components/my-services/my-service-list.component";
 
 const routes: Routes = [
   { path: "search-professionals", component: ServiceListComponent },
@@ -15,6 +16,8 @@ const routes: Routes = [
   { path: "booking-form", component: BookingFormComponent },
   { path: "complete_user/:id", component: InfoComponent },
   { path: "login", component: FormComponent },
+  { path: "my-services", component: MyServiceListComponent },
+  { path: "edit-service/:id", component: AddServiceComponent },
   { path: "add-service", component: AddServiceComponent },
   { path: "**", component: HomePageComponent },
 

@@ -69,7 +69,7 @@ export class ServiceListComponent implements OnInit {
   loadAdditionalData(): void {
     this.services.forEach((service) => {
       this.filterService
-        .getCategoria(service.mainCategory)
+        .getCategoria(service.categoria)
         .subscribe((categoria) => {
           const serviceCard: IServiceCard = {
             service,
@@ -78,11 +78,11 @@ export class ServiceListComponent implements OnInit {
             profesional_name: "",
           };
           this.filterService
-            .getSubCategoria(service.secondaryCategory)
+            .getSubCategoria(service.sub_categoria)
             .subscribe((subCategoria) => {
               serviceCard.subCategory_name = subCategoria.nombre;
               this.filterService
-                .getProfesional(service.profesionalId)
+                .getProfesional(service.profesional_id)
                 .subscribe((profesional) => {
                   serviceCard.profesional_name =
                     profesional.nombre + " " + profesional.apellido;
@@ -112,12 +112,12 @@ export class ServiceListComponent implements OnInit {
       .filter(
         (serviceCard) =>
           (this.filterCriteria.localidad
-            ? serviceCard.service.locality.includes(
+            ? serviceCard.service.localidad.includes(
                 this.filterCriteria.localidad
               )
             : true) &&
           (this.filterCriteria.nombre
-            ? serviceCard.service.description.includes(
+            ? serviceCard.service.descripcion.includes(
                 this.filterCriteria.nombre
               )
             : true) &&

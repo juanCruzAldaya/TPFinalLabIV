@@ -122,13 +122,13 @@ class SubCategoria(BaseModel):
 
 class Servicio(BaseModel):
     id: Optional[int]
-    profesionalId: Optional[str]
-    description: Optional[str]
-    mainCategory: int
-    secondaryCategory: int
-    state: Optional[str]
-    department: Optional[str]
-    locality: Optional[str]
+    profesional_id: Optional[int]
+    descripcion: Optional[str]
+    categoria: int
+    sub_categoria: int
+    provincia: Optional[str]
+    departamento: Optional[str]
+    localidad: Optional[str]
 
 class Resena(BaseModel):
     id: Optional[int]
@@ -305,6 +305,16 @@ def get_categorias():
     db.close()
     return results
 
+@app.get("/subcategories")
+def get_subcategorias():
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM subcategorias")
+    results = cursor.fetchall()
+    cursor.close()
+    db.close()
+    return results
+
 
 @app.get("/categoria/{categoria_id}")
 def get_categoria(categoria_id: int):
@@ -453,41 +463,71 @@ def get_servicios():
     db.close()
     return results
 
-@app.get("/misServicios/{profesionalId}")
-def get_servicios(profesionalId: int):
+@app.get("/mis-servicios/{profesionalId}")
+def get_mis_servicios(profesionalId: int):
     db = get_db_connection()
     cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM servicios WHERE profesional_id = %s", (profesionalId))
+    cursor.execute("SELECT * FROM servicios WHERE profesional_id = %s", (profesionalId,))
     results = cursor.fetchall()
     cursor.close()
     db.close()
     return results
 
-@app.post("/servicios")
+@app.get("/editar-servicio/{servicioId}")
+def get_servicio(servicioId: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    print("servicioId: %s",servicioId)
+    cursor.execute("SELECT * FROM servicios WHERE id = %s", (servicioId,))
+    results = cursor.fetchone()
+    cursor.close()
+    db.close()
+    return results
+
+@app.delete("/eliminar-servicio/{servicioId}")
+def delete_servicio(servicioId: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    print("servicioId: %s",servicioId)
+    cursor.execute("DELETE FROM servicios WHERE id = %s", (servicioId,))
+    db.commit()
+    cursor.close()
+    db.close()
+    return {"message": "Servicio deleted successfully"}
+
+@app.post("/agregar-servicio")
 def add_servicio(servicio: Servicio):
     db = get_db_connection()
-    cursor1 = db.cursor(dictionary=True)
-    cursor2 = db.cursor()
-    # Obtener el nombre de la categoría principal
-    cursor1.execute("SELECT nombre FROM categorias WHERE id = %s", (servicio.mainCategory,))
-    nombreCategoria = cursor1.fetchone()
-    if nombreCategoria:
-        nombreCategoria = nombreCategoria['nombre']  # Extraer solo el nombre
-    # Insertar en la tabla servicios
-    cursor2.execute(" INSERT INTO servicios (profesional_id, nombre, descripcion, calificacion, sub_categoria, provincia, departamento, localidad) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (
-        servicio.profesionalId,
-        nombreCategoria,
-        servicio.description,
-        0,  # Calificación inicial
-        servicio.secondaryCategory,
-        servicio.state,
-        servicio.department,
-        servicio.locality
-    ))
-    cursor1.close()
-    cursor2.close()
-    db.close()
-    return {"message": "Servicio added successfully"}
+    cursor = db.cursor()
+    try:
+        # Insertar en la tabla servicios sin especificar `id`, para que se genere automáticamente
+        cursor.execute(
+            """
+            INSERT INTO servicios 
+            (profesional_id, categoria, descripcion, calificacion, sub_categoria, provincia, departamento, localidad) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """,
+            (
+                servicio.profesional_id,
+                servicio.categoria,
+                servicio.descripcion,
+                0,  # Calificación inicial
+                servicio.sub_categoria,
+                servicio.provincia,
+                servicio.departamento,
+                servicio.localidad
+            )
+        )
+        db.commit()
+        return {"message": "Servicio added successfully"}
+    except Exception as e:
+        db.rollback()
+        print("Error al agregar el servicio:", e)
+        return {"error": "Failed to add service"}
+    finally:
+        cursor.close()
+        db.close()
+
 
 @app.get("/resenas")
 def get_resenas():

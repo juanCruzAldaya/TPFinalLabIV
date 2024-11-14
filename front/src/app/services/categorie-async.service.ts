@@ -18,4 +18,21 @@ export class CategoriesService {
       .get(`${environment.LOCAL_API_URL}/subcategoriasById/${id}`)
       .toPromise();
   }
+
+  getCategory(id: string): Promise<ICategory[] | any> {
+    return this.http
+      .get(`${environment.LOCAL_API_URL}/categoria/${id}`)
+      .toPromise();
+  }
+  getSubCategory(id: string): Promise<ISubCategory[] | any> {
+    return this.http
+      .get(`${environment.LOCAL_API_URL}/subcategory/${id}`)
+      .toPromise();
+  }
+
+  getSubcategories(): Promise<any> {
+    return this.http
+      .get(`${environment.LOCAL_API_URL}/subcategories`)
+      .toPromise();
+  }
 }

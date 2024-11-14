@@ -37,7 +37,7 @@ export class ContractsComponent implements OnInit {
 
   loadContracts(): void {
     if (this.isProfessionalView) {
-      this.contractService.get_contrataciones_profesionales().subscribe({
+      this.contractService.get_contrataciones_profesionales().subscribe({ 
         next: (data: any) => {
           this.contracts = data;
         },

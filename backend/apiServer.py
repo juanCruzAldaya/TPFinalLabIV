@@ -23,7 +23,7 @@ def get_db_connection():
     db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="1234",
+    password="root",
     database="laburappdb")
     
     return db
@@ -96,8 +96,6 @@ def verify_password(plain_password, hashed_password):
 
 
 
-
-
 class Usuario(BaseModel):
     id: Optional[int]
     email: EmailStr
@@ -120,7 +118,7 @@ class SubCategoria(BaseModel):
 
 class Servicio(BaseModel):
     id: Optional[int]
-    profesionalId: Optional[str]
+    profesionalId: Optional[int]
     description: Optional[str]
     mainCategory: int
     secondaryCategory: int
@@ -219,6 +217,11 @@ class AuthResponse(BaseModel):
     userId: int
     email: str
     password: str
+
+class StatusUpdate(BaseModel):
+    contract_id: int
+    estado: str
+    
 
 
 origins = [
@@ -507,6 +510,40 @@ def add_subcategoria(subcategoria: SubCategoria):
     db.close()
     return {"message": "SubCategoria added successfully"}
 
+@app.get("/mis-servicios/{profesionalId}")
+def get_mis_servicios(profesionalId: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM servicios WHERE profesionalId = %s", (profesionalId,))
+    results = cursor.fetchall()
+    cursor.close()
+    db.close()
+    return results
+
+@app.get("/editar-servicio/{servicioId}")
+def get_servicio(servicioId: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    print("servicioId: %s",servicioId)
+    cursor.execute("SELECT * FROM servicios WHERE id = %s", (servicioId,))
+    results = cursor.fetchone()
+    cursor.close()
+    db.close()
+    return results
+    
+@app.delete("/eliminar-servicio/{servicioId}")
+def delete_servicio(servicioId: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    print("servicioId: %s",servicioId)
+    cursor.execute("DELETE FROM servicios WHERE id = %s", (servicioId,))
+    db.commit()
+    cursor.close()
+    db.close()
+    return {"message": "Servicio deleted successfully"}
+
+    
+
 @app.get("/servicios")
 def get_servicios():
     db = get_db_connection()
@@ -520,26 +557,20 @@ def get_servicios():
 @app.post("/servicios")
 def add_servicio(servicio: Servicio):
     db = get_db_connection()
-    cursor1 = db.cursor(dictionary=True)
-    cursor2 = db.cursor()
-    # Obtener el nombre de la categoría principal
-    cursor1.execute("SELECT nombre FROM categorias WHERE id = %s", (servicio.mainCategory,))
-    nombreCategoria = cursor1.fetchone()
-    if nombreCategoria:
-        nombreCategoria = nombreCategoria['nombre']  # Extraer solo el nombre
+    cursor = db.cursor()
+
     # Insertar en la tabla servicios
-    cursor2.execute(" INSERT INTO servicios (profesional_id, nombre, descripcion, calificacion, sub_categoria, provincia, departamento, localidad) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (
+    cursor.execute(" INSERT INTO servicios (profesionalId, description, mainCategory, secondaryCategory, state, department, locality) VALUES (%s, %s, %s, %s, %s, %s, %s)", (
         servicio.profesionalId,
-        nombreCategoria,
         servicio.description,
+        servicio.mainCategory,
         0,  # Calificación inicial
         servicio.secondaryCategory,
         servicio.state,
         servicio.department,
         servicio.locality
     ))
-    cursor1.close()
-    cursor2.close()
+    cursor.close()
     db.close()
     return {"message": "Servicio added successfully"}
 

@@ -159,14 +159,14 @@ export class AddServiceComponent implements OnInit {
 
   onSubmit() {
     let service: IService = {
-      id: "",
+      id: 0,
       description: "",
       mainCategory: 0,
       secondaryCategory: 0,
       state: "",
       department: "",
       locality: "",
-      profesionalId: "",
+      profesionalId: 0,
     };
     const description = this.resourceForm.getRawValue().description as string;
     const mainCategory = new Object(
@@ -186,14 +186,13 @@ export class AddServiceComponent implements OnInit {
     ) as ILocality;
     const profesionalId = this.authService.getUserId();
 
-    service.id = "1";
     service.description = description;
     service.mainCategory = mainCategory.id;
     service.secondaryCategory = secondaryCategory.id;
     service.state = province.nombre;
     service.department = department.nombre;
     service.locality = locality.nombre;
-    service.profesionalId = profesionalId || ""; //aca necesito traerme el id del usuario actual
+    service.profesionalId = parseInt(profesionalId); //aca necesito traerme el id del usuario actual
 
     this.servicesService
       .addService(service)

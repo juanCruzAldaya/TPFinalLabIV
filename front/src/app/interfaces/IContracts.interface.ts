@@ -24,18 +24,3 @@ export interface IContract {
     estado: string;
     comentarios: string;
 }
-
-
-
-
-/*class Contratacion(BaseModel):
-    id: Optional[int]
-    cliente_id: Optional[int]
-    servicio_id: Optional[int]
-    fecha_contratacion: Optional[str]  # Should be a string
-    hora_contratacion: Optional[str]  # Should be a string
-    calendario_id: Optional[int]
-    contacto: Optional[str]  # Should be a string
-    domicilio: Optional[str]  # Should be a string
-    estado: Optional[str]  # Should be a string
-    comentarios: Optional[str]*/

@@ -9,7 +9,12 @@
   color: #007bff;
   cursor: pointer;
 }
-
+h1{
+  font-family: 'Lato', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 .nav-link {
   font-size: 1.1rem;
   color: #007bff;
@@ -57,4 +62,10 @@
 .btn-profile:hover {
   background-color: #007bff;
   color: white;
+}
+body {
+  font-family: 'Lato', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }

@@ -55,10 +55,11 @@
       <app-professional-calendar [events]="selectedService?.eventos" (dayClicked)="handleDayClick($event)"></app-professional-calendar>
     </div>
     <div *ngIf="!showCalendar">
-      <app-available-slots
-        [availableSlots]="availableSlots"
-        (slotSelected)="onSlotSelected($event)">
-      </app-available-slots>
+      <app-available-slots 
+      [availableSlots]="availableSlots" 
+      [unavailableSlots]="unavailableSlots"
+      (slotSelected)="onSlotSelected($event)">
+    </app-available-slots>
     </div>
     <div *ngIf="availableSlots.length > 0">
       <button class="btn btn-primary" (click)="hireService(selectedService)">Contratar</button>

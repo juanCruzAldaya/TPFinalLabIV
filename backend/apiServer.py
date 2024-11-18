@@ -135,11 +135,28 @@ class Resena(BaseModel):
     calificacion: int = Field(..., ge=1, le=5)
     comentario: Optional[str]
 
+
+
+class EventoBase(BaseModel):
+    id: Optional[int]
+    calendario_id: int
+    fecha: date
+    hora_inicio: time
+    hora_fin: time
+    estado: Optional[str] = "disponible"
+
+
+class CalendarioBase(BaseModel):
+    usuario_id: Optional[int] = None
+    anio: Optional[int] = None
+    mes: Optional[int] = None
+    eventos: Optional[List[EventoBase]] = None
 class Calendario(BaseModel):
     id: Optional[int]
     profesional_id: Optional[int]
     anio: Optional[int]
     mes: Optional[int]
+
 
 class Contratacion(BaseModel):
     id: int
@@ -177,12 +194,6 @@ class Direccion(BaseModel):
     codigo_postal: str
 
 
-class EventoBase(BaseModel):
-    calendario_id: int
-    fecha: date
-    hora_inicio: time
-    hora_fin: time
-    estado: Optional[str] = "disponible"
 
 class EventoCreate(EventoBase):
     pass
@@ -203,11 +214,6 @@ class EventoResponse(EventoBase):
         orm_mode = True
 
 
-class CalendarioBase(BaseModel):
-    usuario_id: Optional[int] = None
-    anio: Optional[int] = None
-    mes: Optional[int] = None
-    eventos: Optional[List[EventoBase]] = None
 
 class StatusUpdate(BaseModel):
     estado: str
@@ -360,6 +366,56 @@ def get_calendarByUserId(user_id: int):
         raise HTTPException(status_code=404, detail="Calendar not found")
     
     return {"calendar_id": result["id"]}
+
+
+
+@app.get("/availableSlots/{user_id}/{date}", response_model=List[str])
+def get_available_slots(user_id: int, date: str):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM eventos WHERE calendario_id = (SELECT id FROM calendarios WHERE usuario_id = %s) AND fecha = %s", (user_id, date))
+    events = cursor.fetchall()
+    
+    all_slots = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"]
+    
+    unavailable_slots = []
+    for event in events:
+        hora_inicio = event['hora_inicio']
+        if isinstance(hora_inicio, datetime):
+            hora_inicio = hora_inicio.time()
+        elif isinstance(hora_inicio, timedelta):
+            # Convert timedelta to time
+            hora_inicio = (datetime.min + hora_inicio).time()
+        unavailable_slots.append(hora_inicio.strftime("%H:%M"))
+    
+    available_slots = [slot for slot in all_slots if slot not in unavailable_slots]
+    
+    cursor.close()
+    db.close()
+    
+    return available_slots
+
+@app.get("/available_slots")
+def get_available_slots():
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM eventos")
+    events = cursor.fetchall()
+    cursor.close()
+
+    unavailable_slots = []
+    for event in events:
+        if event['estado'] != 'disponible':
+            hora_inicio = event['hora_inicio']
+            if isinstance(hora_inicio, datetime):
+                hora_inicio = hora_inicio.time()
+            elif isinstance(hora_inicio, timedelta):
+                # Convert timedelta to time
+                hora_inicio = (datetime.min + hora_inicio).time()
+            unavailable_slots.append(hora_inicio.strftime("%H:%M"))
+
+    return unavailable_slots
+
 
 @app.get("/categorias")
 def get_categorias():
@@ -584,7 +640,7 @@ def get_contrataciones():
 
 @app.post("/contrataciones")
 def add_contratacion(contratacion: Contratacion):
-    try:
+    try:    
         db = get_db_connection()
         cursor = db.cursor()
         cursor.execute("""
@@ -791,21 +847,7 @@ def delete_direccion(direccion_id: int):
     db.close()
     return {"message": "Direccion deleted successfully"}
 
-# @app.post("/calendarios", response_model=CalendarioResponse)
-# async def create_calendario(calendario: CalendarioCreate):
-#     db = get_db_connection()
-#     cursor = db.cursor()
-#     cursor.execute("""INSERT INTO calendarios (usuario_id, anio, mes) VALUES (%s, %s, %s)
-        
-#     """, (calendario.usuario_id, calendario.mes, calendario.anio))
-#     db.commit()
-    
-#     cursor.close()
 
-#     db.close()
-
-#     return {"message": "Calendario created successfully"}
-    
 
 
 @app.get("/calendario")
@@ -863,10 +905,10 @@ def create_evento(evento: EventoCreate):
     db = get_db_connection()
     cursor = db.cursor()
     query = """
-    INSERT INTO eventos (calendario_id, fecha, hora_inicio, hora_fin, estado)
-    VALUES (%s, %s, %s, %s, %s)
+    INSERT INTO eventos (id, calendario_id, fecha, hora_inicio, hora_fin, estado)
+    VALUES (%s, %s, %s, %s, %s, %s)
     """
-    cursor.execute(query, (evento.calendario_id, evento.fecha, evento.hora_inicio, evento.hora_fin, evento.estado))
+    cursor.execute(query, (0, evento.calendario_id, evento.fecha, evento.hora_inicio, evento.hora_fin, evento.estado))
     db.commit()
     evento_id = cursor.lastrowid
     cursor.close()
@@ -940,13 +982,21 @@ def read_calendario(usuario_id: int):
 
 
 
-@app.post("/eventos/", response_model=EventoResponse)
-def create_evento(evento: EventoCreate):
+@app.post("/eventos")
+def create_evento(evento: EventoBase):
     db = get_db_connection()
-    if db:
-        return create_evento(db, evento)
-    else:
-        raise HTTPException(status_code=500, detail="Error al conectar a la base de datos")
+    cursor = db.cursor()
+    query = """
+    INSERT INTO eventos (id, calendario_id, fecha, hora_inicio, hora_fin, estado)
+    VALUES (%s, %s, %s, %s, %s, %s)
+    """
+    cursor.execute(query, (0, evento.calendario_id, evento.fecha, evento.hora_inicio, evento.hora_fin, evento.estado))
+    db.commit()
+    evento_id = cursor.lastrowid
+    cursor.close()
+    return {**evento.dict(), "id": evento_id}
+
+
 
 @app.put("/eventos/{evento_id}", response_model=EventoResponse)
 def update_evento(evento_id: int, evento: EventoUpdate):

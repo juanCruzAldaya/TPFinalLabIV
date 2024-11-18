@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, throwError  } from 'rxjs';
 import { CalendarEvent } from 'angular-calendar';
 import { map } from 'rxjs/operators';
-import {ICalendario} from '../interfaces/calendario.interface'
+import {ICalendario, IEvento} from '../interfaces/calendario.interface'
 import { environment } from '../../enviroments/enviroments';
 
 @Injectable({
@@ -34,8 +34,8 @@ export class CalendarService {
     );
   }
 
-  createEvent(event: CalendarEvent): Observable<CalendarEvent> {
-    return this.http.post<CalendarEvent>(environment.LOCAL_API_URL + `/eventos`, event);
+  createEvent(evento: IEvento): Observable<IEvento> {
+    return this.http.post<IEvento>(environment.LOCAL_API_URL + "/eventos", evento);
   }
 
   updateEvent(event: CalendarEvent): Observable<CalendarEvent> {
@@ -51,15 +51,7 @@ export class CalendarService {
 
 
   getAvailableSlots(profesionalId: number, date: string): Observable<string[]> {
-    return this.getCalendar(profesionalId).pipe(
-      map(calendario => {
-        const formattedDate = date;
-        const events = calendario.eventos!.filter(event => event.fecha === formattedDate);
-        const blockedTimes = events.map(event => event.hora_inicio); // Asume que cada evento tiene una propiedad 'hora_inicio'
-        const allPossibleTimes = this.generatePossibleTimes();
-        return allPossibleTimes.filter(time => !blockedTimes.includes(time));
-      })
-    );
+    return this.http.get<string[]>(`${environment.LOCAL_API_URL}/availableSlots/${profesionalId}/${date}`);
   }
   
   private generatePossibleTimes(): string[] {

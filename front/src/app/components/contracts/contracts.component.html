@@ -35,6 +35,9 @@
     <p><strong>Estado:</strong> {{ selectedContract?.estado }}</p>
     <p><strong>Fecha de Contratación:</strong> {{ selectedContract?.fecha_contratacion }}</p>
     <p><strong>Hora de Contratación:</strong> {{ selectedContract?.hora_contratacion }}</p>
+        <!-- New buttons for canceling and finishing the service -->
+    <button (click)="cancelService()">Cancelar Servicio</button>
+    <button (click)="finishService()" *ngIf="canCancelOrFinish()">Finalizar Servicio</button>
   </div>
 </div>
 

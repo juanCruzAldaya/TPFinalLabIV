@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { SharedService } from '../../../services/shared.service';
 import { Router } from '@angular/router';
 @Component({
   selector: 'app-available-slots',
@@ -9,16 +10,23 @@ import { Router } from '@angular/router';
 
 export class AvailableSlotsComponent {
     @Input() availableSlots: string[] = [];
+    @Input() unavailableSlots: string[] = [];
     @Output() slotSelected = new EventEmitter<string>();
     
     
-    constructor(private router: Router) {}
+    constructor(private router: Router,  private sharedService: SharedService) {}
 
 
  selectSlot(slot: string): void {
-    const selectedDate = new Date().toISOString().split('T')[0]; // Aquí deberías obtener la fecha seleccionada
+
+    this.sharedService.setSelectedSlot(slot);
     this.slotSelected.emit(slot);
-    this.router.navigate(['/booking-form'], { queryParams: { slot, date: selectedDate } });
+    this.router.navigate(['/booking-form'], { queryParams: { slot} });
   }
 
+  isSlotAvailable(slot: string): boolean {
+    return !this.unavailableSlots.includes(slot);
+  }
 }
+
+

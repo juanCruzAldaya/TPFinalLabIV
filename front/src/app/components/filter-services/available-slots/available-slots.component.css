@@ -14,4 +14,8 @@ ul {
   li:hover {
     background-color: #d0d0d0;
   }
-  
+  button.unavailable {
+    background-color: #d3d3d3; /* Light gray background */
+    color: #a9a9a9; /* Dark gray text */
+    cursor: not-allowed; /* Change cursor to indicate it's not clickable */
+  }

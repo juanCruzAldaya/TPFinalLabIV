@@ -2,7 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ContractsService } from '../../services/contracts.service';
 import { IContract } from '../../interfaces/IContracts.interface';
 import { AuthService } from '../../services/auth.services';
-
+import { CalendarService } from '../../services/calendar.service';
+import {IEvento} from '../../interfaces/IEvent.interface'
+import { SharedService } from '../../services/shared.service';
 
 
 @Component({
@@ -22,7 +24,7 @@ export class ContractsComponent implements OnInit {
   contractToConfirm: IContract | null = null;
   isConfirmModalOpen = false;
 
-  constructor(private contractService: ContractsService, private authService: AuthService) {}
+  constructor(private contractService: ContractsService, private authService: AuthService, private calendarService: CalendarService, private sharedService: SharedService) {}
 
   ngOnInit(): void {
     this.loadContracts();
@@ -112,7 +114,26 @@ export class ContractsComponent implements OnInit {
         const contract = this.contracts.find(c => c.id === contractId);
         if (contract) {
           contract.estado = 'aceptado';
+          const evento: IEvento = {
+            id: 0, 
+            calendario_id: this.sharedService.getCalendarId(),
+            fecha: contract.fecha_contratacion, 
+            hora_inicio: contract.hora_contratacion, 
+            hora_fin: this.calculateEndTime(contract.hora_contratacion, 3), 
+            estado: 'reservado'
+          };
+          this.calendarService.createEvent(evento).subscribe({
+            next: (response) => {
+              console.log('Evento creado con éxito', response);
+            },
+            error: (err) => {
+              console.error('Error al crear el evento:', err);
+            }
+          });
+
+          
         }
+        
         console.log('Contract accepted successfully');
       },
       error: (err) => {
@@ -120,7 +141,12 @@ export class ContractsComponent implements OnInit {
       }
     });
   }
-  
+  calculateEndTime(startTime: string, durationHours: number): string {
+    const [hours, minutes] = startTime.split(':').map(Number);
+    const endTime = new Date();
+    endTime.setHours(hours + durationHours, minutes);
+    return endTime.toTimeString().slice(0, 5);
+  }
   rejectContract(contractId: number): void {
     this.contractService.updateContractStatus(contractId, 'rechazado').subscribe({
       next: () => {
@@ -152,5 +178,43 @@ export class ContractsComponent implements OnInit {
       this.rejectContract(this.contractToConfirm!.id);
     }
     this.closeConfirmModal();
+  }
+  canCancelOrFinish(): boolean {
+    if (!this.selectedContract) {
+      return false;
+    }
+    const currentDate = new Date();
+    const scheduledDate = new Date(this.selectedContract.hora_contratacion);
+    return currentDate > scheduledDate;
+  }
+  
+  // Method to cancel the service
+  cancelService(): void {
+    if (this.selectedContract) {
+      this.contractService.updateContractStatus(this.selectedContract.id, 'cancelado').subscribe({
+        next: () => {
+          this.selectedContract!.estado = 'cancelado';
+          console.log('Service canceled successfully');
+        },
+        error: (err) => {
+          console.error('Error canceling service:', err);
+        }
+      });
+    }
+  }
+  
+  // Method to finish the service
+  finishService(): void {
+    if (this.selectedContract) {
+      this.contractService.updateContractStatus(this.selectedContract.id, 'finalizado').subscribe({
+        next: () => {
+          this.selectedContract!.estado = 'finalizado';
+          console.log('Service finished successfully');
+        },
+        error: (err) => {
+          console.error('Error finishing service:', err);
+        }
+      });
+    }
   }
 }

@@ -136,9 +136,8 @@ class Resena(BaseModel):
     comentario: Optional[str]
 
 
-
 class EventoBase(BaseModel):
-    id: Optional[int]
+    id: Optional[int] = None
     calendario_id: int
     fecha: date
     hora_inicio: time
@@ -268,7 +267,6 @@ def login(request: LoginRequest):
 
 
     token = jwt.encode({"sub": request.email}, SECRET_KEY, algorithm=ALGORITHM)
-    print(user['id'])
 
 
 
@@ -1014,17 +1012,6 @@ def delete_evento(evento_id: int):
     else:
         raise HTTPException(status_code=500, detail="Error al conectar a la base de datos")
 
-
-
-# @app.get("/events", response_model=List[EventoBase])
-# def get_events(profesionalId: int, date: datetime.date):
-#     db = get_db_connection()
-
-#     events = [
-#         {"calendario_id": 1, "fecha": date, "hora_inicio": "09:00:00", "hora_fin": "10:00:00", "estado": "reservado"},
-#         {"calendario_id": 1, "fecha": date, "hora_inicio": "11:00:00", "hora_fin": "12:00:00", "estado": "reservado"}
-#     ]
-#     return events
 
 
 if __name__ == "__main__":

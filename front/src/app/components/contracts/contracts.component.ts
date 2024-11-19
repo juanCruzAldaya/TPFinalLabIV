@@ -177,34 +177,49 @@ export class ContractsComponent implements OnInit {
     } else if (this.confirmAction === 'rechazar') {
       this.rejectContract(this.contractToConfirm!.id);
     }
+    else if (this.confirmAction === 'finalizar') {
+      this.finishService();
+    }
     this.closeConfirmModal();
   }
-  canCancelOrFinish(): boolean {
-    if (!this.selectedContract) {
-      return false;
-    }
-    const currentDate = new Date();
-    const scheduledDate = new Date(this.selectedContract.hora_contratacion);
-    return currentDate > scheduledDate;
+  canFinish(): boolean {
+    return this.selectedContract?.estado === 'aceptado';
   }
-  
-  // Method to cancel the service
+  canCancelService(): boolean {
+    return this.selectedContract?.estado !== 'cancelado' && this.selectedContract?.estado !== 'finalizado';
+  }
+  canReviewService(): boolean {
+    return this.selectedContract?.estado === 'finalizado';
+  }
   cancelService(): void {
     if (this.selectedContract) {
-      this.contractService.updateContractStatus(this.selectedContract.id, 'cancelado').subscribe({
-        next: () => {
-          this.selectedContract!.estado = 'cancelado';
-          console.log('Service canceled successfully');
-        },
-        error: (err) => {
-          console.error('Error canceling service:', err);
-        }
-      });
+      if (this.selectedContract.estado != 'cancelado'){
+        this.contractService.updateContractStatus(this.selectedContract.id, 'cancelado').subscribe({
+          next: () => {
+            this.selectedContract!.estado = 'cancelado';
+            console.log('Service canceled successfully');
+          },
+          error: (err) => {
+            console.error('Error canceling service:', err);
+          }
+        });
+      }
+
     }
   }
-  
+  addReview(): void {
+    // Logic to open a review form or modal
+    console.log('Opening review form for service:', this.selectedContract?.id);
+  }
   // Method to finish the service
+
+
   finishService(): void {
+    if (this.selectedContract) {
+      this.openConfirmModal('finalizar', this.selectedContract);
+    }
+  }
+  finalizeContract(): void {
     if (this.selectedContract) {
       this.contractService.updateContractStatus(this.selectedContract.id, 'finalizado').subscribe({
         next: () => {
@@ -216,5 +231,12 @@ export class ContractsComponent implements OnInit {
         }
       });
     }
+  }
+  isAccepted(contract: IContract): boolean {
+    return contract.estado === 'aceptado';
+  }
+  
+  isPending(contract: IContract): boolean {
+    return contract.estado === 'pendiente';
   }
 }

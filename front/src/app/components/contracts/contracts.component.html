@@ -17,8 +17,8 @@
           <p class="card-text"><strong>Estado:</strong> {{ contract.estado }}</p>
           <div class="button-container">
             <button class="btn btn-primary custom-btn" (click)="showContractDetails(contract)">Ver Detalles</button>
-            <button *ngIf="isProfessionalView" class="btn btn-success custom-btn" (click)="openConfirmModal('aceptar', contract)">Aceptar</button>
-            <button *ngIf="isProfessionalView" class="btn btn-danger custom-btn" (click)="openConfirmModal('rechazar', contract)">Rechazar</button>
+            <button *ngIf="isProfessionalView && isPending(contract)"class="btn btn-success custom-btn" (click)="openConfirmModal('aceptar', contract)">Aceptar</button>
+            <button *ngIf="isProfessionalView && isPending(contract) " class="btn btn-danger custom-btn" (click)="openConfirmModal('rechazar', contract)">Rechazar</button>
           </div>
         </div>
       </div>
@@ -35,9 +35,17 @@
     <p><strong>Estado:</strong> {{ selectedContract?.estado }}</p>
     <p><strong>Fecha de Contratación:</strong> {{ selectedContract?.fecha_contratacion }}</p>
     <p><strong>Hora de Contratación:</strong> {{ selectedContract?.hora_contratacion }}</p>
-        <!-- New buttons for canceling and finishing the service -->
-    <button (click)="cancelService()">Cancelar Servicio</button>
-    <button (click)="finishService()" *ngIf="canCancelOrFinish()">Finalizar Servicio</button>
+       
+    <div *ngIf="canCancelService()">
+      <button (click)="cancelService()">Cancelar Servicio</button>
+    </div>
+    
+    <button (click)="finishService()" *ngIf="canFinish() && isProfessionalView">Finalizar Servicio</button>
+
+
+    <div *ngIf="canReviewService() && !isProfessionalView">
+      <button (click)="addReview()">Dar reseña</button>
+    </div>
   </div>
 </div>
 

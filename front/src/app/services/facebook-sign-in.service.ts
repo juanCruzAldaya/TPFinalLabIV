@@ -14,7 +14,7 @@ export class AuthService {
   loadFacebookSDK(): void {
     (window as any).fbAsyncInit = () => {
       FB.init({
-        appId: 'YOUR_APP_ID',
+        appId: '931313202190082',
         cookie: true,
         xfbml: true,
         version: 'v10.0'

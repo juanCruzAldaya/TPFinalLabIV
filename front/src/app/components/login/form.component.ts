@@ -15,9 +15,9 @@ import {
 } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
-import { AuthService } from "../../../services/auth.services";
-import { ICalendario } from "../../../interfaces/calendario.interface";
-import { CalendarService } from "../../../services/calendar.service";
+import { AuthService } from "../../services/auth.services";
+import { ICalendario } from "../../interfaces/calendario.interface";
+import { CalendarService } from "../../services/calendar.service";
 import { CommonModule } from "@angular/common";
 
 export function matchPasswordsValidator(
@@ -219,7 +219,6 @@ export class FormComponent implements AfterViewInit, OnInit {
         ciudad: this.userForm.value.ciudad,
         nacimiento: this.userForm.value.nacimiento,
         calificacion_promedio: this.userForm.value.calificacion_promedio,
-        // Add other fields if needed
       };
 
       console.log(formData);
@@ -236,7 +235,7 @@ export class FormComponent implements AfterViewInit, OnInit {
               usuario_id: newUserId,
               anio: null,
               mes: null,
-              eventos: null, // Ensure this is set to null if there are no events
+              eventos: null, 
             };
             console.log(calendario);
             this.calendarService.createCalendar(calendario).subscribe(

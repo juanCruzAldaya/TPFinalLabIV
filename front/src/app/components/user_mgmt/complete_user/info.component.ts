@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CompletingUsersService } from '../../../services/completing-users.service';
 import { IUsuarios } from '../../../interfaces/users.interfaces';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { AuthService } from '../../../services/auth.services';
+import { AuthService } from '../../../services/auth.service';
 
 
 export function mayorEdad(): ValidatorFn {

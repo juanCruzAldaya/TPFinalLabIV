@@ -14,8 +14,9 @@ body{
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    height: 85vh;
+    height: 90vh;
 }
+
 
 .container{
     background-color: #fff;
@@ -33,9 +34,9 @@ body{
     line-height: 20px;
     letter-spacing: 0.3px;
     margin: 20px 0;
-    margin-bottom: 0;
-}
-
+    margin-bottom: 10 px; 
+    text-align: center;
+  }
 
 .container span{
     font-size: 12px;
@@ -47,8 +48,7 @@ h1{
 }
 h3{
     font-size: 26px;
-    margin-top: 60px;
-    margin-left: 65px;
+    margin : 65px;
 }
 
 .container a{
@@ -71,7 +71,9 @@ h3{
     margin-top: 10px;
     cursor: pointer;
 }
-
+.calificacion {
+    margin-bottom: 10px;
+}
 
 .container form{
     background-color: #fff;
@@ -95,6 +97,7 @@ h3{
 }
 .estrellas {
     display: inline-block;
+    margin-bottom: 10px;
   }
   
   .estrellas span {

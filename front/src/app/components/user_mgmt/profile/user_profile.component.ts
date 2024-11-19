@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AuthService } from '../../../services/auth.services';
+import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { CompletingUsersService } from '../../../services/completing-users.service';
 import { IUsuarios } from '../../../interfaces/users.interfaces';

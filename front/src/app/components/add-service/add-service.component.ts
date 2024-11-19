@@ -11,7 +11,7 @@ import { IDepartment } from "../../interfaces/department";
 import { ILocality } from "../../interfaces/locality";
 import { IProvince } from "../../interfaces/province";
 import { IService } from "../../interfaces/service.interface";
-import { AuthService } from "../../services/auth.services";
+import { AuthService } from "../../services/auth.service";
 import { CategoriesService } from "../../services/categorie-async.service";
 import { LocationAsyncService } from "../../services/location-async.service";
 import { ServicesService } from "../../services/service-async.service";

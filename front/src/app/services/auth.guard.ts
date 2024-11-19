@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
-import { AuthService } from './auth.services'  // Adjust path as needed
+import { AuthService } from './auth.service'  // Adjust path as needed
 
 
 

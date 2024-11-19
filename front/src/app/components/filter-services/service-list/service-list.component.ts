@@ -6,7 +6,7 @@ import { IServiceCard } from '../../../interfaces/IServiceCard.interface';
 import { CalendarComponent } from '../calendar/calendar.component';
 import { CalendarMonthViewDay } from 'angular-calendar';
 import { ICalendario } from '../../../interfaces/calendario.interface';
-import { AuthService } from '../../../services/auth.services';
+import { AuthService } from '../../../services/auth.service';
 import { SharedService } from '../../../services/shared.service';
 
 @Component({

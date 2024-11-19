@@ -1,7 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { ReseñasService } from "../../services/resenia.service";
 import { IReseña } from "../../interfaces/resenia.interface";
-import { FormsModule } from "@angular/forms";
+import { FormBuilder, FormGroup, FormsModule, Validators } from "@angular/forms";
+import { AuthService } from "../../services/auth.service";
+import { SharedService } from "../../services/shared.service";
 
 @Component({
   selector: "app-resenia",
@@ -10,38 +12,51 @@ import { FormsModule } from "@angular/forms";
 })
 export class ReseñasComponent implements OnInit {
   resenias: IReseña[] = [];
-  nuevaResenia: IReseña = {
-    usuario_id: 0,
-    servicio_id: 0,
-    calificacion: 5,
-    comentario: "",
-  };
+  reviewForm: FormGroup;
 
-  constructor(private reseñasService: ReseñasService) {}
-
-  ngOnInit(): void {
-    const servicio_id = 1;
-    this.getResenias(servicio_id);
+  constructor(
+    private reseñasService: ReseñasService,
+    private fb: FormBuilder,
+    private auth :AuthService,
+    private shared :SharedService
+  ) {
+    console.log("servicio id: "+shared.getServiceId)
+    this.reviewForm = this.fb.group({
+      usuario_id: [auth.getUserId, Validators.required], 
+      // servicio_id: [shared.getServiceId, Validators.required], 
+      servicio_id: [48, Validators.required], 
+      calificacion: [5, [Validators.required, Validators.min(1), Validators.max(5)]],
+      comentario: ["", [Validators.required, Validators.minLength(10)]],
+    });
   }
 
-  getResenias(servicio_id: number): void {
-    this.reseñasService.getReseñas(servicio_id).subscribe((data) => {
+  ngOnInit(): void {
+    this.getReviews();
+  }
+
+  // Método para enviar una nueva reseña
+  submitReview(): void {
+    if (this.reviewForm.valid) {
+      const review: IReseña = this.reviewForm.value;
+      this.reseñasService.submitReview(review).subscribe(() => {
+        alert("Reseña enviada correctamente");
+        this.getReviews(); 
+        this.reviewForm.reset({ calificacion: 5, comentario: "" }); 
+      });
+    } else {
+      alert("Por favor, completa todos los campos correctamente.");
+    }
+  }
+
+  
+  getReviews(): void {
+    // const servicioId = this.shared.getServiceId(); 
+    const servicioId = 48; 
+    this.reseñasService.getReviews(servicioId).subscribe((data: IReseña[]) => {
       this.resenias = data;
     });
   }
-
-  addResenia(): void {
-    this.reseñasService.addReseña(this.resenias).subscribe((data) => {
-      this.resenias.push(data);
-      this.nuevaResenia = {
-        usuario_id: 0,
-        servicio_id: 0,
-        calificacion: 5,
-        comentario: "",
-      };
-    });
-  }
   seleccionarCalificacion(calificacion: number): void {
-    this.nuevaResenia.calificacion = calificacion;
+    this.reviewForm.patchValue({ calificacion });
   }
 }

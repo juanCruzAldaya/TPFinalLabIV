@@ -24,7 +24,12 @@ export class ContractsComponent implements OnInit {
   contractToConfirm: IContract | null = null;
   isConfirmModalOpen = false;
 
-  constructor(private contractService: ContractsService, private authService: AuthService, private calendarService: CalendarService, private sharedService: SharedService) {}
+  constructor(private contractService: ContractsService, 
+    private authService: AuthService, 
+    private calendarService: CalendarService, 
+    private sharedService: SharedService) {
+
+    }
 
   ngOnInit(): void {
     this.loadContracts();
@@ -178,7 +183,7 @@ export class ContractsComponent implements OnInit {
       this.rejectContract(this.contractToConfirm!.id);
     }
     else if (this.confirmAction === 'finalizar') {
-      this.finishService();
+      this.finalizeContract();
     }
     this.closeConfirmModal();
   }

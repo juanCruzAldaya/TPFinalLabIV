@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ContractsService } from '../../services/contracts.service';
 import { IContract } from '../../interfaces/IContracts.interface';
-import { AuthService } from '../../services/auth.services';
+import { AuthService } from '../../services/auth.service';
 
 
 

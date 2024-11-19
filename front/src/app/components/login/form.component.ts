@@ -15,7 +15,7 @@ import {
 } from "@angular/forms";
 import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
-import { AuthService } from "../../services/auth.services";
+import { AuthService } from "../../services/auth.service";
 import { ICalendario } from "../../interfaces/calendario.interface";
 import { CalendarService } from "../../services/calendar.service";
 import { CommonModule } from "@angular/common";

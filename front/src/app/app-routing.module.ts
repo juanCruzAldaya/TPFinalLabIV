@@ -5,7 +5,7 @@ import { ServiceListComponent } from "./components/filter-services/service-list/
 import { BookingFormComponent } from "./components/filter-services/booking-form/booking-form.component";
 import { InfoComponent } from "./components/user_mgmt/complete_user/info.component";
 import { AddServiceComponent } from "./components/add-service/add-service.component";
-import { FormComponent } from "./components/login/form/form.component";
+import { FormComponent } from "./components/login/form.component";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { ReseñasComponent } from "./components/resenia/resenia.component";

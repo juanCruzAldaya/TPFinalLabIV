@@ -549,7 +549,7 @@ def add_servicio(servicio: Servicio):
     db.close()
     return {"message": "Servicio added successfully"}
 
-@app.get("/resenas{id}")
+@app.get("/resenas/{id}")
 def get_resenas():
     db = get_db_connection()
     cursor = db.cursor(dictionary=True)
@@ -559,7 +559,7 @@ def get_resenas():
     db.close()
     return results
 
-@app.post("/resenas")
+@app.post("/resenas/")
 def add_resena(resena: Resena):
     db = get_db_connection()
     cursor = db.cursor()

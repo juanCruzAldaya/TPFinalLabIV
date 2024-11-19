@@ -2,7 +2,7 @@ import { Component, OnInit,Input  } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { BookingService } from '../../../services/booking.service';
-import { AuthService } from '../../../services/auth.services';
+import { AuthService } from '../../../services/auth.service';
 import { CalendarService } from '../../../services/calendar.service';
 import { SharedService } from '../../../services/shared.service';
 import { IService } from '../../../interfaces/service.interface';

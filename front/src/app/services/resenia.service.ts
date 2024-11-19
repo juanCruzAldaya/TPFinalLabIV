@@ -4,21 +4,21 @@ import { Observable } from "rxjs";
 import { IReseña } from "../interfaces/resenia.interface";
 import { environment } from "../../enviroments/enviroments";
 
+
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root'
 })
 export class ReseñasService {
-  private apiUrl = environment.LOCAL_API_URL + "/resenas";
-
+  private Url = environment.LOCAL_API_URL + "/resenas";
   constructor(private http: HttpClient) {}
 
-  getReseñas(servicio_id: number): Observable<IReseña[]> {
-    return this.http.get<IReseña[]>(`${this.apiUrl}/${servicio_id}`);
+  // Enviar una nueva reseña
+  submitReview(review: IReseña) {
+    return this.http.post<IReseña>(`${this.Url}`, review);
   }
 
-  addReseña(data: any): Observable<IReseña> {
-    return this.http.post<IReseña>(environment.LOCAL_API_URL+"/resena", data, {
-      headers: { 'Content-Type': 'application/json' }
-    });
+  // Obtener reseñas de un servicio
+  getReviews(servicioId: number) {
+    return this.http.get<IReseña[]>(`${this.Url}?servicio_id=${servicioId}`);
   }
 }

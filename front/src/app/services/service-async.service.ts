@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../enviroments/enviroments";
 import { IService } from "../interfaces/service.interface";
+import { Observable } from "rxjs/internal/Observable";
 
 @Injectable({
   providedIn: "root",
@@ -11,10 +12,17 @@ export class ServicesService {
 
   constructor(private http: HttpClient) {}
 
-  getService(servicio_id: number): Promise<any> {
-    return this.http
-      .get(`${this.apiUrl}/editar-servicio/${servicio_id}`)
-      .toPromise();
+  getService(serviceId: number): Observable<IService> {
+    return this.http.get<IService>(`${this.apiUrl}/servicio/${serviceId}`);
+  }
+
+  getServiceByUserId(
+    serviceId: number,
+    profesionalId: number
+  ): Observable<IService> {
+    return this.http.get<IService>(
+      `${this.apiUrl}/servicio/${serviceId}/${profesionalId}`
+    );
   }
 
   getServices(): Promise<any> {
@@ -22,8 +30,9 @@ export class ServicesService {
   }
 
   addService(service: IService): Promise<any> {
+    console.log("SERVICIO:", service);
     return this.http
-      .post(`${this.apiUrl}/agregar-servicio`, service, {
+      .post(`${this.apiUrl}/servicios`, service, {
         headers: { "Content-Type": "application/json" },
       })
       .toPromise();
@@ -40,6 +49,19 @@ export class ServicesService {
   deleteService(id: number): Promise<any> {
     return this.http
       .delete(`${environment.LOCAL_API_URL}/eliminar-servicio/${id}`)
+      .toPromise();
+  }
+
+  editService(
+    id: string,
+    profesionalId: string,
+    service: IService
+  ): Promise<any> {
+    return this.http
+      .put(
+        `${environment.LOCAL_API_URL}/editar-servicio/${id}/${profesionalId}`,
+        service
+      )
       .toPromise();
   }
 }

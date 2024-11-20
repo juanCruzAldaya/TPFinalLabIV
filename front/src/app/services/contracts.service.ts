@@ -43,6 +43,10 @@ export class ContractsService {
 
 } 
 
+getEventId(contract_id: number): Observable<any> {
+  return this.http.get<{evento_id: number}>(`${environment.LOCAL_API_URL}/event_id/${contract_id}`);
+}
+
 
 deleteEventId(eventoId: number): Observable<any> {
   return this.http.delete(`${environment.LOCAL_API_URL}/delete_event/${eventoId}`);

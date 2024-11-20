@@ -49,6 +49,7 @@ export class ContractsComponent implements OnInit {
     if (this.isProfessionalView) {
         this.contractService.get_contrataciones_profesionales().subscribe({
             next: (data: IContract[]) => {
+                this.contracts = data;
                 this.processContracts(data); // Procesar contratos
             },
             error: (err) => console.error('Error fetching contracts:', err)
@@ -56,6 +57,7 @@ export class ContractsComponent implements OnInit {
     } else {
         this.contractService.get_contrataciones_clientes().subscribe({
             next: (data: IContract[]) => {
+                this.contracts = data;
                 this.processContracts(data); // Procesar contratos
             },
             error: (err) => console.error('Error fetching contracts:', err)
@@ -97,6 +99,7 @@ processContracts(contracts: IContract[]): void {
 }
 
   openBasicDetails(contract: any) {
+    
     this.selectedContract = contract;
     this.isModalOpen = true;
   }
@@ -110,7 +113,22 @@ processContracts(contracts: IContract[]): void {
   }
   showContractDetails(contract: any) {
     this.selectedContract = contract;
+    if (this.selectedContract?.id) {
+      this.contractService.get_contrataciones_service_id(this.selectedContract.id)
+        .subscribe(response => {
+          const serviceId = response.servicio_id;
+          if (serviceId) {
+            this.sharedService.setServiceId(serviceId);
+          }
+        }, error => {
+          console.error('Error fetching service ID:', error);
+        });
+    } else {
+      console.error('Selected contract ID is missing');
+    }
+    this.selectedContract!.servicio_id = this.sharedService.getServiceId()
     this.isModalOpen = true;
+    
   }
   updateFilter(criteria: any): void {
     this.filteredContracts = this.contracts.filter(contract => {
@@ -131,9 +149,11 @@ processContracts(contracts: IContract[]): void {
     this.isProfessionalModalOpen = false;
   }
   acceptContract(contractId: number): void {
+    
     this.contractService.updateContractStatus(contractId, 'aceptado').subscribe({
       next: () => {
         const contract = this.contracts.find(c => c.id === contractId);
+        
         if (contract) {
           contract.estado = 'aceptado';
           const evento: IEvento = {
@@ -144,6 +164,7 @@ processContracts(contracts: IContract[]): void {
             hora_fin: this.calculateEndTime(contract.hora_contratacion, 3),
             estado: 'reservado'
           };
+          
           this.calendarService.createEvent(evento).subscribe({
             next: (response) => {
               console.log('Evento creado con éxito', response);
@@ -164,7 +185,7 @@ processContracts(contracts: IContract[]): void {
             }
           });
         }
-        console.log('Contract accepted successfully');
+        console.log('Contract accepted successfully adsdasdassadad');
       },
       error: (err) => {
         console.error('Error accepting contract:', err);
@@ -222,7 +243,22 @@ processContracts(contracts: IContract[]): void {
     return this.selectedContract?.estado === 'finalizado';
   }
   cancelService(): void {
+
     if (this.selectedContract) {
+      
+      // TODO: Agregar validaciones para que solo se pueda cancelar un contrato que no haya sido finalizado o cancelado
+      this.contractService.getEventId(this.selectedContract.id).subscribe({
+        next: (response) => {
+          console.log(response)
+          this.selectedContract!.evento_id = response.evento_id;
+        },
+
+      })
+
+
+
+
+
       if (this.selectedContract.estado != 'cancelado'){
         this.contractService.updateContractStatus(this.selectedContract.id, 'cancelado').subscribe({
           next: () => {
@@ -256,19 +292,28 @@ processContracts(contracts: IContract[]): void {
       }
     });
   }
+
   addReview(): void {
     // Logic to open a review form or modal
-
-    this.contractService.get_contrataciones_service_id(this.selectedContract?.id)
-    .subscribe(serviceId => {
-        this.sharedService.setServiceId(serviceId);
-    });
-
-    
+  
+    if (this.selectedContract?.id) {
+      this.contractService.get_contrataciones_service_id(this.selectedContract.id)
+        .subscribe(response => {
+          const serviceId = response.servicio_id;
+          if (serviceId) {
+            this.sharedService.setServiceId(serviceId);
+            console.log('Service ID:', serviceId);
+          } else {
+            console.error('Service ID not found');
+          }
+        }, error => {
+          console.error('Error fetching service ID:', error);
+        });
+    } else {
+      console.error('Selected contract ID is missing');
+    }
     this.router.navigate(["/reviews"]);
   }
-  // Method to finish the service
-
 
   finishService(): void {
     if (this.selectedContract) {

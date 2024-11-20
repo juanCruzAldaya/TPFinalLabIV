@@ -214,6 +214,8 @@ class EventoUpdate(BaseModel):
 class DeleteResponse(BaseModel):
     message: str
 
+class EventIdResponser(BaseModel):
+    evento_id: int
 
 class EventoResponse(EventoBase):
     id: int
@@ -655,7 +657,7 @@ def get_contrataciones():
 
 
 @app.get("/contrataciones_service_id/{id}")
-def get_contrataciones(id: int):
+def get_contrataciones_servicio_id(id: int):
     db = get_db_connection()
     cursor = db.cursor(dictionary=True)
     print(type(id))
@@ -664,7 +666,7 @@ def get_contrataciones(id: int):
     results = cursor.fetchall()
     cursor.close()
     db.close()
-    return results
+    return {"servicio_id": results[0]['servicio_id']} if results else {}
 
 
 
@@ -1052,6 +1054,22 @@ def update_evento(evento_id: int, evento: EventoUpdate):
         return update_evento(db, evento_id, evento)
     else:
         raise HTTPException(status_code=500, detail="Error al conectar a la base de datos")
+
+
+
+@app.get("/event_id/{id}")
+def get_event_id(id: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT evento_id FROM contrataciones WHERE id = %s", (id,))
+    results = cursor.fetchall()
+    cursor.close()
+    db.close()
+    if results:
+        result = results[0] # Access the first element of the list
+        return EventIdResponser(evento_id= int(result['evento_id']))
+    else:
+        return {"error": "Event not found"}, 404
 
 
 @app.delete("/delete_event/{evento_id}", response_model=DeleteResponse)

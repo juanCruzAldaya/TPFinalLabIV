@@ -64,3 +64,58 @@
   background-color: #0056b3; /* Cambia el color de fondo al pasar el ratón */
 }
 
+.carousel-caption {
+  background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7));
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 2rem 1.5rem;
+  text-align: left;
+}
+
+.caption-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.carousel-caption h3 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  transform: translateY(0);
+  transition: transform 0.3s ease-out;
+}
+
+.carousel-caption:hover h3 {
+  transform: translateY(-5px);
+}
+
+.picsum-img-wrapper {
+  width: 100%;
+  height: 500px; /* Adjust based on your needs */
+  overflow: hidden;
+}
+
+.picsum-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+ngb-carousel:hover .picsum-img-wrapper img {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .carousel-caption h3 {
+    font-size: 1.5rem;
+  }
+  
+  .picsum-img-wrapper {
+    height: 300px;
+  }
+}

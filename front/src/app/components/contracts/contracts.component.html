@@ -68,7 +68,6 @@
     </h2>
     <div class="row">
       <div *ngFor="let contract of futureContracts" class="col-md-4">
-        <div class="contract-card" [ngClass]="getStatusClass(contract.estado)">
           <div class="contract-card" [ngClass]="getStatusClass(contract.estado)">
             <div class="card-body">
               <h5 class="card-title">{{ contract.servicio_nombre }}</h5>
@@ -104,7 +103,6 @@
                 </button>
               </div>
             </div>
-          </div>
         </div>
       </div>
     </div>

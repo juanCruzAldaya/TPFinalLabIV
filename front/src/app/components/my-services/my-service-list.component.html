@@ -13,16 +13,16 @@
 <div class="service-list" *ngIf="servicesFormatted.length > 0">
   <div *ngFor="let service of servicesFormatted" class="card">
     <div class="card-content">
-      <h3>{{ service.nombre_profesional }}</h3>
-      <p><strong>Main Category:</strong> {{ service.nombre_categoria }}</p>
+      <h3>{{ service.profesionalName }}</h3>
+      <p><strong>Main Category:</strong> {{ service.mainCategoryName }}</p>
       <p>
         <strong>Secondary Category:</strong>
-        {{ service.nombre_subcategoria }}
+        {{ service.secondaryCategoryName }}
       </p>
-      <p><strong>Description:</strong> {{ service.descripcion }}</p>
-      <p><strong>State:</strong> {{ service.provincia }}</p>
-      <p><strong>Department:</strong> {{ service.departamento }}</p>
-      <p><strong>Locality:</strong> {{ service.localidad }}</p>
+      <p><strong>Description:</strong> {{ service.description }}</p>
+      <p><strong>State:</strong> {{ service.state }}</p>
+      <p><strong>Department:</strong> {{ service.department }}</p>
+      <p><strong>Locality:</strong> {{ service.locality }}</p>
     </div>
     <div class="footer">
       <button

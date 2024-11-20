@@ -1,7 +1,15 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-fluid">
     <a class="navbar-brand" (click)="navigateHome()">LaburApp</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
@@ -10,23 +18,37 @@
       </ng-container>
       <ng-template #loggedIn>
         <ul class="navbar-nav">
-      
           <li class="nav-item">
-            <a class="nav-link" (click)="navigateTo('/search-professionals')">Buscar profesionales</a>
+            <a class="nav-link" (click)="navigateTo('/search-professionals')"
+              >Buscar profesionales</a
+            >
           </li>
           <li class="nav-item">
-            <a class="nav-link" (click)="navigateTo('/contracts')">Consultar contrataciones</a>
+            <a class="nav-link" (click)="navigateTo('/contracts')"
+              >Consultar contrataciones</a
+            >
           </li>
           <li class="nav-item">
-            <a class="nav-link" (click)="navigateTo('/my-services')">Mis servicios</a>
+            <a class="nav-link" (click)="navigateTo('/add-service')"
+              >Agregar servicio</a
+            >
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" (click)="navigateTo('/my-services')"
+              >Mis servicios</a
+            >
           </li>
           <li class="nav-item">
             <a class="nav-link" (click)="logOut()">Salir</a>
           </li>
           <li class="nav-item">
             <!-- <a class="nav-link" (click)="navigateToProfile()">{{user.foto}}</a> -->
-            <a class="nav-link" (click)="navigateToProfile()"><img class="icon-profile" src="../../../assets/images/home/image-user.png" alt="User Icon"></a>
-            
+            <a class="nav-link" (click)="navigateToProfile()"
+              ><img
+                class="icon-profile"
+                src="../../../assets/images/home/image-user.png"
+                alt="User Icon"
+            /></a>
           </li>
         </ul>
       </ng-template>

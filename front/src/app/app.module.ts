@@ -7,7 +7,6 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { HomeModule } from "./components/home/home.module";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { RouterModule, Routes } from "@angular/router";
-import { appRoutes } from "./app.routes";
 import { SharedModule } from "./shared/shared.module";
 import { FilterServiceModule } from "./components/filter-services/filter-services.module";
 import { InfoComponent } from "./components/user_mgmt/complete_user/info.component";
@@ -26,7 +25,7 @@ import {ProfileComponent} from "./components/user_mgmt/profile/user_profile.comp
     FormsModule,
     BrowserModule,
     AppRoutingModule,
-    RouterModule.forRoot(appRoutes),
+    // RouterModule.forRoot(appRoutes),
     ToastrModule.forRoot({
       positionClass: "toast-bottom-right",
       preventDuplicates: true,

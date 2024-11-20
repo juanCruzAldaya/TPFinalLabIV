@@ -1,51 +1,222 @@
 <app-header></app-header>
 <div class="container-fluid mt-4" [ngClass]="{'blur-background': isModalOpen}">
-  <div class="row mb-3">
-    <div class="col-md-4">
-      <select class="form-select" (change)="onContractTypeChange($event)">
-        <option value="solicitadas">Contrataciones Solicitadas</option>
-        <option value="profesional">Contrataciones como Profesional</option>
-      </select>
+  <!-- View Selector -->
+  <div class="view-selector">
+    <div class="row">
+      <div class="col-md-4">
+        <select class="form-select" (change)="onContractTypeChange($event)">
+          <option value="solicitadas">Contrataciones Solicitadas</option>
+          <option value="profesional">Contrataciones como Profesional</option>
+        </select>
+      </div>
     </div>
   </div>
-  <div class="row">
-    <div *ngFor="let contract of contracts" class="col-md-4 mb-4">
-      <div class="contract-card" [ngClass]="getStatusClass(contract.estado)">
-        <div class="card-body">
-          <h5 class="card-title text-primary">{{ contract.servicio_nombre }}</h5>
-          <p class="card-text"><strong>Profesional:</strong> {{ contract.profesional_nombre }} {{ contract.profesional_apellido }}</p>
-          <p class="card-text"><strong>Estado:</strong> {{ contract.estado }}</p>
-          <div class="button-container">
-            <button class="btn btn-primary custom-btn" (click)="showContractDetails(contract)">Ver Detalles</button>
-            <button *ngIf="isProfessionalView" class="btn btn-success custom-btn" (click)="openConfirmModal('aceptar', contract)">Aceptar</button>
-            <button *ngIf="isProfessionalView" class="btn btn-danger custom-btn" (click)="openConfirmModal('rechazar', contract)">Rechazar</button>
+
+  <!-- Today's Contracts Section -->
+  <div class="contracts-section">
+    <h2 class="section-title">
+      <i class="fas fa-calendar-day me-2"></i>
+      Contratos de Hoy
+    </h2>
+    <div class="row">
+      <div *ngFor="let contract of todayContracts" class="col-md-4">
+        <div class="contract-card" [ngClass]="getStatusClass(contract.estado)">
+          <div class="card-body">
+            <h5 class="card-title">{{ contract.servicio_nombre }}</h5>
+            <p class="card-text">
+              <i class="fas fa-user-tie me-2"></i>
+              <strong>Cliente:</strong> {{ contract.cliente_nombre }} {{ contract.cliente_apellido }}
+            </p>
+            <p class="card-text">
+              <i class="fas fa-user-tie me-2"></i>
+              <strong>Domicilio:</strong> {{ contract.domicilio }}
+            </p>
+            <p class="card-text">
+              <i class="fas fa-user-tie me-2"></i>
+              <strong>Conctacto:</strong> {{ contract.contacto }}
+            </p>
+            <p class="card-text">
+              <i class="fas fa-info-circle me-2"></i>
+              <strong>Estado:</strong> {{ contract.estado }}
+            </p>
+            <div class="button-container">
+              <button class="btn btn-primary custom-btn" (click)="showContractDetails(contract)">
+                <i class="fas fa-eye me-1"></i> Ver Detalles
+              </button>
+              <button *ngIf="isProfessionalView && isPending(contract)" 
+                      class="btn btn-success custom-btn" 
+                      (click)="openConfirmModal('aceptar', contract)">
+                <i class="fas fa-check me-1"></i> Aceptar
+              </button>
+              <button *ngIf="isProfessionalView && isPending(contract)" 
+                      class="btn btn-danger custom-btn" 
+                      (click)="openConfirmModal('rechazar', contract)">
+                <i class="fas fa-times me-1"></i> Rechazar
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
+  <!-- Future Contracts Section -->
+  <div class="contracts-section">
+    <h2 class="section-title">
+      <i class="fas fa-calendar-alt me-2"></i>
+      Próximos Contratos
+    </h2>
+    <div class="row">
+      <div *ngFor="let contract of futureContracts" class="col-md-4">
+        <div class="contract-card" [ngClass]="getStatusClass(contract.estado)">
+          <div class="contract-card" [ngClass]="getStatusClass(contract.estado)">
+            <div class="card-body">
+              <h5 class="card-title">{{ contract.servicio_nombre }}</h5>
+              <p class="card-text">
+                <i class="fas fa-user-tie me-2"></i>
+                <strong>Cliente:</strong> {{ contract.cliente_nombre }} {{ contract.cliente_apellido }}
+              </p>
+              <p class="card-text">
+                <i class="fas fa-user-tie me-2"></i>
+                <strong>Domicilio:</strong> {{ contract.domicilio }}
+              </p>
+              <p class="card-text">
+                <i class="fas fa-user-tie me-2"></i>
+                <strong>Conctacto:</strong> {{ contract.contacto }}
+              </p>
+              <p class="card-text">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Estado:</strong> {{ contract.estado }}
+              </p>
+              <div class="button-container">
+                <button class="btn btn-primary custom-btn" (click)="showContractDetails(contract)">
+                  <i class="fas fa-eye me-1"></i> Ver Detalles
+                </button>
+                <button *ngIf="isProfessionalView && isPending(contract)" 
+                        class="btn btn-success custom-btn" 
+                        (click)="openConfirmModal('aceptar', contract)">
+                  <i class="fas fa-check me-1"></i> Aceptar
+                </button>
+                <button *ngIf="isProfessionalView && isPending(contract)" 
+                        class="btn btn-danger custom-btn" 
+                        (click)="openConfirmModal('rechazar', contract)">
+                  <i class="fas fa-times me-1"></i> Rechazar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Archived Contracts Section -->
+  <div class="contracts-section">
+    <h2 class="section-title">
+      <i class="fas fa-archive me-2"></i>
+      Contratos Archivados
+    </h2>
+    <div class="row">
+      <div *ngFor="let contract of archivedContracts" class="col-md-4">
+        <div class="contract-card" [ngClass]="getStatusClass(contract.estado)">
+            <div class="card-body">
+              <h5 class="card-title">{{ contract.servicio_nombre }}</h5>
+              <p class="card-text">
+                <i class="fas fa-user-tie me-2"></i>
+                <strong>Cliente:</strong> {{ contract.cliente_nombre }} {{ contract.cliente_apellido }}
+              </p>
+              <p class="card-text">
+                <i class="fas fa-user-tie me-2"></i>
+                <strong>Domicilio:</strong> {{ contract.domicilio }}
+              </p>
+              <p class="card-text">
+                <i class="fas fa-user-tie me-2"></i>
+                <strong>Conctacto:</strong> {{ contract.contacto }}
+              </p>
+              <p class="card-text">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Estado:</strong> {{ contract.estado }}
+              </p>
+              <div class="button-container">
+                <button class="btn btn-primary custom-btn" (click)="showContractDetails(contract)">
+                  <i class="fas fa-eye me-1"></i> Ver Detalles
+                </button>
+                <button *ngIf="isProfessionalView && isPending(contract)" 
+                        class="btn btn-success custom-btn" 
+                        (click)="openConfirmModal('aceptar', contract)">
+                  <i class="fas fa-check me-1"></i> Aceptar
+                </button>
+                <button *ngIf="isProfessionalView && isPending(contract)" 
+                        class="btn btn-danger custom-btn" 
+                        (click)="openConfirmModal('rechazar', contract)">
+                  <i class="fas fa-times me-1"></i> Rechazar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Modales con el mismo estilo mejorado -->
 <div class="modal" [ngClass]="{'show': isModalOpen}" (click)="closeModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <span class="close" (click)="closeModal()">×</span>
     
-    <h4>{{ selectedContract?.servicio_nombre }}</h4>
-    <p><strong>Profesional:</strong> {{ selectedContract?.profesional_nombre }} {{ selectedContract?.profesional_apellido }}</p>
-    <p><strong>Estado:</strong> {{ selectedContract?.estado }}</p>
-    <p><strong>Fecha de Contratación:</strong> {{ selectedContract?.fecha_contratacion }}</p>
-    <p><strong>Hora de Contratación:</strong> {{ selectedContract?.hora_contratacion }}</p>
+    <h4 class="modal-title">{{ selectedContract?.servicio_nombre }}</h4>
+    <div class="modal-body">
+      <p class="modal-text">
+        <i class="fas fa-user-tie me-2"></i>
+        <strong>Profesional:</strong> {{ selectedContract?.profesional_nombre }} {{ selectedContract?.profesional_apellido }}
+      </p>
+      <p class="modal-text">
+        <i class="fas fa-info-circle me-2"></i>
+        <strong>Estado:</strong> {{ selectedContract?.estado }}
+      </p>
+      <p class="modal-text">
+        <i class="fas fa-calendar me-2"></i>
+        <strong>Fecha de Contratación:</strong> {{ selectedContract?.fecha_contratacion }}
+      </p>
+      <p class="modal-text">
+        <i class="fas fa-clock me-2"></i>
+        <strong>Hora de Contratación:</strong> {{ selectedContract?.hora_contratacion }}
+      </p>
+    </div>
+    
+    <div class="modal-actions">
+      <div *ngIf="canCancelService()">
+        <button class="btn btn-danger custom-btn" (click)="cancelService()">
+          <i class="fas fa-ban me-1"></i> Cancelar Servicio
+        </button>
+      </div>
+      
+      <button class="btn btn-success custom-btn" (click)="finishService()" *ngIf="canFinish() && isProfessionalView">
+        <i class="fas fa-check-circle me-1"></i> Finalizar Servicio
+      </button>
+      
+      <div *ngIf="canReviewService() && !isProfessionalView">
+        <button class="btn btn-primary custom-btn" (click)="addReview()">
+          <i class="fas fa-star me-1"></i> Dar reseña
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
+<!-- Confirmation Modal -->
 <div class="modal" [ngClass]="{'show': isConfirmModalOpen}" (click)="closeConfirmModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <span class="close" (click)="closeConfirmModal()">×</span>
-    <h4>Confirmar Acción</h4>
-    <p>¿Estás seguro de que deseas {{ confirmAction }} este contrato?</p>
+    <h4 class="modal-title">Confirmar Acción</h4>
+    <p class="modal-text">¿Estás seguro de que deseas {{ confirmAction }} este contrato?</p>
     <div class="button-container">
-      <button class="btn btn-primary custom-confirm-btn" (click)="confirmActionHandler()">Confirmar</button>
-      <button class="btn btn-secondary custom-cancel-btn" (click)="closeConfirmModal()">Cancelar</button>
+      <button class="btn btn-primary custom-confirm-btn" (click)="confirmActionHandler()">
+        <i class="fas fa-check me-1"></i> Confirmar
+      </button>
+      <button class="btn btn-secondary custom-cancel-btn" (click)="closeConfirmModal()">
+        <i class="fas fa-times me-1"></i> Cancelar
+      </button>
     </div>
   </div>
 </div>

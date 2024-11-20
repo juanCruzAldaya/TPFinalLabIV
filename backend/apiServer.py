@@ -4,7 +4,7 @@ from typing import Optional
 from decimal import Decimal
 from datetime import date, time, timedelta, datetime
 from typing import Optional, List
-
+from fastapi.responses import JSONResponse
 import mysql.connector
 from jose import  jwt
 from fastapi.middleware.cors import CORSMiddleware
@@ -135,11 +135,31 @@ class Resena(BaseModel):
     calificacion: int = Field(..., ge=1, le=5)
     comentario: Optional[str]
 
+
+class EventoBase(BaseModel):
+    id: Optional[int] = None
+    calendario_id: int
+    fecha: date
+    hora_inicio: time
+    hora_fin: time
+    estado: Optional[str] = "disponible"
+
+
+class CalendarioBase(BaseModel):
+    usuario_id: Optional[int] = None
+    anio: Optional[int] = None
+    mes: Optional[int] = None
+    eventos: Optional[List[EventoBase]] = None
+
+class EventoIDUpdate(BaseModel):
+    evento_id: int
+
 class Calendario(BaseModel):
     id: Optional[int]
     profesional_id: Optional[int]
     anio: Optional[int]
     mes: Optional[int]
+
 
 class Contratacion(BaseModel):
     id: int
@@ -148,10 +168,21 @@ class Contratacion(BaseModel):
     fecha_contratacion: str # Should be a string
     hora_contratacion: str # Should be a string
     calendario_id: int
+    evento_id: Optional[int] = None
     contacto: str  # Should be a string
     domicilio: str  # Should be a string
     estado: str  # Should be a string
     comentarios: str
+
+
+
+class ContractStatusUpdate(BaseModel):
+    id: int
+    estado: str
+
+
+
+
 
 class MetodoDePago(BaseModel):
     id: Optional[int]
@@ -167,12 +198,6 @@ class Direccion(BaseModel):
     codigo_postal: str
 
 
-class EventoBase(BaseModel):
-    calendario_id: int
-    fecha: date
-    hora_inicio: time
-    hora_fin: time
-    estado: Optional[str] = "disponible"
 
 class EventoCreate(EventoBase):
     pass
@@ -185,6 +210,9 @@ class EventoUpdate(BaseModel):
 
 
 
+class DeleteResponse(BaseModel):
+    message: str
+
 
 class EventoResponse(EventoBase):
     id: int
@@ -193,11 +221,10 @@ class EventoResponse(EventoBase):
         orm_mode = True
 
 
-class CalendarioBase(BaseModel):
-    usuario_id: Optional[int] = None
-    anio: Optional[int] = None
-    mes: Optional[int] = None
-    eventos: Optional[List[EventoBase]] = None
+
+class StatusUpdate(BaseModel):
+    estado: str
+
 
 
 class CalendarioCreate(CalendarioBase):
@@ -219,12 +246,6 @@ class AuthResponse(BaseModel):
     userId: int
     email: str
     password: str
-
-class ContractStatusUpdate(BaseModel):
-    id: int
-    estado: str
-class StatusUpdate(BaseModel):
-    estado: str
 
 
 origins = [
@@ -254,7 +275,6 @@ def login(request: LoginRequest):
 
 
     token = jwt.encode({"sub": request.email}, SECRET_KEY, algorithm=ALGORITHM)
-    
 
 
 
@@ -266,28 +286,6 @@ def get_profesional(id: int):
     db = get_db_connection()
     cursor = db.cursor(dictionary=True)
     cursor.execute("SELECT nombre, apellido FROM usuarios WHERE id = %s", (id,))
-    result = cursor.fetchone()
-    cursor.close()
-    db.close()
-    if result is None:
-        raise HTTPException(status_code=404, detail="Profesional no encontrado")
-    return result
-
-@app.delete("/usuarios/{id}")
-def delete_usuarios(id: int):
-    db = get_db_connection()
-    cursor = db.cursor()
-    cursor.execute("DELETE FROM usuarios WHERE id = %s", (id,))
-    db.commit()
-    cursor.close()
-    db.close()
-    return {"message": "usuarios deleted successfully"}
-
-@app.get("/usuariosC/{id}")
-def get_profesional(id: int):
-    db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM usuarios WHERE id = %s", (id,))
     result = cursor.fetchone()
     cursor.close()
     db.close()
@@ -310,15 +308,36 @@ def update_usuario(user_id: int, usuario: Usuario):
             db.close()
     else:
         raise HTTPException(status_code=500, detail="Error al conectar a la base de datos")
-@app.get("/usuarios/ultimo_id")
-def get_lastId():
+    
+@app.get("/usuariosC/{id}")
+def get_profesional(id: int):
     db = get_db_connection()
     cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT id FROM usuarios ORDER BY id DESC LIMIT 1")
+    cursor.execute("SELECT * FROM usuarios WHERE id = %s", (id,))
     result = cursor.fetchone()
     cursor.close()
     db.close()
+    if result is None:
+        raise HTTPException(status_code=404, detail="Profesional no encontrado")
     return result
+
+
+
+
+@app.get("/ultimo_id")
+def get_last_user_id():
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    try:
+        cursor.execute("SELECT id FROM usuarios ORDER BY id DESC LIMIT 1")
+        result = cursor.fetchall()
+        if result:
+            return {"id": result[0]}
+        else:
+            raise HTTPException(status_code=404, detail="No users found")
+    finally:
+        cursor.close()
+        connection.close()
 
 @app.get("/usuarios")
 def get_usuarios():
@@ -365,6 +384,56 @@ def get_calendarByUserId(user_id: int):
         raise HTTPException(status_code=404, detail="Calendar not found")
     
     return {"calendar_id": result["id"]}
+
+
+
+@app.get("/availableSlots/{user_id}/{date}", response_model=List[str])
+def get_available_slots(user_id: int, date: str):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM eventos WHERE calendario_id = (SELECT id FROM calendarios WHERE usuario_id = %s) AND fecha = %s", (user_id, date))
+    events = cursor.fetchall()
+    
+    all_slots = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"]
+    
+    unavailable_slots = []
+    for event in events:
+        hora_inicio = event['hora_inicio']
+        if isinstance(hora_inicio, datetime):
+            hora_inicio = hora_inicio.time()
+        elif isinstance(hora_inicio, timedelta):
+            # Convert timedelta to time
+            hora_inicio = (datetime.min + hora_inicio).time()
+        unavailable_slots.append(hora_inicio.strftime("%H:%M"))
+    
+    available_slots = [slot for slot in all_slots if slot not in unavailable_slots]
+    
+    cursor.close()
+    db.close()
+    
+    return available_slots
+
+@app.get("/available_slots")
+def get_available_slots():
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM eventos")
+    events = cursor.fetchall()
+    cursor.close()
+
+    unavailable_slots = []
+    for event in events:
+        if event['estado'] != 'disponible':
+            hora_inicio = event['hora_inicio']
+            if isinstance(hora_inicio, datetime):
+                hora_inicio = hora_inicio.time()
+            elif isinstance(hora_inicio, timedelta):
+                # Convert timedelta to time
+                hora_inicio = (datetime.min + hora_inicio).time()
+            unavailable_slots.append(hora_inicio.strftime("%H:%M"))
+
+    return unavailable_slots
+
 
 @app.get("/categorias")
 def get_categorias():
@@ -549,22 +618,22 @@ def add_servicio(servicio: Servicio):
     db.close()
     return {"message": "Servicio added successfully"}
 
-@app.get("/resenas/{id}")
+@app.get("/resenas")
 def get_resenas():
     db = get_db_connection()
     cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM resenas where id = servico_id")
+    cursor.execute("SELECT * FROM resenas")
     results = cursor.fetchall()
     cursor.close()
     db.close()
     return results
 
-@app.post("/resenas/")
+@app.post("/resenas")
 def add_resena(resena: Resena):
     db = get_db_connection()
     cursor = db.cursor()
     cursor.execute("""
-        INSERT INTO resenas (servicio_id, cliente_id, calificacion, comentario)
+        INSERT INTO resenas (servicio_id, cliente_id, calificacion, comentario) 
         VALUES (%s, %s, %s, %s)
     """, (resena.servicio_id, resena.cliente_id, resena.calificacion, resena.comentario))
     db.commit()
@@ -583,26 +652,42 @@ def get_contrataciones():
     db.close()
     return results
 
+
+@app.get("/contrataciones_service_id/{id}")
+def get_contrataciones():
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT servicio_id FROM contrataciones where id = %s",(id,))
+    # cursor.execute("SELECT servicio_id FROM contrataciones WHERE id = %s", (contratacion_id,))
+    results = cursor.fetchall()
+    cursor.close()
+    db.close()
+    return results
+
+
+
+
+
 @app.post("/contrataciones")
 def add_contratacion(contratacion: Contratacion):
-    try:
+    try:    
         db = get_db_connection()
         cursor = db.cursor()
         cursor.execute("""
-            INSERT INTO contrataciones (id, cliente_id, servicio_id, fecha_contratacion, calendario_id, contacto, domicilio, estado, comentarios, hora_contratacion) 
-            VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                       
+            INSERT INTO contrataciones (cliente_id, servicio_id, fecha_contratacion, calendario_id, estado, domicilio, contacto, comentarios, hora_contratacion, evento_id) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (
-                contratacion.id,
-                contratacion.cliente_id, 
-                contratacion.servicio_id, 
-                contratacion.fecha_contratacion, 
-                contratacion.calendario_id, 
-                contratacion.contacto, 
-                contratacion.domicilio, 
-                contratacion.estado, 
-                contratacion.comentarios, 
-                contratacion.hora_contratacion))
+            contratacion.cliente_id, 
+            contratacion.servicio_id, 
+            contratacion.fecha_contratacion, 
+            contratacion.calendario_id, 
+            contratacion.estado, 
+            contratacion.domicilio, 
+            contratacion.contacto, 
+            contratacion.comentarios,
+            contratacion.hora_contratacion,
+            contratacion.evento_id
+        ))
         db.commit()
         return {"message": "Contratacion added successfully"}
     except Exception as e:
@@ -611,7 +696,6 @@ def add_contratacion(contratacion: Contratacion):
     finally:
         cursor.close()
         db.close()
-
 
 @app.get("/contrataciones_clientes/{id_usuario}")
 def get_contrataciones(id_usuario: int):
@@ -629,6 +713,9 @@ def get_contrataciones(id_usuario: int):
         cursor.close()
         db.close()
         return {"error": str(err)}
+
+
+
 
 @app.get("/contrataciones_profesionales/{id_usuario}")
 def get_contrataciones(id_usuario: int):
@@ -653,7 +740,7 @@ def get_contrataciones(id_usuario: int):
 @app.put("/contracts_status/{contract_id}")
 def update_contract_status(contract_id: int, status_update: StatusUpdate):
     db = get_db_connection()
-    cursor = db.cursor()
+    cursor = db.cursor()    
     try:
         update_query = """
         UPDATE contrataciones
@@ -670,6 +757,8 @@ def update_contract_status(contract_id: int, status_update: StatusUpdate):
         cursor.close()
         db.close()
         raise HTTPException(status_code=500, detail=str(err))
+
+
 
 
 @app.get("/usuarios/{id}")
@@ -788,21 +877,7 @@ def delete_direccion(direccion_id: int):
     db.close()
     return {"message": "Direccion deleted successfully"}
 
-# @app.post("/calendarios", response_model=CalendarioResponse)
-# async def create_calendario(calendario: CalendarioCreate):
-#     db = get_db_connection()
-#     cursor = db.cursor()
-#     cursor.execute("""INSERT INTO calendarios (usuario_id, anio, mes) VALUES (%s, %s, %s)
-        
-#     """, (calendario.usuario_id, calendario.mes, calendario.anio))
-#     db.commit()
-    
-#     cursor.close()
 
-#     db.close()
-
-#     return {"message": "Calendario created successfully"}
-    
 
 
 @app.get("/calendario")
@@ -860,36 +935,39 @@ def create_evento(evento: EventoCreate):
     db = get_db_connection()
     cursor = db.cursor()
     query = """
-    INSERT INTO eventos (calendario_id, fecha, hora_inicio, hora_fin, estado)
-    VALUES (%s, %s, %s, %s, %s)
+    INSERT INTO eventos (id, calendario_id, fecha, hora_inicio, hora_fin, estado)
+    VALUES (%s, %s, %s, %s, %s, %s)
     """
-    cursor.execute(query, (evento.calendario_id, evento.fecha, evento.hora_inicio, evento.hora_fin, evento.estado))
+    cursor.execute(query, (0, evento.calendario_id, evento.fecha, evento.hora_inicio, evento.hora_fin, evento.estado))
     db.commit()
     evento_id = cursor.lastrowid
     cursor.close()
     return {**evento.model_dump(), "id": evento_id}
 
-def update_evento(evento_id: int, evento: EventoUpdate):
+
+
+
+
+
+
+
+
+@app.put("/update_contracts/{contrato_id}")
+def update_contrato(contrato_id: int, contrato: Contratacion):
     db = get_db_connection()
     cursor = db.cursor()
     query = """
-    UPDATE eventos
-    SET fecha = %s, hora_inicio = %s, hora_fin = %s, estado = %s
+    UPDATE contratos
+    SET cliente_id = %s, servicio_id = %s, fecha_contratacion = %s, calendario_id = %s,
+        estado = %s, domicilio = %s, contacto = %s, estado = %s, comentarios = %s, hora_contratacion = %s
     WHERE id = %s
     """
-    cursor.execute(query, (evento.fecha, evento.hora_inicio, evento.hora_fin, evento.estado, evento_id))
+    cursor.execute(query, (contrato.cliente_id, contrato.cliente_id, contrato.servicio_id, contrato.fecha_contratacion,
+                           contrato.calendario_id,contrato.estado, contrato.domicilio, contrato.contacto, contrato.comentarios, contrato.hora_contratacion, contrato.evento_id, contrato_id))
     db.commit()
     cursor.close()
-    return {**evento.model_dump(), "id": evento_id}
+    return {"message": "Contrato actualizado"}
 
-def delete_evento(evento_id: int):
-    db = get_db_connection()
-    cursor = db.cursor()
-    query = "DELETE FROM eventos WHERE id = %s"
-    cursor.execute(query, (evento_id,))
-    db.commit()
-    cursor.close()
-    return {"id": evento_id}
 
 
 def update_user(user_id: int, usuario: Usuario):
@@ -935,15 +1013,35 @@ def read_calendario(usuario_id: int):
         raise HTTPException(status_code=404, detail="Calendario no encontrado")
     return calendario
 
-
-
-@app.post("/eventos/", response_model=EventoResponse)
-def create_evento(evento: EventoCreate):
+@app.put("/update_contract_event_id/{contrato_id}")
+def update_contract_event_id(contrato_id: int, evento_update: EventoIDUpdate):
     db = get_db_connection()
-    if db:
-        return create_evento(db, evento)
-    else:
-        raise HTTPException(status_code=500, detail="Error al conectar a la base de datos")
+    cursor = db.cursor()
+    query = """
+    UPDATE contrataciones
+    SET evento_id = %s
+    WHERE id = %s
+    """
+    cursor.execute(query, (evento_update.evento_id, contrato_id))
+    db.commit()
+    cursor.close()
+    return {"message": "Evento ID actualizado"}
+
+@app.post("/eventos")
+def create_evento(evento: EventoBase):
+    db = get_db_connection()
+    cursor = db.cursor()
+    query = """
+    INSERT INTO eventos (id, calendario_id, fecha, hora_inicio, hora_fin, estado)
+    VALUES (%s, %s, %s, %s, %s, %s)
+    """
+    cursor.execute(query, (0, evento.calendario_id, evento.fecha, evento.hora_inicio, evento.hora_fin, evento.estado))
+    db.commit()
+    evento_id = cursor.lastrowid
+    cursor.close()
+    return {**evento.dict(), "id": evento_id}
+
+
 
 @app.put("/eventos/{evento_id}", response_model=EventoResponse)
 def update_evento(evento_id: int, evento: EventoUpdate):
@@ -953,25 +1051,22 @@ def update_evento(evento_id: int, evento: EventoUpdate):
     else:
         raise HTTPException(status_code=500, detail="Error al conectar a la base de datos")
 
-@app.delete("/eventos/{evento_id}", response_model=EventoResponse)
+
+@app.delete("/delete_event/{evento_id}", response_model=DeleteResponse)
 def delete_evento(evento_id: int):
     db = get_db_connection()
     if db:
-        return delete_evento(db, evento_id)
+        cursor = db.cursor()
+        query = """
+        DELETE FROM eventos WHERE id = %s;
+        """
+        cursor.execute(query, (evento_id,))
+        db.commit()
+        cursor.close()
+        db.close()
+        return DeleteResponse(message="Event deleted successfully")
     else:
         raise HTTPException(status_code=500, detail="Error al conectar a la base de datos")
-
-
-
-# @app.get("/events", response_model=List[EventoBase])
-# def get_events(profesionalId: int, date: datetime.date):
-#     db = get_db_connection()
-
-#     events = [
-#         {"calendario_id": 1, "fecha": date, "hora_inicio": "09:00:00", "hora_fin": "10:00:00", "estado": "reservado"},
-#         {"calendario_id": 1, "fecha": date, "hora_inicio": "11:00:00", "hora_fin": "12:00:00", "estado": "reservado"}
-#     ]
-#     return events
 
 
 if __name__ == "__main__":

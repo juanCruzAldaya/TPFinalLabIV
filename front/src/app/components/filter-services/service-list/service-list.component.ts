@@ -29,6 +29,7 @@ export class ServiceListComponent implements OnInit {
   pageSize = 10;
   currentPage = 1;
   availableSlots: string[] = [];
+  unavailableSlots: string[] = [];
   selectedDate: string | null = null;
   selectedService: any;
   profesional_id: string | null = null;
@@ -148,12 +149,17 @@ export class ServiceListComponent implements OnInit {
     );
   }
 
-  handleDayClick(event: { day: CalendarMonthViewDay<any>, date: string }) {
-    this.selectedDate = event.date;
+  handleDayClick(event: { day: CalendarMonthViewDay, date: string }) {
+    this.selectedDate = event.date.toString().split('T')[0];
+    console.log(this.selectedDate);
+    
+    this.sharedService.setSelectedDate(this.selectedDate)
+    console.log(this.sharedService.getSelectedDate())
     this.showCalendar = false;
     this.calendarService.getAvailableSlots(parseInt(this.profesional_id!), this.selectedDate).subscribe(
       (availableSlots: string[]) => {
         this.availableSlots = availableSlots;
+        this.unavailableSlots = this.getUnavailableSlots(availableSlots);
       },
       (error: any) => {
         console.error('Error fetching available slots', error);
@@ -161,17 +167,26 @@ export class ServiceListComponent implements OnInit {
     );
   }
   
+  getUnavailableSlots(availableSlots: string[]): string[] {
+    const allSlots = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
+    return allSlots.filter(slot => !availableSlots.includes(slot));
+  }
+  
+
   hireService(service: any) {
-    
+
     console.log('Contratando servicio:', service);
   }
+
+
+
 closeCalendarModal() {
   this.isCalendarModalOpen = false;
 }
 
 
 onDayClicked(date: string) {
-  console.log('Día seleccionado:', date);
+  console.log('Día seleccionado: + asdasas', date);
   // Aquí puedes llamar a un servicio para obtener los horarios disponibles para el día seleccionado
   this.calendarService.getAvailableSlots(this.selectedService.profesional_id, date).subscribe(
     (slots: any[]) => {

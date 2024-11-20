@@ -4,6 +4,8 @@ import { IReseña } from "../../interfaces/resenia.interface";
 import { FormBuilder, FormGroup, FormsModule, Validators } from "@angular/forms";
 import { AuthService } from "../../services/auth.service";
 import { SharedService } from "../../services/shared.service";
+import { ContractsService } from "../../services/contracts.service";
+// import {}
 
 @Component({
   selector: "app-resenia",
@@ -18,9 +20,10 @@ export class ReseñasComponent implements OnInit {
     private reseñasService: ReseñasService,
     private fb: FormBuilder,
     private auth :AuthService,
-    private shared :SharedService
+    private shared :SharedService,
+    private contractsService: ContractsService,
   ) {
-    console.log("servicio id: "+shared.getServiceId)
+    console.log("servicio id: "+shared.getServiceId())
     this.reviewForm = this.fb.group({
       usuario_id: [auth.getUserId, Validators.required], 
       // servicio_id: [shared.getServiceId, Validators.required], 
@@ -32,6 +35,7 @@ export class ReseñasComponent implements OnInit {
 
   ngOnInit(): void {
     this.getReviews();
+    
   }
 
   // Método para enviar una nueva reseña
@@ -50,9 +54,8 @@ export class ReseñasComponent implements OnInit {
 
   
   getReviews(): void {
-    // const servicioId = this.shared.getServiceId(); 
-    const servicioId = 48; 
-    this.reseñasService.getReviews(servicioId).subscribe((data: IReseña[]) => {
+    const services_id =this.shared.getServiceId();
+    this.reseñasService.getReviews(services_id).subscribe((data: IReseña[]) => {
       this.resenias = data;
     });
   }

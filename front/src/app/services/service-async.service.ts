@@ -52,16 +52,9 @@ export class ServicesService {
       .toPromise();
   }
 
-  editService(
-    id: string,
-    profesionalId: string,
-    service: IService
-  ): Promise<any> {
+  editService(service: IService): Promise<any> {
     return this.http
-      .put(
-        `${environment.LOCAL_API_URL}/editar-servicio/${id}/${profesionalId}`,
-        service
-      )
+      .put(`${environment.LOCAL_API_URL}/editar-servicio`, service)
       .toPromise();
   }
 }

@@ -192,8 +192,8 @@ export class AddServiceComponent implements OnInit {
     this.loadSubCategoryList(category.id);
   }
 
-  showSuccess() {
-    this.toastr.success("Se creo el servicio exitosamente!");
+  showSuccess(msg: string) {
+    this.toastr.success(msg);
   }
   showError() {
     this.toastr.error("Algo salio mal");
@@ -236,17 +236,28 @@ export class AddServiceComponent implements OnInit {
     service.locality = locality.nombre;
     service.profesionalId = parseInt(profesionalId); //aca necesito traerme el id del usuario actual
 
-    this.servicesService
-      .addService(service)
-      .then(() => {
-        // Si la solicitud fue exitosa, muestra el mensaje de éxito
-        this.showSuccess();
-      })
-      .catch((error) => {
-        // Si ocurre un error, muestra el mensaje de error
-        this.showError();
-        console.log(error);
-      });
+    if (this.serviceId) {
+      this.service.id = parseInt(this.serviceId);
+      this.servicesService
+        .editService(service)
+        .then(() => this.showSuccess("Se edito el servicio exitosamente"))
+        .catch((error) => {
+          this.showError();
+          console.log(error);
+        });
+    } else {
+      this.servicesService
+        .addService(service)
+        .then(() => {
+          // Si la solicitud fue exitosa, muestra el mensaje de éxito
+          this.showSuccess("Se creo el servicio exitosamente!");
+        })
+        .catch((error) => {
+          // Si ocurre un error, muestra el mensaje de error
+          this.showError();
+          console.log(error);
+        });
+    }
 
     this.resourceForm.reset();
   }

@@ -15,21 +15,22 @@ import { ContractsService } from "../../services/contracts.service";
 export class ReseñasComponent implements OnInit {
   resenias: IReseña[] = [];
   reviewForm: FormGroup;
-
+  
   constructor(
     private reseñasService: ReseñasService,
     private fb: FormBuilder,
     private auth :AuthService,
     private shared :SharedService,
     private contractsService: ContractsService,
+    
   ) {
-    console.log("servicio id: "+shared.getServiceId())
+    const service_id = shared.getServiceId()
+    console.log(service_id)
     this.reviewForm = this.fb.group({
-      usuario_id: [auth.getUserId, Validators.required], 
-      // servicio_id: [shared.getServiceId, Validators.required], 
-      servicio_id: [48, Validators.required], 
+      cliente_id: [parseInt(auth.getUserId()), Validators.required], 
+      servicio_id: [service_id, Validators.required], 
       calificacion: [5, [Validators.required, Validators.min(1), Validators.max(5)]],
-      comentario: ["", [Validators.required, Validators.minLength(10)]],
+      comentario: ['', [Validators.required]], //Validators.minLength(10)
     });
   }
 
@@ -41,8 +42,19 @@ export class ReseñasComponent implements OnInit {
   // Método para enviar una nueva reseña
   submitReview(): void {
     if (this.reviewForm.valid) {
-      const review: IReseña = this.reviewForm.value;
-      this.reseñasService.submitReview(review).subscribe(() => {
+      
+      
+      const reviewData: IReseña = {
+        calificacion: this.reviewForm.value.calificacion,
+        comentario: this.reviewForm.value.comentario,
+        fecha: new Date().toISOString().split('T')[0], // This will give you "2024-11-20",
+        id: 0,
+        servicio_id: this.reviewForm.value.servicio_id,
+        cliente_id: this.reviewForm.value.cliente_id,     
+        };
+      
+
+      this.reseñasService.submitReview(reviewData).subscribe(() => {
         alert("Reseña enviada correctamente");
         this.getReviews(); 
         this.reviewForm.reset({ calificacion: 5, comentario: "" }); 

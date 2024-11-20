@@ -23,7 +23,7 @@ def get_db_connection():
     db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="1234",
+    password="root",
     database="laburappdb")
     
     return db
@@ -134,6 +134,7 @@ class Resena(BaseModel):
     cliente_id: int
     calificacion: int = Field(..., ge=1, le=5)
     comentario: Optional[str]
+    fecha: Optional[date] = None
 
 
 class EventoBase(BaseModel):
@@ -633,9 +634,9 @@ def add_resena(resena: Resena):
     db = get_db_connection()
     cursor = db.cursor()
     cursor.execute("""
-        INSERT INTO resenas (servicio_id, cliente_id, calificacion, comentario) 
-        VALUES (%s, %s, %s, %s)
-    """, (resena.servicio_id, resena.cliente_id, resena.calificacion, resena.comentario))
+        INSERT INTO resenas (id, servicio_id, cliente_id, calificacion, comentario, fecha) 
+        VALUES (%s, %s, %s, %s, %s, %s)
+    """, (0, resena.servicio_id, resena.cliente_id, resena.calificacion, resena.comentario, resena.fecha))
     db.commit()
     cursor.close()
     db.close()
@@ -654,11 +655,12 @@ def get_contrataciones():
 
 
 @app.get("/contrataciones_service_id/{id}")
-def get_contrataciones():
+def get_contrataciones(id: int):
     db = get_db_connection()
     cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT servicio_id FROM contrataciones where id = %s",(id,))
-    # cursor.execute("SELECT servicio_id FROM contrataciones WHERE id = %s", (contratacion_id,))
+    print(type(id))
+    cursor.execute("SELECT servicio_id FROM contrataciones where id = %s" ,(id,))
+
     results = cursor.fetchall()
     cursor.close()
     db.close()

@@ -16,6 +16,14 @@ export class ReseñasService {
   submitReview(review: IReseña) {
     return this.http.post<IReseña>(`${this.Url}`, review);
   }
+  /*
+  export interface IReseña {
+    usuario_id: number;
+    servicio_id: number;
+    calificacion: number;
+    comentario: string;
+    fecha?: Date;
+  }*/
 
   // Obtener reseñas de un servicio
   getReviews(servicioId: number) {

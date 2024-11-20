@@ -38,10 +38,12 @@ export class ProfileComponent implements OnInit {
 
   resenias: IReseña[] = [];
   nuevaResenia: IReseña = {
-    usuario_id: 0,
+    id: 0,
+    cliente_id: 0,
     servicio_id: 0,
     calificacion: 5,
     comentario: "",
+    fecha: '',
   };
   
   constructor(private authService: AuthService, private router: Router,private servis: CompletingUsersService,private reseñasService: ReseñasService) {

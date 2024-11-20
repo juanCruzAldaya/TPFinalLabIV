@@ -23,7 +23,7 @@ def get_db_connection():
     db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="1234",
+    password="root",
     database="laburappdb")
     
     return db

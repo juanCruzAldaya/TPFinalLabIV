@@ -624,6 +624,55 @@ def add_servicio(servicio: Servicio):
     return {"message": "Servicio agregado exitosamente", "servicio_id": new_id}
 
 
+@app.put("/editar-servicio")
+def update_service(servicio: Servicio):
+    db = get_db_connection()
+    cursor = db.cursor()
+    print('servicio.id, %s',servicio.id)
+    try:
+        update_query = """
+        UPDATE servicios
+        SET 
+            description = %s,
+            mainCategory = %s,
+            secondaryCategory = %s,
+            state = %s,
+            department = %s,
+            locality = %s,
+        WHERE id = %s AND profesionalId = %s
+        """
+        cursor.execute(
+            update_query, 
+            (
+                servicio.mainCategory, 
+                servicio.secondaryCategory, 
+                servicio.description, 
+                servicio.state, 
+                servicio.department, 
+                servicio.locality, 
+                servicio.id, 
+                servicio.profesionalId
+            )
+        )
+        db.commit()
+
+        if cursor.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Service not found or no updates were applied.")
+
+    except Exception as e:
+        db.rollback()
+        # Log the full error for debugging
+        print(f"Error updating service: {e}")  # Replace with proper logging
+        raise HTTPException(status_code=500, detail=f"Error updating service: {e}")
+
+    finally:
+        cursor.close()
+        db.close()
+    
+    return {"message": "Service updated successfully"}
+
+
+
 
 @app.get("/resenas{id}")
 def get_resenas():

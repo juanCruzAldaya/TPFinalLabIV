@@ -169,3 +169,98 @@
   background-color: #5a6268;
   border-color: #545b62;
 }
+
+
+.section-title {
+  color: #1a73e8;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #e8f0fe;
+}
+
+.contracts-section {
+  background-color: #f8f9fa;
+  padding: 2rem;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.contract-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: none;
+  margin-bottom: 1.5rem;
+}
+
+.contract-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.card-title {
+  color: #1a73e8;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.card-text {
+  color: #5f6368;
+  margin-bottom: 0.5rem;
+}
+
+.button-container {
+  margin-top: 1.2rem;
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.custom-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.status-pending {
+  border-left: 4px solid #ffa000;
+}
+
+.status-accepted {
+  border-left: 4px solid #00c853;
+}
+
+.status-canceled {
+  border-left: 4px solid #d32f2f;
+}
+
+.view-selector {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  margin-bottom: 2rem;
+}
+
+.form-select {
+  border: 2px solid #e8f0fe;
+  padding: 0.8rem;
+  border-radius: 6px;
+  color: #1a73e8;
+  font-weight: 500;
+}
+
+.form-select:focus {
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+}

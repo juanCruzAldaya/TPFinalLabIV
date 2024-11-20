@@ -18,10 +18,10 @@ export class BookingFormComponent implements OnInit {
   bookingForm: FormGroup;
   selectedSlot: string = '';
   selectedDate: string = '';
-  userId: number = 0; // ID del usuario
+  userId: number = 0; 
   serviceId: number = 0;
   calendarId: number = 0;
-  profesionalId: number = 0; // ID del profesional
+  profesionalId: number = 0; 
 
   constructor(private fb: FormBuilder, 
     private route: ActivatedRoute, 
@@ -52,15 +52,15 @@ export class BookingFormComponent implements OnInit {
     }).catch(error => {
         console.error('Error fetching profesionalId:', error);
     });
-    
+    this.selectedDate = this.sharedService.getSelectedDate();
     this.route.queryParams.subscribe(params => {
-      this.selectedSlot = params['slot'];
-      this.selectedDate = params['date'];
+      this.selectedSlot = params['slot']; 
+      
       
 
       this.bookingForm.patchValue({
-        date: this.selectedDate,
-        slot: this.selectedSlot
+        slot: this.selectedSlot,
+        date: this.selectedDate
       });
     });
 
@@ -74,15 +74,17 @@ export class BookingFormComponent implements OnInit {
 
       this.serviceId = this.sharedService.getServiceId();
       this.sharedService.getProfesionalByServiceId(this.serviceId).then(objectProfesionalId => {
-  
+      
 
       this.profesionalId = objectProfesionalId.profesionalId;
       
-      this.calendarService.getCalendarByUserId(this.profesionalId).subscribe( //PASARLE PROFESIONAL ID EN VEZ DE EL ID DEL
+      this.calendarService.getCalendarByUserId(this.profesionalId).subscribe( 
         calendar_Id => {
+
           let parsedResponse = JSON.stringify(calendar_Id);
           let parsedJson = JSON.parse(parsedResponse);
           this.calendarId = parsedJson['calendar_id'];
+          this.sharedService.setCalendarId(this.calendarId);
 
       });
 
@@ -102,13 +104,13 @@ export class BookingFormComponent implements OnInit {
             fecha_contratacion: this.selectedDate,
             hora_contratacion: this.selectedSlot,
             calendario_id: this.calendarId,
+            evento_id: 0,
             contacto: this.bookingForm.value.contact,
             domicilio: this.bookingForm.value.address,
             estado: 'pendiente',
             comentarios: this.bookingForm.value.comments
         };
-
-        console.log(bookingData);
+        console.log('Reserva:', bookingData);
 
         this.bookService.addBooking(bookingData).subscribe(
             response => {

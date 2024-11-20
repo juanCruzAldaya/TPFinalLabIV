@@ -9,7 +9,7 @@ export interface IEvento {
 
 export interface ICalendario {
   id: number;
-  usuario_id: number;
+  usuario_id: any;
   anio: any;
   mes: any;
   eventos?: IEvento[] | null;

@@ -1,12 +1,14 @@
 <div *ngIf="availableSlots.length > 0">
-    <h3>Seleccione un horario disponible:</h3>
-    <ul>
-      <li *ngFor="let slot of availableSlots" (click)="selectSlot(slot)">
-        {{ slot }}
-      </li>
-    </ul>
+  <p>Seleccione un horario disponible:</p>
+  <div *ngFor="let slot of availableSlots">
+    <button 
+      [disabled]="!isSlotAvailable(slot)" 
+      (click)="selectSlot(slot)"
+      [ngClass]="{'unavailable': !isSlotAvailable(slot)}">
+      {{ slot }}
+    </button>
   </div>
-  <div *ngIf="availableSlots.length === 0">
-    <p>No hay horarios disponibles para la fecha seleccionada.</p>
-  </div>
-  
+</div>
+<div *ngIf="availableSlots.length === 0">
+  <p>No hay horarios disponibles para la fecha seleccionada.</p>
+</div>

@@ -104,13 +104,13 @@ export class BookingFormComponent implements OnInit {
             fecha_contratacion: this.selectedDate,
             hora_contratacion: this.selectedSlot,
             calendario_id: this.calendarId,
+            evento_id: 0,
             contacto: this.bookingForm.value.contact,
             domicilio: this.bookingForm.value.address,
             estado: 'pendiente',
             comentarios: this.bookingForm.value.comments
         };
-
-        console.log(bookingData);
+        console.log('Reserva:', bookingData);
 
         this.bookService.addBooking(bookingData).subscribe(
             response => {

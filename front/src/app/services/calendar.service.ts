@@ -38,8 +38,8 @@ export class CalendarService {
     return this.http.post<IEvento>(environment.LOCAL_API_URL + "/eventos", evento);
   }
 
-  updateEvent(event: CalendarEvent): Observable<CalendarEvent> {
-    return this.http.put<CalendarEvent>(environment.LOCAL_API_URL + `/eventos/${event.id}`, event);
+  updateEvent(eventoId: number, evento: Partial<IEvento>): Observable<IEvento> {
+    return this.http.put<IEvento>(`${environment.LOCAL_API_URL}/${eventoId}`, evento);
   }
 
   deleteEvent(eventId: number): Observable<void> {

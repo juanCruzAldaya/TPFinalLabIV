@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ContractsService } from '../../services/contracts.service';
-import { IContract } from '../../interfaces/IContracts.interface';
+import { IBackendContract, IContract } from '../../interfaces/IContracts.interface';
 import { AuthService } from '../../services/auth.services';
 import { CalendarService } from '../../services/calendar.service';
 import {IEvento} from '../../interfaces/IEvent.interface'
 import { SharedService } from '../../services/shared.service';
-
+import { from } from 'rxjs';
 
 @Component({
   selector: 'app-contracts',
@@ -23,8 +23,12 @@ export class ContractsComponent implements OnInit {
   confirmAction: string = '';
   contractToConfirm: IContract | null = null;
   isConfirmModalOpen = false;
+  todayContracts: IContract[] = [];
+  futureContracts: IContract[] = [];
+  archivedContracts: IContract[] = [];
 
-  constructor(private contractService: ContractsService, 
+  constructor(
+    private contractService: ContractsService, 
     private authService: AuthService, 
     private calendarService: CalendarService, 
     private sharedService: SharedService) {
@@ -38,33 +42,35 @@ export class ContractsComponent implements OnInit {
 
 
 
-
-
-
-
   loadContracts(): void {
     if (this.isProfessionalView) {
-      this.contractService.get_contrataciones_profesionales().subscribe({
-        next: (data: any) => {
-          this.contracts = data;
-        },
-        error: (err) => console.error('Error fetching contracts:', err)
-      });
+        this.contractService.get_contrataciones_profesionales().subscribe({
+            next: (data: IContract[]) => {
+                this.processContracts(data); // Procesar contratos
+            },
+            error: (err) => console.error('Error fetching contracts:', err)
+        });
     } else {
-      this.contractService.get_contrataciones_clientes().subscribe({
-        next: (data: any) => {
-          this.contracts = data;
-        },
-        error: (err) => console.error('Error fetching contracts:', err)
-      });
+        this.contractService.get_contrataciones_clientes().subscribe({
+            next: (data: IContract[]) => {
+                this.processContracts(data); // Procesar contratos
+            },
+            error: (err) => console.error('Error fetching contracts:', err)
+        });
     }
-  }
-  processContracts(contracts: IContract[]): void {
-    contracts.forEach(contract => {
-      console.log('Processing contract:', contract);
-      // Aquí puedes agregar la lógica que necesites para procesar cada contrato
-    });
-  }
+}
+
+sortContractsByDate(contracts: IContract[]): IContract[] {
+    return contracts.sort((a, b) => new Date(a.fecha_contratacion).getTime() - new Date(b.fecha_contratacion).getTime());
+}
+
+
+processContracts(contracts: IContract[]): void {
+  const today = new Date().toISOString().split('T')[0];
+  this.todayContracts = contracts.filter(contract => contract.fecha_contratacion === today);
+  this.futureContracts = contracts.filter(contract => contract.fecha_contratacion > today);
+  this.archivedContracts = contracts.filter(contract => contract.fecha_contratacion < today);
+}
   getStatusClass(status: string): string {
     switch (status.toLowerCase()) {
       case 'pendiente':
@@ -84,8 +90,8 @@ export class ContractsComponent implements OnInit {
 
   onContractTypeChange(event: any): void {
     this.isProfessionalView = event.target.value === 'profesional';
-    this.loadContracts();
-  }
+    this.loadContracts(); // Recargar contratos
+}
 
   openBasicDetails(contract: any) {
     this.selectedContract = contract;
@@ -108,7 +114,15 @@ export class ContractsComponent implements OnInit {
       return true; 
     });
   }
+  getTodayContracts(): IContract[] {
+    const today = new Date().toISOString().split('T')[0];
+    return this.contracts.filter(contract => contract.fecha_contratacion === today);
+}
 
+  getFutureContracts(): IContract[] {
+      const today = new Date().toISOString().split('T')[0];
+      return this.contracts.filter(contract => contract.fecha_contratacion > today);
+  }
 
   closeProfessionalModal() {
     this.isProfessionalModalOpen = false;
@@ -120,25 +134,33 @@ export class ContractsComponent implements OnInit {
         if (contract) {
           contract.estado = 'aceptado';
           const evento: IEvento = {
-            id: 0, 
+            id: 0,
             calendario_id: this.sharedService.getCalendarId(),
-            fecha: contract.fecha_contratacion, 
-            hora_inicio: contract.hora_contratacion, 
-            hora_fin: this.calculateEndTime(contract.hora_contratacion, 3), 
+            fecha: contract.fecha_contratacion,
+            hora_inicio: contract.hora_contratacion,
+            hora_fin: this.calculateEndTime(contract.hora_contratacion, 3),
             estado: 'reservado'
           };
           this.calendarService.createEvent(evento).subscribe({
             next: (response) => {
               console.log('Evento creado con éxito', response);
+              contract.evento_id = response.id;  // Asignar el evento_id al contrato
+  
+              // Actualizar solo el evento_id del contrato
+              this.contractService.updateContractEventId(contract.id, response.id).subscribe({
+                next: () => {
+                  console.log('Contract updated with event ID successfully');
+                },
+                error: (err) => {
+                  console.error('Error updating contract with event ID:', err);
+                }
+              });
             },
             error: (err) => {
               console.error('Error al crear el evento:', err);
             }
           });
-
-          
         }
-        
         console.log('Contract accepted successfully');
       },
       error: (err) => {
@@ -201,7 +223,15 @@ export class ContractsComponent implements OnInit {
       if (this.selectedContract.estado != 'cancelado'){
         this.contractService.updateContractStatus(this.selectedContract.id, 'cancelado').subscribe({
           next: () => {
-            this.selectedContract!.estado = 'cancelado';
+            this.contractService.deleteEventId(this.selectedContract!.evento_id).subscribe({
+              next: () => {
+                  console.log('Event deleted successfully');
+              },
+              error: (err) => {
+                  console.error('Error deleting event:', err);
+              }
+          });
+            
             console.log('Service canceled successfully');
           },
           error: (err) => {
@@ -211,6 +241,17 @@ export class ContractsComponent implements OnInit {
       }
 
     }
+  }
+  updateEventStatus(eventoId: number, estado: string): void {
+    const eventoUpdate = { estado: estado };
+    this.calendarService.updateEvent(eventoId, eventoUpdate).subscribe({
+      next: () => {
+        console.log('Event status updated successfully');
+      },
+      error: (err) => {
+        console.error('Error updating event status:', err);
+      }
+    });
   }
   addReview(): void {
     // Logic to open a review form or modal

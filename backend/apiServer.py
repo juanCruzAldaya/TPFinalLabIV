@@ -150,6 +150,10 @@ class CalendarioBase(BaseModel):
     anio: Optional[int] = None
     mes: Optional[int] = None
     eventos: Optional[List[EventoBase]] = None
+
+class EventoIDUpdate(BaseModel):
+    evento_id: int
+
 class Calendario(BaseModel):
     id: Optional[int]
     profesional_id: Optional[int]
@@ -164,6 +168,7 @@ class Contratacion(BaseModel):
     fecha_contratacion: str # Should be a string
     hora_contratacion: str # Should be a string
     calendario_id: int
+    evento_id: Optional[int] = None
     contacto: str  # Should be a string
     domicilio: str  # Should be a string
     estado: str  # Should be a string
@@ -204,6 +209,9 @@ class EventoUpdate(BaseModel):
     estado: Optional[str]
 
 
+
+class DeleteResponse(BaseModel):
+    message: str
 
 
 class EventoResponse(EventoBase):
@@ -642,20 +650,20 @@ def add_contratacion(contratacion: Contratacion):
         db = get_db_connection()
         cursor = db.cursor()
         cursor.execute("""
-            INSERT INTO contrataciones (id, cliente_id, servicio_id, fecha_contratacion, calendario_id, contacto, domicilio, estado, comentarios, hora_contratacion) 
-            VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                       
+            INSERT INTO contrataciones (cliente_id, servicio_id, fecha_contratacion, calendario_id, estado, domicilio, contacto, comentarios, hora_contratacion, evento_id) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         """, (
-                contratacion.id,
-                contratacion.cliente_id, 
-                contratacion.servicio_id, 
-                contratacion.fecha_contratacion, 
-                contratacion.calendario_id, 
-                contratacion.contacto, 
-                contratacion.domicilio, 
-                contratacion.estado, 
-                contratacion.comentarios, 
-                contratacion.hora_contratacion))
+            contratacion.cliente_id, 
+            contratacion.servicio_id, 
+            contratacion.fecha_contratacion, 
+            contratacion.calendario_id, 
+            contratacion.estado, 
+            contratacion.domicilio, 
+            contratacion.contacto, 
+            contratacion.comentarios,
+            contratacion.hora_contratacion,
+            contratacion.evento_id
+        ))
         db.commit()
         return {"message": "Contratacion added successfully"}
     except Exception as e:
@@ -708,7 +716,7 @@ def get_contrataciones(id_usuario: int):
 @app.put("/contracts_status/{contract_id}")
 def update_contract_status(contract_id: int, status_update: StatusUpdate):
     db = get_db_connection()
-    cursor = db.cursor()
+    cursor = db.cursor()    
     try:
         update_query = """
         UPDATE contrataciones
@@ -912,27 +920,30 @@ def create_evento(evento: EventoCreate):
     cursor.close()
     return {**evento.model_dump(), "id": evento_id}
 
-def update_evento(evento_id: int, evento: EventoUpdate):
+
+
+
+
+
+
+
+
+@app.put("/update_contracts/{contrato_id}")
+def update_contrato(contrato_id: int, contrato: Contratacion):
     db = get_db_connection()
     cursor = db.cursor()
     query = """
-    UPDATE eventos
-    SET fecha = %s, hora_inicio = %s, hora_fin = %s, estado = %s
+    UPDATE contratos
+    SET cliente_id = %s, servicio_id = %s, fecha_contratacion = %s, calendario_id = %s,
+        estado = %s, domicilio = %s, contacto = %s, estado = %s, comentarios = %s, hora_contratacion = %s
     WHERE id = %s
     """
-    cursor.execute(query, (evento.fecha, evento.hora_inicio, evento.hora_fin, evento.estado, evento_id))
+    cursor.execute(query, (contrato.cliente_id, contrato.cliente_id, contrato.servicio_id, contrato.fecha_contratacion,
+                           contrato.calendario_id,contrato.estado, contrato.domicilio, contrato.contacto, contrato.comentarios, contrato.hora_contratacion, contrato.evento_id, contrato_id))
     db.commit()
     cursor.close()
-    return {**evento.model_dump(), "id": evento_id}
+    return {"message": "Contrato actualizado"}
 
-def delete_evento(evento_id: int):
-    db = get_db_connection()
-    cursor = db.cursor()
-    query = "DELETE FROM eventos WHERE id = %s"
-    cursor.execute(query, (evento_id,))
-    db.commit()
-    cursor.close()
-    return {"id": evento_id}
 
 
 def update_user(user_id: int, usuario: Usuario):
@@ -978,7 +989,19 @@ def read_calendario(usuario_id: int):
         raise HTTPException(status_code=404, detail="Calendario no encontrado")
     return calendario
 
-
+@app.put("/update_contract_event_id/{contrato_id}")
+def update_contract_event_id(contrato_id: int, evento_update: EventoIDUpdate):
+    db = get_db_connection()
+    cursor = db.cursor()
+    query = """
+    UPDATE contrataciones
+    SET evento_id = %s
+    WHERE id = %s
+    """
+    cursor.execute(query, (evento_update.evento_id, contrato_id))
+    db.commit()
+    cursor.close()
+    return {"message": "Evento ID actualizado"}
 
 @app.post("/eventos")
 def create_evento(evento: EventoBase):
@@ -1004,14 +1027,22 @@ def update_evento(evento_id: int, evento: EventoUpdate):
     else:
         raise HTTPException(status_code=500, detail="Error al conectar a la base de datos")
 
-@app.delete("/eventos/{evento_id}", response_model=EventoResponse)
+
+@app.delete("/delete_event/{evento_id}", response_model=DeleteResponse)
 def delete_evento(evento_id: int):
     db = get_db_connection()
     if db:
-        return delete_evento(db, evento_id)
+        cursor = db.cursor()
+        query = """
+        DELETE FROM eventos WHERE id = %s;
+        """
+        cursor.execute(query, (evento_id,))
+        db.commit()
+        cursor.close()
+        db.close()
+        return DeleteResponse(message="Event deleted successfully")
     else:
         raise HTTPException(status_code=500, detail="Error al conectar a la base de datos")
-
 
 
 if __name__ == "__main__":

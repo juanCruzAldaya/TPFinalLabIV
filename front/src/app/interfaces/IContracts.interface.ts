@@ -9,6 +9,10 @@ export interface IContract {
     servicio_nombre: string;
     profesional_apellido: string;
     profesional_nombre: string;
+    evento_id: number;
+    cliente_id: number;
+    cliente_nombre: string;
+    cliente_apellido: string;
 
   }
 
@@ -19,6 +23,7 @@ export interface IContract {
     fecha_contratacion: string;
     hora_contratacion: string;
     calendario_id: number;
+    evento_id: number;
     contacto: string;
     domicilio: string;
     estado: string;

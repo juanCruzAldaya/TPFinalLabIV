@@ -49,11 +49,11 @@ export class ReseñasComponent implements OnInit {
         comentario: this.reviewForm.value.comentario,
         fecha: new Date().toISOString().split('T')[0], // This will give you "2024-11-20",
         id: 0,
-        servicio_id: this.reviewForm.value.servicio_id,
+        servicio_id: this.shared.getServiceId(),
         cliente_id: this.reviewForm.value.cliente_id,     
         };
       
-
+      console.log(reviewData);
       this.reseñasService.submitReview(reviewData).subscribe(() => {
         alert("Reseña enviada correctamente");
         this.getReviews(); 
@@ -75,3 +75,5 @@ export class ReseñasComponent implements OnInit {
     this.reviewForm.patchValue({ calificacion });
   }
 }
+
+

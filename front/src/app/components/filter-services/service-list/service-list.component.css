@@ -1,4 +1,4 @@
-/* styles.css */
+styles.css
 body {
     background-color: #f4f6f9;
     font-family: 'Roboto', sans-serif;
@@ -283,3 +283,131 @@ h4{
     
 
 
+
+.services-container {
+  background-color: #f4f7f6;
+  padding: 2rem 0;
+}
+
+.services-grid {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+.service-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  background-color: white;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.service-card-header {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.service-title {
+  margin: 0;
+  color: #333;
+  font-weight: 600;
+}
+
+.service-category {
+  background-color: #007bff;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.service-card-body {
+  padding: 1rem;
+}
+
+.service-info {
+  margin-bottom: 1rem;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.info-item i {
+  margin-right: 0.5rem;
+  color: #007bff;
+}
+
+.service-rating {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.rating-stars {
+  margin-right: 0.5rem;
+}
+
+.rating-stars i {
+  color: #ddd;
+  margin-right: 2px;
+}
+
+.rating-stars i.filled-star {
+  color: #ffc107;
+}
+
+.service-actions {
+  text-align: center;
+}
+
+/* Modal Styles */
+.modal {
+  background-color: rgba(0,0,0,0.5);
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+.modal.show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-dialog {
+  max-width: 500px;
+  width: 100%;
+}
+
+.modal-content {
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.service-details .detail-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.service-details .detail-item i {
+  margin-right: 0.75rem;
+  color: #007bff;
+}

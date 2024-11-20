@@ -52,7 +52,10 @@ export class ServiceListComponent implements OnInit {
     this.isModalOpen = true;
  
   }
-
+  
+  getStarArray(rating: number): number[] {
+    return Array(rating).fill(0).map((x, i) => i);
+  }
   closeModal() {
     this.isModalOpen = false;
   }
@@ -76,7 +79,8 @@ export class ServiceListComponent implements OnInit {
                 service,
                 category_name: categoria.nombre,
                 subCategory_name: '',
-                profesional_name: ''
+                profesional_name: '',
+                calificacion: 0
             };
             this.filterService.getSubCategoria(service.secondaryCategory).subscribe(subCategoria => {
                 serviceCard.subCategory_name = subCategoria.nombre;

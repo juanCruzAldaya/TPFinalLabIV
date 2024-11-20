@@ -4,6 +4,7 @@ export interface IContract {
     hora_contratacion: string; // Usamos string para las fechas y horas, ya que vienen como strings del backend
     contacto: string;
     domicilio: string;
+    servicio_id: number,
     estado: string;
     comentarios: string;
     servicio_nombre: string;

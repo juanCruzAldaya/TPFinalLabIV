@@ -25,7 +25,6 @@ def get_db_connection():
     user="root",
     password="root",
     database="laburappdb")
-    
     return db
 
 
@@ -80,7 +79,7 @@ def get_user_credentials(email):
     cursor = db.cursor(dictionary=True)
     
     query = "SELECT * FROM usuarios WHERE email = %s"
-    result = cursor.execute(query, (email,))  # Asegúrate de que 'email' está en una tupla
+    cursor.execute(query, (email,))  # Asegúrate de que 'email' está en una tupla
     user = cursor.fetchone()
     cursor.close()
     db.close()
@@ -327,24 +326,45 @@ def get_usuarios():
     db.close()
     return results
 
+
 @app.post("/usuarios")
 def add_usuario(usuario: Usuario):
-    
     db = get_db_connection()
     if db:
         db.get_server_info()
         cursor = db.cursor()
+        
+        # Verificar si el email ya existe
+        cursor.execute("SELECT COUNT(*) FROM usuarios WHERE email = %s", (usuario.email,))
+        if cursor.fetchone()[0] > 0:
+            cursor.close()
+            db.close()
+            return {"error": "El correo ya está registrado"}, 400  # Error 400: solicitud inválida
+        
+        # Insertar el nuevo usuario
         hashed_password = pwd_context.hash(usuario.password)
-
         cursor.execute("""
-            INSERT INTO usuarios (email, password) 
-            VALUES (%s, %s)
-        """, (usuario.email, hashed_password))
+            INSERT INTO usuarios (email, password, nombre, apellido, contacto, ciudad, nacimiento, calificacion_promedio)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """, (
+            usuario.email,
+            hashed_password,
+            usuario.nombre,
+            usuario.apellido,
+            usuario.contacto,
+            usuario.ciudad,
+            usuario.nacimiento if usuario.nacimiento else None,
+            usuario.calificacion_promedio
+        ))
         db.commit()
 
         cursor.close()
-        db.close()  
-        return {"message": "Usuario added successfully"}
+        db.close()
+        return {"message": "Usuario agregado exitosamente"}
+    else:
+        return {"error": "Error al conectar con la base de datos"}, 500
+
+
 
 
 
@@ -520,12 +540,24 @@ def get_mis_servicios(profesionalId: int):
     db.close()
     return results
 
-@app.get("/editar-servicio/{servicioId}")
+@app.get("/servicio/{servicioId}")
 def get_servicio(servicioId: int):
     db = get_db_connection()
     cursor = db.cursor(dictionary=True)
     print("servicioId: %s",servicioId)
-    cursor.execute("SELECT * FROM servicios WHERE id = %s", (servicioId,))
+    cursor.execute("SELECT * FROM servicios WHERE id = %s", (servicioId))
+    results = cursor.fetchone()
+    cursor.close()
+    db.close()
+    return results
+
+@app.get("/servicio/{servicioId}/{profesionalId}")
+def get_servicio_by_profesiona_id(servicioId: int, profesionalId: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    print("servicioId: %s",profesionalId)
+    print("servicioId: %s",servicioId)
+    cursor.execute("SELECT * FROM servicios WHERE id = %s AND profesionalId = %s", (servicioId, profesionalId))
     results = cursor.fetchone()
     cursor.close()
     db.close()
@@ -558,21 +590,40 @@ def get_servicios():
 def add_servicio(servicio: Servicio):
     db = get_db_connection()
     cursor = db.cursor()
+    
+    print('Servicio recibido:', servicio)
 
-    # Insertar en la tabla servicios
-    cursor.execute(" INSERT INTO servicios (profesionalId, description, mainCategory, secondaryCategory, state, department, locality) VALUES (%s, %s, %s, %s, %s, %s, %s)", (
-        servicio.profesionalId,
-        servicio.description,
-        servicio.mainCategory,
-        0,  # Calificación inicial
-        servicio.secondaryCategory,
-        servicio.state,
-        servicio.department,
-        servicio.locality
-    ))
-    cursor.close()
-    db.close()
-    return {"message": "Servicio added successfully"}
+    try:
+        # Insertar en la tabla servicios
+        cursor.execute("""
+            INSERT INTO servicios (profesionalId, description, mainCategory, secondaryCategory, state, department, locality) 
+            VALUES ( %s, %s, %s, %s, %s, %s, %s)
+        """, (
+            servicio.profesionalId,
+            servicio.description,
+            servicio.mainCategory,
+            servicio.secondaryCategory,
+            servicio.state,
+            servicio.department,
+            servicio.locality, 
+        ))
+
+        # Obtener el ID del nuevo servicio insertado
+        new_id = cursor.lastrowid
+        print("Committing transaction...")
+        db.commit()
+        print("Transaction committed successfully.")
+
+    except Exception as e:
+        db.rollback()  # Deshacer si hay algún error
+        raise HTTPException(status_code=500, detail=f"Error al agregar el servicio: {str(e)}")
+    finally:
+        cursor.close()
+        db.close()
+    
+    return {"message": "Servicio agregado exitosamente", "servicio_id": new_id}
+
+
 
 @app.get("/resenas{id}")
 def get_resenas():

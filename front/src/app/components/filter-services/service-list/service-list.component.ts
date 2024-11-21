@@ -127,13 +127,7 @@ export class ServiceListComponent implements OnInit {
     observer.observe(this.scrollAnchor.nativeElement);
   }
 
-  ngAfterViewInit(): void {
-    if (this.calendarComponent){
-      console.log('CalendarComponent loaded');
-    } else {
-      console.log('CalendarComponent not loaded');
-    }
-  }
+
 
   openCalendarModal(service: any) {
     this.selectedService = service;
@@ -155,10 +149,8 @@ export class ServiceListComponent implements OnInit {
 
   handleDayClick(event: { day: CalendarMonthViewDay, date: string }) {
     this.selectedDate = event.date.toString().split('T')[0];
-    console.log(this.selectedDate);
     
     this.sharedService.setSelectedDate(this.selectedDate)
-    console.log(this.sharedService.getSelectedDate())
     this.showCalendar = false;
     this.calendarService.getAvailableSlots(this.profesional_id, this.selectedDate).subscribe(
       (availableSlots: string[]) => {
@@ -204,7 +196,6 @@ onDayClicked(date: string) {
 }
 
 onSlotSelected(slot: string): void {
-  console.log('Selected slot:', slot);
   
   // Aquí puedes manejar la lógica para cuando se selecciona un horario
 }

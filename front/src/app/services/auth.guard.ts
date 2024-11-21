@@ -1,24 +1,25 @@
-import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router';
-import { AuthService } from './auth.service'  // Adjust path as needed
+import {
+  ActivatedRouteSnapshot,
+  Router,
+  RouterStateSnapshot,
+} from "@angular/router";
+import { inject } from "@angular/core";
+import { AuthService } from "./auth.service";
 
+export const AuthGuard = () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
+  const url = router.routerState.snapshot.url;
 
-@Injectable({
-  providedIn: 'root'
-})
+  // If logged in and token exists, then return true
+  if (authService.token) return true;
 
+  // Store the attempted URL for redirecting
+  authService.redirectUrl = url;
 
-export class AuthGuard implements CanActivate {
+  // Navigate to the login page with extras
+  router.navigate(["/login"]);
 
-  constructor(private authService: AuthService, private router: Router) {}
-
-  canActivate(): boolean {
-    if (this.authService.isAuthenticated()) { // Método para verificar si el usuario está autenticado
-      return true;
-    } else {
-      this.router.navigate(['/login']); // Redirigir a login si no está autenticado
-      return false;
-    }
-  }
-}
+  return false;
+};

@@ -15,6 +15,12 @@ export class CompletingUsersService {
   ) {}
 
   private apiURL = `${environment.LOCAL_API_URL}`;
+  uploadProfileImage(userId: number, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    return this.http.post(`${environment.LOCAL_API_URL}/users/${userId}/profile-image`, formData);
+  }
 
   updateUser(usuario: IUsuarios): Observable<IUsuarios> {
     usuario.email = this.authService.getUserEmail();

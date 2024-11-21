@@ -46,12 +46,13 @@ export class HeaderComponent {
       const userId = this.authService.getUserId();
       this.servis.getUserData(userId).subscribe(
         (usuario: IUsuarios) => {
-          this.user=usuario;
+          this.user = usuario; // Asegúrate de que `profileImageUrl` esté en la respuesta
         },
         error => {
           console.error('Error al cargar los datos del usuario:', error);
         }
       );
     }
+    
     
 }

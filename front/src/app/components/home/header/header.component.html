@@ -24,9 +24,10 @@
             <a class="nav-link" (click)="logOut()">Salir</a>
           </li>
           <li class="nav-item">
-            <!-- <a class="nav-link" (click)="navigateToProfile()">{{user.foto}}</a> -->
-            <a class="nav-link" (click)="navigateToProfile()"><img class="icon-profile" src="../../../assets/images/home/image-user.png" alt="User Icon"></a>
-            
+            <a class="nav-link" (click)="navigateToProfile()">
+              <img *ngIf="user?.profileImageUrl" class="icon-profile" [src]="user?.profileImageUrl" alt="User Icon" />
+              <img *ngIf="!user?.profileImageUrl" class="icon-profile" src="../../../assets/images/home/image-user.png" alt="Default User Icon" />
+            </a>
           </li>
         </ul>
       </ng-template>

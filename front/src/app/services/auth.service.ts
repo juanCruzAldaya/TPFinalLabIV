@@ -32,17 +32,15 @@ export class AuthService {
       .post<AuthResponse>(
         `${environment.LOCAL_API_URL}/login`,
         { email, password },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
+        { headers: { 'Content-Type': 'application/json' } }
       )
       .pipe(
         tap((response: AuthResponse) => {
           if (response && response.token) {
-            localStorage.setItem("token", response.token);
-            localStorage.setItem("userId", response.userId);
-            localStorage.setItem("email", response.email);
-            localStorage.setItem("password", response.password);
+            localStorage.setItem('token', response.token);
+            localStorage.setItem('userId', response.userId);
+            localStorage.setItem('email', response.email);
+            localStorage.setItem('password', response.password);
             this.userId = response.userId;
             this.email = response.email;
             this.password = response.password;
@@ -50,9 +48,14 @@ export class AuthService {
           }
         }),
         catchError((error) => {
-          console.error("Login error", error);
+          console.error('Login error', error);
           this.authStatus.next(false);
-          return throwError(error);
+
+          // Personalizar el mensaje de error
+          if (error.status === 401) {
+            return throwError(() => new Error('Credenciales incorrectas.'));
+          }
+          return throwError(() => new Error('Error de conexión al servidor.'));
         })
       );
   }

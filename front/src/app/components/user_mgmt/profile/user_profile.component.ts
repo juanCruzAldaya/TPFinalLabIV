@@ -14,7 +14,8 @@ import { IReseña } from '../../../interfaces/resenia.interface';
   styleUrls: ['./user_profile.component.css']
 })
 export class ProfileComponent implements OnInit {
-  profileImageUrl: string = 'front/src/assets/images/home/image-user.png';  
+  profileImageUrl: string | Blob = 'front/src/assets/images/home/image-user.png';
+
   @ViewChild('fileInput') fileInput!: ElementRef;
  
 
@@ -22,19 +23,7 @@ export class ProfileComponent implements OnInit {
     this.fileInput.nativeElement.click();
   }
 
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      const reader = new FileReader();
-      
-      reader.onload = () => {
-        this.profileImageUrl = reader.result as string; // Actualiza la URL de la imagen
-      };
-      reader.readAsDataURL(file);
-    }
   
-  }
 
   resenias: IReseña[] = [];
   nuevaResenia: IReseña = {
@@ -49,10 +38,19 @@ export class ProfileComponent implements OnInit {
   constructor(private authService: AuthService, private router: Router,private servis: CompletingUsersService,private reseñasService: ReseñasService) {
   }
   ngOnInit(): void {
-    this.loadUserData();
-  const servicio_id = 1; // ID del servicio específico
-    // this.obtenerResenias(servicio_id);
-  }
+  this.loadUserData();
+  const userId = this.authService.getUserId();
+  this.servis.getUserData(userId).subscribe(
+    (usuario: IUsuarios) => {
+      this.user = usuario;
+      this.profileImageUrl = usuario.profileImageUrl || 'default-image-url';
+    },
+    (error) => {
+      console.error('Error al cargar los datos del usuario:', error);
+    }
+  );
+}
+
     user : IUsuarios | undefined ;
     loadUserData(): void {
       const userId = this.authService.getUserId();
@@ -66,13 +64,53 @@ export class ProfileComponent implements OnInit {
       );
     }
   
+    onFileSelected(event: Event): void {
+      const input = event.target as HTMLInputElement;
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        
+
+      if (file.size > 5 * 1024 * 1024) { // 5 MB
+        console.error('El archivo es demasiado grande.');
+        Swal.fire('Error', 'El archivo es demasiado grande. Tamaño máximo: 5 MB.', 'error');
+        return;
+      }
+
+      // Validar tipo (debe ser una imagen)
+      if (!file.type.startsWith('image/')) {
+        console.error('Solo se permiten imágenes.');
+        Swal.fire('Error', 'El archivo debe ser una imagen.', 'error');
+        return;
+      }
+    
+        // Mostrar la imagen localmente
+        const reader = new FileReader();
+        reader.onload = () => {
+          this.profileImageUrl = reader.result as string; // Actualiza la imagen local
+        };
+        reader.readAsDataURL(file);
+    
+        // Subir la imagen al servidor
+        const userId = this.authService.getUserId();
+        this.servis.uploadProfileImage(userId, file).subscribe(
+          (response) => {
+            console.log('Imagen subida exitosamente:', response);
+            this.profileImageUrl = response.url; // URL del servidor
+          },
+          (error) => {
+            console.error('Error al subir la imagen:', error);
+          }
+        );
+      }
+    }
+    
 
 
-  // obtenerResenias(servicio_id: number): void {
-  //   this.reseñasService.getReseñas(servicio_id).subscribe((data) => {
-  //     this.resenias = data;
-  //   });
-  // }
+  obtenerResenias(servicio_id: number): void {
+    this.reseñasService.getReviews(servicio_id).subscribe((data) => {
+      this.resenias = data;
+    });
+  }
 
     navigateToCompleteUser() {
       this.router.navigate([`/complete_user/${this.authService.getUserId()}`]);

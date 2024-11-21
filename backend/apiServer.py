@@ -120,7 +120,7 @@ class SubCategoria(BaseModel):
 
 class Servicio(BaseModel):
     id: Optional[int]
-    profesionalId: Optional[str]
+    profesionalId: Optional[int]
     description: Optional[str]
     mainCategory: int
     secondaryCategory: int
@@ -585,6 +585,52 @@ def add_subcategoria(subcategoria: SubCategoria):
     db.close()
     return {"message": "SubCategoria added successfully"}
 
+@app.get("/mis-servicios/{profesionalId}")
+def get_mis_servicios(profesionalId: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM servicios WHERE profesionalId = %s", (profesionalId,))
+    results = cursor.fetchall()
+    cursor.close()
+    db.close()
+    return results
+
+@app.get("/servicio/{servicioId}")
+def get_servicio(servicioId: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    print("servicioId: %s",servicioId)
+    cursor.execute("SELECT * FROM servicios WHERE id = %s", (servicioId))
+    results = cursor.fetchone()
+    cursor.close()
+    db.close()
+    return results
+
+@app.get("/servicio/{servicioId}/{profesionalId}")
+def get_servicio_by_profesiona_id(servicioId: int, profesionalId: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    print("servicioId: %s",profesionalId)
+    print("servicioId: %s",servicioId)
+    cursor.execute("SELECT * FROM servicios WHERE id = %s AND profesionalId = %s", (servicioId, profesionalId))
+    results = cursor.fetchone()
+    cursor.close()
+    db.close()
+    return results
+    
+@app.delete("/eliminar-servicio/{servicioId}")
+def delete_servicio(servicioId: int):
+    db = get_db_connection()
+    cursor = db.cursor(dictionary=True)
+    print("servicioId: %s",servicioId)
+    cursor.execute("DELETE FROM servicios WHERE id = %s", (servicioId,))
+    db.commit()
+    cursor.close()
+    db.close()
+    return {"message": "Servicio deleted successfully"}
+
+    
+                                     
 @app.get("/servicios")
 def get_servicios():
     db = get_db_connection()
@@ -598,28 +644,94 @@ def get_servicios():
 @app.post("/servicios")
 def add_servicio(servicio: Servicio):
     db = get_db_connection()
-    cursor1 = db.cursor(dictionary=True)
-    cursor2 = db.cursor()
-    # Obtener el nombre de la categoría principal
-    cursor1.execute("SELECT nombre FROM categorias WHERE id = %s", (servicio.mainCategory,))
-    nombreCategoria = cursor1.fetchone()
-    if nombreCategoria:
-        nombreCategoria = nombreCategoria['nombre']  # Extraer solo el nombre
-    # Insertar en la tabla servicios
-    cursor2.execute(" INSERT INTO servicios (profesional_id, nombre, descripcion, calificacion, sub_categoria, provincia, departamento, localidad) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (
-        servicio.profesionalId,
-        nombreCategoria,
-        servicio.description,
-        0,  # Calificación inicial
-        servicio.secondaryCategory,
-        servicio.state,
-        servicio.department,
-        servicio.locality
-    ))
-    cursor1.close()
-    cursor2.close()
-    db.close()
-    return {"message": "Servicio added successfully"}
+    cursor = db.cursor()
+    
+    print('Servicio recibido:', servicio)
+
+    try:
+        # Insertar en la tabla servicios
+        cursor.execute("""
+            INSERT INTO servicios (profesionalId, description, mainCategory, secondaryCategory, state, department, locality) 
+            VALUES ( %s, %s, %s, %s, %s, %s, %s)
+        """, (
+            servicio.profesionalId,
+            servicio.description,
+            servicio.mainCategory,
+            servicio.secondaryCategory,
+            servicio.state,
+            servicio.department,
+            servicio.locality, 
+        ))
+
+        # Obtener el ID del nuevo servicio insertado
+        new_id = cursor.lastrowid
+        print("Committing transaction...")
+        db.commit()
+        print("Transaction committed successfully.")
+
+    except Exception as e:
+        db.rollback()  # Deshacer si hay algún error
+        raise HTTPException(status_code=500, detail=f"Error al agregar el servicio: {str(e)}")
+    finally:
+        cursor.close()
+        db.close()
+    
+    return {"message": "Servicio agregado exitosamente", "servicio_id": new_id}
+
+
+
+
+
+@app.put("/editar-servicio")
+def update_service(servicio: Servicio):
+    db = get_db_connection()
+    cursor = db.cursor()
+    print('servicio.id, %s',servicio.id)
+    try:
+        update_query = """
+        UPDATE servicios
+        SET 
+            description = %s,
+            mainCategory = %s,
+            secondaryCategory = %s,
+            state = %s,
+            department = %s,
+            locality = %s,
+        WHERE id = %s AND profesionalId = %s
+        """
+        cursor.execute(
+            update_query, 
+            (
+                servicio.mainCategory, 
+                servicio.secondaryCategory, 
+                servicio.description, 
+                servicio.state, 
+                servicio.department, 
+                servicio.locality, 
+                servicio.id, 
+                servicio.profesionalId
+            )
+        )
+        db.commit()
+
+        if cursor.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Service not found or no updates were applied.")
+
+    except Exception as e:
+        db.rollback()
+        # Log the full error for debugging
+        print(f"Error updating service: {e}")  # Replace with proper logging
+        raise HTTPException(status_code=500, detail=f"Error updating service: {e}")
+
+    finally:
+        cursor.close()
+        db.close()
+    
+    return {"message": "Service updated successfully"}
+
+
+
+
 
 @app.get("/resenas")
 def get_resenas():

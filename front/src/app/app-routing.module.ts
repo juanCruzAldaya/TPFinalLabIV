@@ -12,6 +12,7 @@ import { ReseñasComponent } from "./components/resenia/resenia.component";
 import { AuthGuard } from './services/auth.guard';
 import { ContractsComponent } from "./components/contracts/contracts.component";
 import { ProfileComponent } from "./components/user_mgmt/profile/user_profile.component";
+import { MyServiceListComponent } from "./components/my-services/my-service-list.component";
 
 
 const routes: Routes = [
@@ -24,6 +25,12 @@ const routes: Routes = [
   { path: "contracts", component: ContractsComponent, canActivate: [AuthGuard]},
   { path: "add-service", component: AddServiceComponent, canActivate: [AuthGuard]},
   { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
+  {path: 'my-services', component: MyServiceListComponent, canActivate: [AuthGuard]},
+  {
+    path: "edit-service/:id",
+    component: AddServiceComponent,
+    canActivate: [AuthGuard],
+  },
   { path: "", component: HomePageComponent },
   { path: "**", component: HomePageComponent }
   

@@ -18,6 +18,7 @@ import { ServicesService } from "../../services/service-async.service";
 import { ISubCategory } from "../../interfaces/subCategory.interface";
 import { SharedModule } from "../../shared/shared.module";
 import { ToastrService } from "ngx-toastr";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "app-add-service",
@@ -27,70 +28,114 @@ import { ToastrService } from "ngx-toastr";
   styleUrl: "./add-service.component.css",
 })
 export class AddServiceComponent implements OnInit {
+  serviceId: string | null = "";
+  userId: string = "";
   provinceList: Array<IProvince> = [];
   departmentList: Array<IDepartment> = [];
   localityList: Array<ILocality> = [];
   mainCategoryList: Array<ICategory> = [];
   subCategoryList: Array<ISubCategory> = [];
-
-  resourceForm = new FormGroup({
-    description: new FormControl("", [
-      Validators.required,
-      Validators.maxLength(500),
-    ]),
-    selectedCategory: new FormControl(""),
-    selectedSubCategory: new FormControl(""),
-    selectedProvince: new FormControl(this.provinceList, [Validators.required]),
-    selectedDepartment: new FormControl(this.departmentList, [
-      Validators.required,
-    ]),
-    selectedLocality: new FormControl(this.localityList, [Validators.required]),
-  });
+  resourceForm!: FormGroup;
+  service!: IService;
+  categories: Array<ICategory> = [];
+  subcategories: Array<ISubCategory> = [];
 
   constructor(
     private locationService: LocationAsyncService,
     private categoriesService: CategoriesService,
     private servicesService: ServicesService,
     private authService: AuthService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private route: ActivatedRoute
   ) {}
 
-  ngOnInit() {
-    if (this.authService.isAuthenticated()) {
-      this.categoriesService
-        .getCategories()
-        .then((response) => {
-          console.log(response);
-          this.mainCategoryList = response;
-        })
-        .catch((error) => console.log(JSON.stringify(error)));
+  async ngOnInit() {
+    this.serviceId = this.route.snapshot.paramMap.get("id");
+    this.userId = await this.authService.getUserId();
 
-      this.locationService
-        .getAllProvinces()
-        .then((response) => {
-          this.provinceList = response.provincias;
-          // console.log("response.provincias", response.provincias);
-        })
-        .catch((error) => {
-          console.log(JSON.stringify(error));
-        });
+    this.categoriesService
+      .getCategories()
+      .then((response) => {
+        this.mainCategoryList = response;
+      })
+      .catch((error) => console.log(JSON.stringify(error)));
 
-      this.categoriesService
-        .getCategories()
-        .then((response) => {
-          this.mainCategoryList = response;
-        })
-        .catch((error) => {
-          console.log(JSON.stringify(error));
+    this.locationService
+      .getAllProvinces()
+      .then((response) => {
+        this.provinceList = response.provincias;
+        // console.log("response.provincias", response.provincias);
+      })
+      .catch((error) => {
+        console.log(JSON.stringify(error));
+      });
+
+    this.resourceForm = new FormGroup({
+      description: new FormControl("", [
+        Validators.required,
+        Validators.maxLength(500),
+      ]),
+      selectedCategory: new FormControl(null),
+      selectedSubCategory: new FormControl(null),
+      selectedProvince: new FormControl(null, [Validators.required]),
+      selectedDepartment: new FormControl(null, [Validators.required]),
+      selectedLocality: new FormControl(null, [Validators.required]),
+    });
+
+    await this.loadServiceData();
+  }
+
+  async loadServiceData() {
+    if (!this.serviceId || !this.userId) return;
+
+    this.servicesService
+      .getServiceByUserId(parseInt(this.serviceId), parseInt(this.userId))
+      .subscribe(async (service: IService) => {
+        this.service = service;
+
+        const categorySelected = this.mainCategoryList.find(
+          (cat) => cat.id === this.service.mainCategory
+        );
+
+        await this.loadSubCategoryList(this.service.mainCategory);
+
+        const subcategorySelected = this.subCategoryList.find(
+          (subcat) => subcat.id === this.service.secondaryCategory
+        );
+
+        await this.loadDepartments(this.service.state);
+
+        const stateSelected = this.provinceList.find(
+          (state) => state.nombre === this.service.state
+        );
+
+        await this.loadLocalities(this.service.department);
+
+        const departmentSelected = this.departmentList.find(
+          (department) => department.nombre === this.service.department
+        );
+
+        const localitySelected = this.localityList.find(
+          (locality) => locality.nombre === this.service.locality
+        );
+
+        this.resourceForm.patchValue({
+          description: this.service.description,
+          selectedCategory: categorySelected,
+          selectedSubCategory: subcategorySelected,
+          selectedProvince: stateSelected,
+          selectedDepartment: departmentSelected,
+          selectedLocality: localitySelected,
         });
-    } else {
-      window.location.href = "/login";
-    }
+      }),
+      (error: any) => {
+        console.log("Error al cargar el servicio:", error);
+      };
   }
 
   // Cuando cambia la provincia seleccionada, cargar departamentos
-  loadDepartments(provinceName: string) {
-    this.locationService
+  async loadDepartments(provinceName: string) {
+    await this.locationService
       .getAllDepartmentsByProvince(provinceName)
       .then((response) => {
         // console.log("response.departamentos", response.departamentos);
@@ -102,8 +147,8 @@ export class AddServiceComponent implements OnInit {
       });
   }
 
-  loadLocalities(departmentName: string) {
-    this.locationService
+  async loadLocalities(departmentName: string) {
+    await this.locationService
       .getAllLocalitiesByDepartments(departmentName)
       .then((response) => {
         // console.log("response.localidades", response.localidades);
@@ -114,11 +159,10 @@ export class AddServiceComponent implements OnInit {
       });
   }
 
-  loadSubCategoryList(categoryId: number) {
-    this.categoriesService
+  async loadSubCategoryList(categoryId: number) {
+    await this.categoriesService
       .getSubCategoriesById(categoryId)
       .then((response) => {
-        console.log(response);
         this.subCategoryList = response;
       })
       .catch((error) => console.log(JSON.stringify(error)));
@@ -145,8 +189,6 @@ export class AddServiceComponent implements OnInit {
     const category = new Object(
       this.resourceForm.getRawValue().selectedCategory
     ) as ICategory;
-    console.log(category);
-    console.log(category.id);
     this.loadSubCategoryList(category.id);
   }
 
@@ -159,14 +201,14 @@ export class AddServiceComponent implements OnInit {
 
   onSubmit() {
     let service: IService = {
-      id: "",
+      id: 0,
       description: "",
       mainCategory: 0,
       secondaryCategory: 0,
       state: "",
       department: "",
       locality: "",
-      profesionalId: "",
+      profesionalId: 0,
     };
     const description = this.resourceForm.getRawValue().description as string;
     const mainCategory = new Object(
@@ -186,20 +228,22 @@ export class AddServiceComponent implements OnInit {
     ) as ILocality;
     const profesionalId = this.authService.getUserId();
 
-    service.id = "1";
     service.description = description;
     service.mainCategory = mainCategory.id;
     service.secondaryCategory = secondaryCategory.id;
     service.state = province.nombre;
     service.department = department.nombre;
     service.locality = locality.nombre;
-    service.profesionalId = profesionalId || ""; //aca necesito traerme el id del usuario actual
+    service.profesionalId = parseInt(profesionalId); //aca necesito traerme el id del usuario actual
 
     this.servicesService
       .addService(service)
-      .then()
-      .then(() => this.showSuccess())
+      .then(() => {
+        // Si la solicitud fue exitosa, muestra el mensaje de éxito
+        this.showSuccess();
+      })
       .catch((error) => {
+        // Si ocurre un error, muestra el mensaje de error
         this.showError();
         console.log(error);
       });

@@ -64,6 +64,8 @@ export class FormComponent implements AfterViewInit, OnInit {
   userForm!: FormGroup;
   loginForm!: FormGroup;
   calendario!: ICalendario;
+  errorMessage: string | null = null;
+
   
 
   constructor(
@@ -123,10 +125,12 @@ export class FormComponent implements AfterViewInit, OnInit {
         { validators: matchPasswordsValidator("password", "confirmPassword") }
       );
     } else {
-      this.loginForm = this.fb.group({
-        email: ["", [Validators.required, Validators.email]],
-        password: ["", [Validators.required]],
+      this.userForm = this.fb.group({
+        email: ['', [Validators.required, Validators.email]],
+        password: ['', Validators.required],
+        confirmPassword1: ['', Validators.required] 
       });
+      
     }
   }
 
@@ -246,22 +250,28 @@ export class FormComponent implements AfterViewInit, OnInit {
   
 
   onLogin(): void {
-    const email = this.loginForm.get("emailLogin")?.value;
-    const password = this.loginForm.get("passwordLogin")?.value;
+    const email = this.loginForm.get('emailLogin')?.value;
+    const password = this.loginForm.get('passwordLogin')?.value;
 
     if (email && password) {
       this.authService.login(email, password).subscribe(
         (response) => {
           if (response) {
-            this.router.navigate(["/home"]);
+            this.errorMessage = null; 
+            this.router.navigate(['/home']);
           }
         },
         (error) => {
-          console.error("Login failed:", error);
+          
+          if (error.status === 401) {
+            this.errorMessage = 'Email o contraseña incorrectos.';
+          } else {
+            this.errorMessage = 'Contraseña incorrecta';
+          }
         }
       );
     } else {
-      console.error("Email or password is missing");
+      this.errorMessage = 'Por favor, completa todos los campos.';
     }
   }
 
@@ -277,7 +287,7 @@ export class FormComponent implements AfterViewInit, OnInit {
           id: 0,
           usuario_id: parseInt(parsedUserId),
           anio: null,
-          mes: null,// Ensure this is set to null if there are no events
+          mes: null,
         };
         console.log(this.calendario)
         this.calendarService.createCalendar(this.calendario).subscribe(

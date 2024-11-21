@@ -35,6 +35,9 @@ body{
     margin: 20px 0;
 }
 
+.title{
+    margin-bottom: 35px;
+}
 .container span{
     font-size: 12px;
 }

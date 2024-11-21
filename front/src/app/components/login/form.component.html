@@ -11,38 +11,43 @@
     <!-- Formulario de Registro -->
     <div class="form-container sign-up">
       <form [formGroup]="userForm" (ngSubmit)="onRegister()">
-        <h1>Crear Cuenta</h1>
-        <div class="social-icons">
+        <h1 class="title">Crear Cuenta</h1>
+        <!-- <div class="social-icons">
           <a href="#" (click)="onGoogleSignIn()" class="icon"><i class="fa-brands fa-google"></i></a>
           <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
-        </div>
-        <span>O usa tu email para registrarte.</span>
+        </div> -->
+        <!-- <span>O usa tu email para registrarte.</span> -->
         <input type="email" id="email" class="form-control" formControlName="email" placeholder="Email"/>
         <div *ngIf="userForm.get('email')?.invalid && (userForm.get('email')?.dirty || userForm.get('email')?.touched)" class="text-danger">
           Mail invalido
         </div>
         <input type="password" placeholder="Contraseña" id="pass1" class="form-control" formControlName="password"/>
-        <input type="password" placeholder="Repetir contraseña" id="pass2" class="form-control" formControlName="confirmPassword1"/>
+        <input type="password" id="pass2" class="form-control" formControlName="confirmPassword1" placeholder="Repetir contraseña" />
         <div *ngIf="userForm.hasError('passwordMismatch') && userForm.get('confirmPassword1')?.touched" class="text-danger">
           Las contraseñas no coinciden
         </div>
+        
+
         <button type="submit" >Crear Cuenta</button>
       </form>
     </div>
     <!-- Formulario de Inicio de Sesión -->
     <div class="form-container sign-in">
       <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-        <h1>Iniciar Sesión</h1>
-        <div class="social-icons">
+        <h1 class="title">Iniciar Sesión</h1>
+        <!-- <div class="social-icons">
           <a href="#" (click)="onGoogleSignIn()" class="icon"><i class="fa-brands fa-google"></i></a>
           <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
-        </div>
-        <span>O inicia con tu email.</span>
+        </div> -->
+        <!-- <span>O inicia con tu email.</span> -->
         <input type="email" id="email" class="form-control" formControlName="emailLogin" placeholder="Email"/>
         <div *ngIf="userForm.get('emailLogin')?.invalid && (userForm.get('emailLogin')?.dirty || userForm.get('emailLogin')?.touched)" class="text-danger">
           Mail invalido
         </div>
         <input type="password" placeholder="Contraseña" class="form-control" formControlName="passwordLogin"/>
+          <div *ngIf="errorMessage" class="text-danger">
+            {{ errorMessage }}
+          </div>
         <a href="#">¿Olvidaste tu contraseña?</a>
         <button type="submit">Iniciar Sesión</button>
       </form>

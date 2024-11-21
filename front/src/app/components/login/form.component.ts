@@ -66,8 +66,6 @@ export class FormComponent implements AfterViewInit, OnInit {
   calendario!: ICalendario;
   errorMessage: string | null = null;
 
-  
-
   constructor(
     private authService: AuthService,
     private fb: FormBuilder,
@@ -126,11 +124,10 @@ export class FormComponent implements AfterViewInit, OnInit {
       );
     } else {
       this.userForm = this.fb.group({
-        email: ['', [Validators.required, Validators.email]],
-        password: ['', Validators.required],
-        confirmPassword1: ['', Validators.required] 
+        email: ["", [Validators.required, Validators.email]],
+        password: ["", Validators.required],
+        confirmPassword1: ["", Validators.required],
       });
-      
     }
   }
 
@@ -211,7 +208,7 @@ export class FormComponent implements AfterViewInit, OnInit {
         console.log(`Control: ${key}, Errors:`, controlErrors);
       }
     });
-  
+
     if (this.userForm.valid) {
       const formData = {
         id: this.userForm.value.id,
@@ -225,16 +222,12 @@ export class FormComponent implements AfterViewInit, OnInit {
         calificacion_promedio: this.userForm.value.calificacion_promedio,
         // Add other fields if needed
       };
-  
+
       this.http.post("http://localhost:8000/usuarios", formData).subscribe(
         (user: any) => {
-
           this.createCalendar();
           console.log("User added:", user);
           this.router.navigate(["/"]);
-  
-          
-          
         },
         (error) => {
           console.error("Registration failed:", error);
@@ -247,68 +240,60 @@ export class FormComponent implements AfterViewInit, OnInit {
       console.log("Form is invalid, please check the errors above.");
     }
   }
-  
 
   onLogin(): void {
-    const email = this.loginForm.get('emailLogin')?.value;
-    const password = this.loginForm.get('passwordLogin')?.value;
+    const email = this.loginForm.get("emailLogin")?.value;
+    const password = this.loginForm.get("passwordLogin")?.value;
 
     if (email && password) {
       this.authService.login(email, password).subscribe(
         (response) => {
           if (response) {
-            this.errorMessage = null; 
-            this.router.navigate(['/home']);
+            this.errorMessage = null;
+            this.router.navigate(["/home"]);
           }
         },
         (error) => {
-          
           if (error.status === 401) {
-            this.errorMessage = 'Email o contraseña incorrectos.';
+            this.errorMessage = "Email o contraseña incorrectos.";
           } else {
-            this.errorMessage = 'Contraseña incorrecta';
+            this.errorMessage = "Contraseña incorrecta";
           }
         }
       );
     } else {
-      this.errorMessage = 'Por favor, completa todos los campos.';
+      this.errorMessage = "Por favor, completa todos los campos.";
     }
   }
-
 
   createCalendar() {
     this.authService.getLastUserId().subscribe({
       next: (response: { id: number }) => {
         const newUserId = response.id;
-        const jsonUserId = JSON.stringify({ id: newUserId });
-        const parsedUserId = JSON.parse(jsonUserId).id;
-        console.log(parsedUserId)
+
+        // Initialize the calendario object
         this.calendario = {
           id: 0,
-          usuario_id: parseInt(parsedUserId),
+          usuario_id: newUserId, // Directly use newUserId since it's already a number
           anio: null,
           mes: null,
         };
-        console.log(this.calendario)
-        this.calendarService.createCalendar(this.calendario).subscribe(
-          (response: ICalendario) => {
-            console.log('Calendario created successfully', response);
+
+        console.log(this.calendario);
+
+        // Call the service to create the calendar
+        this.calendarService.createCalendar(this.calendario).subscribe({
+          next: (calendarResponse: ICalendario) => {
+            console.log("Calendario created successfully", calendarResponse);
           },
-          (error: any) => {
-            console.error('Error creating calendario', error);
-          }
-        );
+          error: (error: any) => {
+            console.error("Error creating calendario", error);
+          },
+        });
       },
       error: (error: any) => {
-        console.error('Error fetching last user ID:', error);
-      }
+        console.error("Error fetching last user ID:", error);
+      },
     });
   }
-
-
-
-
-
-
-
 }

@@ -19,11 +19,12 @@ export class AuthService {
   private userId: number | null = null;
   private email: string | null = null;
   private password: string | null = null;
+  token?: string = undefined;
+  redirectUrl: string = "/login";
 
   constructor(private http: HttpClient) {}
 
   isAuthenticated(): Observable<boolean> {
-    
     return this.authStatus.asObservable();
   }
 
@@ -32,30 +33,31 @@ export class AuthService {
       .post<AuthResponse>(
         `${environment.LOCAL_API_URL}/login`,
         { email, password },
-        { headers: { 'Content-Type': 'application/json' } }
+        { headers: { "Content-Type": "application/json" } }
       )
       .pipe(
         tap((response: AuthResponse) => {
           if (response && response.token) {
-            localStorage.setItem('token', response.token);
-            localStorage.setItem('userId', response.userId);
-            localStorage.setItem('email', response.email);
-            localStorage.setItem('password', response.password);
-            this.userId = response.userId;
+            this.token = response.token;
+            sessionStorage.setItem("token", response.token);
+            sessionStorage.setItem("userId", response.userId);
+            sessionStorage.setItem("email", response.email);
+            sessionStorage.setItem("password", response.password);
+            this.userId = response.userId; // Store userId for future requests
             this.email = response.email;
             this.password = response.password;
             this.authStatus.next(true);
           }
         }),
         catchError((error) => {
-          console.error('Login error', error);
+          console.error("Login error", error);
           this.authStatus.next(false);
 
           // Personalizar el mensaje de error
           if (error.status === 401) {
-            return throwError(() => new Error('Credenciales incorrectas.'));
+            return throwError(() => new Error("Credenciales incorrectas."));
           }
-          return throwError(() => new Error('Error de conexión al servidor.'));
+          return throwError(() => new Error("Error de conexión al servidor."));
         })
       );
   }
@@ -63,26 +65,27 @@ export class AuthService {
   getUserId(): any {
     return this.userId
       ? this.userId.toString()
-      : localStorage.getItem("userId"); // Ensure userId is a string
+      : sessionStorage.getItem("userId"); // Ensure userId is a string
   }
 
   getUserEmail(): string | null {
-    return this.email ? this.email : localStorage.getItem("email");
+    return this.email ? this.email : sessionStorage.getItem("email");
   }
 
   getUserPassword(): string | null {
-    return this.password ? this.password : localStorage.getItem("password");
+    return this.password ? this.password : sessionStorage.getItem("password");
   }
 
   logout() {
     this.authStatus.next(false);
-    localStorage.removeItem("token");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("email");
-    localStorage.removeItem("password");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("userId");
+    sessionStorage.removeItem("email");
+    sessionStorage.removeItem("password");
     this.userId = null;
     this.email = null;
     this.password = null;
+    this.token = undefined;
   }
 
   signInWithGoogle(): Promise<any> {
@@ -92,11 +95,13 @@ export class AuthService {
     });
   }
   getLastUserId(): Observable<{ id: number }> {
-    return this.http.get<{ id: number }>( environment.LOCAL_API_URL + '/ultimo_id').pipe(
-      catchError(error => {
-        console.error('Error fetching last user ID:', error);
-        return throwError(error);
-      })
-    );
+    return this.http
+      .get<{ id: number }>(environment.LOCAL_API_URL + "/ultimo_id")
+      .pipe(
+        catchError((error) => {
+          console.error("Error fetching last user ID:", error);
+          return throwError(error);
+        })
+      );
   }
 }

@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
-import { HttpClientModule } from "@angular/common/http";
+import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http";
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
 import { ReactiveFormsModule } from "@angular/forms";
@@ -13,13 +13,20 @@ import { InfoComponent } from "./components/user_mgmt/complete_user/info.compone
 import { ToastrModule } from "ngx-toastr";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ReseñasComponent } from "./components/resenia/resenia.component";
-import { FormsModule } from '@angular/forms';
-import { ContractsComponent } from './components/contracts/contracts.component'; // Import FormsModule if needed
-import {ProfileComponent} from "./components/user_mgmt/profile/user_profile.component";
-
+import { FormsModule } from "@angular/forms";
+import { ContractsComponent } from "./components/contracts/contracts.component"; // Import FormsModule if needed
+import { ProfileComponent } from "./components/user_mgmt/profile/user_profile.component";
+import { AuthInterceptorService } from "./services/auth-interceptors.service";
 
 @NgModule({
-  declarations: [AppComponent, InfoComponent, InfoComponent, ReseñasComponent, ContractsComponent, ProfileComponent],
+  declarations: [
+    AppComponent,
+    InfoComponent,
+    InfoComponent,
+    ReseñasComponent,
+    ContractsComponent,
+    ProfileComponent,
+  ],
 
   imports: [
     FormsModule,
@@ -37,11 +44,16 @@ import {ProfileComponent} from "./components/user_mgmt/profile/user_profile.comp
     HttpClientModule,
     FilterServiceModule,
     BrowserAnimationsModule,
-    
   ],
   exports: [RouterModule, InfoComponent],
 
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi: true,
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

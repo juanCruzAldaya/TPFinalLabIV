@@ -9,31 +9,49 @@ import { FormComponent } from "./components/login/form.component";
 import { ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 import { ReseñasComponent } from "./components/resenia/resenia.component";
-import { AuthGuard } from './services/auth.guard';
+import { AuthGuard } from "./services/auth.guard";
 import { ContractsComponent } from "./components/contracts/contracts.component";
 import { ProfileComponent } from "./components/user_mgmt/profile/user_profile.component";
 import { MyServiceListComponent } from "./components/my-services/my-service-list.component";
 
-
 const routes: Routes = [
   { path: "search-professionals", component: ServiceListComponent },
 
-  { path: "booking-form", component: BookingFormComponent, canActivate: [AuthGuard]},
-  { path: "complete_user/:id", component: InfoComponent, canActivate: [AuthGuard]},
-  { path: "reviews", component: ReseñasComponent,canActivate: [AuthGuard]},
+  {
+    path: "booking-form",
+    component: BookingFormComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "complete_user/:id",
+    component: InfoComponent,
+    canActivate: [AuthGuard],
+  },
+  { path: "reviews", component: ReseñasComponent, canActivate: [AuthGuard] },
   { path: "login", component: FormComponent },
-  { path: "contracts", component: ContractsComponent, canActivate: [AuthGuard]},
-  { path: "add-service", component: AddServiceComponent, canActivate: [AuthGuard]},
-  { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
-  {path: 'my-services', component: MyServiceListComponent, canActivate: [AuthGuard]},
+  {
+    path: "contracts",
+    component: ContractsComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: "add-service",
+    component: AddServiceComponent,
+    canActivate: [AuthGuard],
+  },
+  { path: "profile", component: ProfileComponent, canActivate: [AuthGuard] },
+  {
+    path: "my-services",
+    component: MyServiceListComponent,
+    canActivate: [AuthGuard],
+  },
   {
     path: "edit-service/:id",
     component: AddServiceComponent,
     canActivate: [AuthGuard],
   },
   { path: "", component: HomePageComponent },
-  { path: "**", component: HomePageComponent }
-  
+  { path: "**", component: HomePageComponent },
 
   // otras rutas
 ];

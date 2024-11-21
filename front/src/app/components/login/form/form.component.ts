@@ -222,7 +222,6 @@ export class FormComponent implements AfterViewInit, OnInit {
         // Add other fields if needed
       };
 
-      console.log(formData);
       this.http.post("http://localhost:8000/usuarios", formData).subscribe(
         (user: any) => {
           console.log("User added:", user);

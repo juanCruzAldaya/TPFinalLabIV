@@ -19,7 +19,6 @@ export class CompletingUsersService {
   updateUser(usuario: IUsuarios): Observable<IUsuarios> {
     usuario.email = this.authService.getUserEmail();
     usuario.password = this.authService.getUserPassword();
-    console.log(usuario);
     return this.http.put<IUsuarios>(
       `${environment.LOCAL_API_URL}/usuarios/${this.authService.getUserId()}`,
       usuario

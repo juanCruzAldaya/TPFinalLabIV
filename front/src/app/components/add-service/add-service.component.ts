@@ -64,7 +64,7 @@ export class AddServiceComponent implements OnInit {
       .getAllProvinces()
       .then((response) => {
         this.provinceList = response.provincias;
-        // console.log("response.provincias", response.provincias);
+  
       })
       .catch((error) => {
         console.log(JSON.stringify(error));
@@ -138,7 +138,6 @@ export class AddServiceComponent implements OnInit {
     await this.locationService
       .getAllDepartmentsByProvince(provinceName)
       .then((response) => {
-        // console.log("response.departamentos", response.departamentos);
         this.departmentList = [];
         this.departmentList = response.departamentos;
       })
@@ -151,7 +150,6 @@ export class AddServiceComponent implements OnInit {
     await this.locationService
       .getAllLocalitiesByDepartments(departmentName)
       .then((response) => {
-        // console.log("response.localidades", response.localidades);
         this.localityList = response.localidades;
       })
       .catch((error) => {

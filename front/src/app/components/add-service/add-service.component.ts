@@ -237,7 +237,7 @@ export class AddServiceComponent implements OnInit {
     service.profesionalId = parseInt(profesionalId); //aca necesito traerme el id del usuario actual
 
     if (this.serviceId) {
-      this.service.id = parseInt(this.serviceId);
+      service.id = parseInt(this.serviceId);
       this.servicesService
         .editService(service)
         .then(() => this.showSuccess("Se edito el servicio exitosamente"))

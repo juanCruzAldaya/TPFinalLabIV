@@ -7,7 +7,8 @@ import { CalendarService } from '../../../services/calendar.service';
 import { SharedService } from '../../../services/shared.service';
 import { IService } from '../../../interfaces/service.interface';
 import { IBackendContract } from '../../../interfaces/IContracts.interface';
-
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-booking-form',
@@ -22,13 +23,17 @@ export class BookingFormComponent implements OnInit {
   serviceId: number = 0;
   calendarId: number = 0;
   profesionalId: number = 0; 
+  
 
   constructor(private fb: FormBuilder, 
     private route: ActivatedRoute, 
     private bookService: BookingService, 
     private authService: AuthService, 
     private calendarService: CalendarService, 
-    private sharedService: SharedService) {
+    private sharedService: SharedService,
+    private router: Router,
+    private snackBar: MatSnackBar
+  ) {
       
       
       this.bookingForm = this.fb.group({
@@ -114,7 +119,10 @@ export class BookingFormComponent implements OnInit {
 
         this.bookService.addBooking(bookingData).subscribe(
             response => {
-                console.log('Reserva enviada con éxito', response);
+              this.snackBar.open('Reserva enviada con éxito', 'Cerrar', {
+                duration: 3000,
+            });
+            this.router.navigate(['']);
             },
             error => {
                 console.error('Error al enviar la reserva', error);

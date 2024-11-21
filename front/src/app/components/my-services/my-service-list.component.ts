@@ -43,7 +43,6 @@ export class MyServiceListComponent implements OnInit {
       this.categoryList = await this.categoriesService.getCategories();
       this.subcategoryList = await this.categoriesService.getSubcategories();
       this.mapServices();
-      console.log("servicesFormatted: ", this.servicesFormatted);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -55,7 +54,7 @@ export class MyServiceListComponent implements OnInit {
         this.authService.getUserId()
       );
 
-      console.log(this.serviceList);
+
     } catch (error) {
       console.error("Error fetching services:", error);
     }

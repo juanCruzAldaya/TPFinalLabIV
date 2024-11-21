@@ -56,7 +56,6 @@ export class ProfileComponent implements OnInit {
     user : IUsuarios | undefined ;
     loadUserData(): void {
       const userId = this.authService.getUserId();
-      console.log(userId);
       this.servis.getUserData(userId).subscribe(
         (usuario: IUsuarios) => {
           this.user=usuario;

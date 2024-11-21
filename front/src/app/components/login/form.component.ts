@@ -29,7 +29,6 @@ export function matchPasswordsValidator(
     const confirmPasswordControl = formGroup.get(confirmPassword1);
 
     if (!passwordControl || !confirmPasswordControl) {
-      console.log("Password or Confirm Password control is missing");
       return null;
     }
 

@@ -11,6 +11,8 @@ import { CalendarService } from '../../services/calendar.service';
 import { AvailableSlotsComponent } from './available-slots/available-slots.component';
 import { BookingFormComponent } from './booking-form/booking-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+
 // import { ContractsComponent } from './contracts/contracts.component';
 
 
@@ -33,10 +35,12 @@ import { ReactiveFormsModule } from '@angular/forms';
     FormsModule, // Add FormsModule here
     SharedModule,
     ReactiveFormsModule,
+    MatSnackBarModule,
+
     CalendarModule.forRoot({
       provide: DateAdapter,
       useFactory: adapterFactory,
-
+    
     
       
       
@@ -54,6 +58,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   providers: [
     CalendarService,
     BookingFormComponent,
+    MatSnackBarModule
     
      // Add CalendarComponent to providers if needed
   ]

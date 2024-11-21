@@ -32,7 +32,7 @@ export class ServiceListComponent implements OnInit {
   unavailableSlots: string[] = [];
   selectedDate: string | null = null;
   selectedService: any;
-  profesional_id: string | null = null;
+  profesional_id: number = 0;
   isModalOpen = false;
   filterCriteria = {
     localidad: '',
@@ -160,7 +160,7 @@ export class ServiceListComponent implements OnInit {
     this.sharedService.setSelectedDate(this.selectedDate)
     console.log(this.sharedService.getSelectedDate())
     this.showCalendar = false;
-    this.calendarService.getAvailableSlots(parseInt(this.profesional_id!), this.selectedDate).subscribe(
+    this.calendarService.getAvailableSlots(this.profesional_id, this.selectedDate).subscribe(
       (availableSlots: string[]) => {
         this.availableSlots = availableSlots;
         this.unavailableSlots = this.getUnavailableSlots(availableSlots);

@@ -11,7 +11,7 @@
         aria-placeholder="Seleccione la categoria"
         (change)="onSelectedCategory()"
       >
-        <option value="" disabled>Seleccione la categoria</option>
+        <option [ngValue]="null" disabled>Seleccione la categoria</option>
         <option *ngFor="let category of mainCategoryList" [ngValue]="category">
           {{ category.nombre }}
         </option>
@@ -26,7 +26,7 @@
         formControlName="selectedSubCategory"
         aria-placeholder="Seleccione la sub-categoria"
       >
-        <option value="" disabled>Seleccione la sub-categoria</option>
+        <option [ngValue]="null" disabled>Seleccione la sub-categoria</option>
         <option
           *ngFor="let subCategory of subCategoryList"
           [ngValue]="subCategory"
@@ -59,7 +59,7 @@
         (change)="onSelectedProvince()"
         #provinces.nombre
       >
-        <option value="" disabled>Seleccione la provincia</option>
+        <option [ngValue]="null" disabled>Seleccione la provincia</option>
         <option *ngFor="let province of provinceList" [ngValue]="province">
           {{ province.nombre }}
         </option>
@@ -76,7 +76,7 @@
         (change)="onSelectedDepartment()"
         #departments.nombre
       >
-        <option value="" disabled>Seleccione el departamento</option>
+        <option [ngValue]="null" disabled>Seleccione el departamento</option>
         <option
           *ngFor="let department of departmentList"
           [ngValue]="department"
@@ -95,7 +95,7 @@
         aria-placeholder="Seleccione la localidad"
         #locality.nombre
       >
-        <option selected>Seleccione la localidad</option>
+        <option selected [ngValue]="null">Seleccione la localidad</option>
         <option *ngFor="let locality of localityList" [ngValue]="locality">
           {{ locality.nombre }}
         </option>
@@ -116,11 +116,7 @@
           <div *ngIf="province.errors.required">province is required</div>
         </div> -->
 
-    <button
-      type="submit"
-      class="btn btn-primary"
-      [disabled]="!resourceForm.valid"
-    >
+    <button type="submit" class="btn-primary" [disabled]="!resourceForm.valid">
       Enviar
     </button>
   </form>

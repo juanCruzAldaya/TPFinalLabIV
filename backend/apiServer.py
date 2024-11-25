@@ -686,7 +686,6 @@ def add_servicio(servicio: Servicio):
 def update_service(servicio: Servicio):
     db = get_db_connection()
     cursor = db.cursor()
-    print('servicio.id, %s',servicio.id)
     try:
         update_query = """
         UPDATE servicios
@@ -696,15 +695,15 @@ def update_service(servicio: Servicio):
             secondaryCategory = %s,
             state = %s,
             department = %s,
-            locality = %s,
+            locality = %s
         WHERE id = %s AND profesionalId = %s
         """
         cursor.execute(
             update_query, 
             (
+                servicio.description,  # Corrected the order
                 servicio.mainCategory, 
                 servicio.secondaryCategory, 
-                servicio.description, 
                 servicio.state, 
                 servicio.department, 
                 servicio.locality, 
@@ -719,7 +718,6 @@ def update_service(servicio: Servicio):
 
     except Exception as e:
         db.rollback()
-        # Log the full error for debugging
         print(f"Error updating service: {e}")  # Replace with proper logging
         raise HTTPException(status_code=500, detail=f"Error updating service: {e}")
 
@@ -728,7 +726,6 @@ def update_service(servicio: Servicio):
         db.close()
     
     return {"message": "Service updated successfully"}
-
 
 
 

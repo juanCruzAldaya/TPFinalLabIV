@@ -1,0 +1,12 @@
+<ngb-carousel *ngIf="categories && categories.length">
+  <ng-template ngbSlide *ngFor="let category of categories; let i = index">
+    <div class="picsum-img-wrapper" *ngIf="category.image" loading="lazy">
+      <img [src]="category.image" [alt]="category.title">
+    </div>
+    <div class="carousel-caption">
+      <div class="caption-content">
+        <h3>{{ category.title }}</h3>
+      </div>
+    </div>
+  </ng-template>
+</ngb-carousel>

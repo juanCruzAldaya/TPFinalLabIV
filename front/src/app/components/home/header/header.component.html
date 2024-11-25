@@ -1,0 +1,36 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" (click)="navigateHome()">LaburApp</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ng-container *ngIf="!isAuthenticated; else loggedIn">
+        <a class="nav-link" [routerLink]="['/login']">Iniciar Sesión</a>
+      </ng-container>
+      <ng-template #loggedIn>
+        <ul class="navbar-nav">
+      
+          <li class="nav-item">
+            <a class="nav-link" (click)="navigateTo('/search-professionals')">Buscar profesionales</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" (click)="navigateTo('/contracts')">Consultar contrataciones</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" (click)="navigateTo('/my-services')">Mis servicios</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" (click)="logOut()">Salir</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" (click)="navigateToProfile()">
+              <img *ngIf="user?.profileImageUrl" class="icon-profile" [src]="user?.profileImageUrl" alt="User Icon" />
+              <img *ngIf="!user?.profileImageUrl" class="icon-profile" src="../../../assets/images/home/image-user.png" alt="Default User Icon" />
+            </a>
+          </li>
+        </ul>
+      </ng-template>
+    </div>
+  </div>
+</nav>

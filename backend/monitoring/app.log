@@ -742,3 +742,233 @@ ConnectionResetError: [WinError 10054] An existing connection was forcibly close
 2024-11-25 00:47:26,862 - monitoring.app_monitor - INFO - Fetching event ID for contract ID: 20
 2024-11-25 00:47:26,872 - monitoring.app_monitor - INFO - Event ID found: 10
 2024-11-25 00:47:26,872 - monitoring.app_monitor - INFO - Event ID found: 10
+2024-11-25 11:12:31,886 - root - INFO - Logging configured successfully
+2024-11-25 11:12:31,886 - root - INFO - Logging configured successfully
+2024-11-25 11:16:26,714 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2024-11-25 11:16:26,714 - passlib.handlers.bcrypt - WARNING - (trapped) error reading bcrypt version
+Traceback (most recent call last):
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\site-packages\passlib\handlers\bcrypt.py", line 620, in _load_backend_mixin
+    version = _bcrypt.__about__.__version__
+              ^^^^^^^^^^^^^^^^^
+AttributeError: module 'bcrypt' has no attribute '__about__'
+2024-11-25 11:17:57,980 - asyncio - ERROR - Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:17:57,980 - asyncio - ERROR - Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:18:23,272 - monitoring.app_monitor - INFO - Creating a new event
+2024-11-25 11:18:23,272 - monitoring.app_monitor - INFO - Creating a new event
+2024-11-25 11:18:23,281 - monitoring.app_monitor - INFO - Event created with ID: 17
+2024-11-25 11:18:23,281 - monitoring.app_monitor - INFO - Event created with ID: 17
+2024-11-25 11:18:29,647 - monitoring.app_monitor - INFO - Fetching event ID for contract ID: 22
+2024-11-25 11:18:29,647 - monitoring.app_monitor - INFO - Fetching event ID for contract ID: 22
+2024-11-25 11:18:29,663 - monitoring.app_monitor - INFO - Event ID found: 11
+2024-11-25 11:18:29,663 - monitoring.app_monitor - INFO - Event ID found: 11
+2024-11-25 11:52:48,515 - asyncio - ERROR - Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:52:48,515 - asyncio - ERROR - Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:52:48,626 - asyncio - ERROR - Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:52:48,626 - asyncio - ERROR - Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:52:48,635 - asyncio - ERROR - Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:52:48,635 - asyncio - ERROR - Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:52:48,648 - asyncio - ERROR - Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:52:48,648 - asyncio - ERROR - Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:53:03,130 - monitoring.app_monitor - INFO - Fetching event ID for contract ID: 19
+2024-11-25 11:53:03,130 - monitoring.app_monitor - INFO - Fetching event ID for contract ID: 19
+2024-11-25 11:53:03,148 - monitoring.app_monitor - INFO - Event ID found: 0
+2024-11-25 11:53:03,148 - monitoring.app_monitor - INFO - Event ID found: 0
+2024-11-25 11:53:33,855 - monitoring.app_monitor - INFO - Fetching event ID for contract ID: 29
+2024-11-25 11:53:33,855 - monitoring.app_monitor - INFO - Fetching event ID for contract ID: 29
+2024-11-25 11:53:33,863 - monitoring.app_monitor - INFO - Event ID found: 0
+2024-11-25 11:53:33,863 - monitoring.app_monitor - INFO - Event ID found: 0
+2024-11-25 11:53:33,880 - monitoring.app_monitor - INFO - Deleting event with ID: 0
+2024-11-25 11:53:33,880 - monitoring.app_monitor - INFO - Deleting event with ID: 0
+2024-11-25 11:53:33,886 - monitoring.app_monitor - INFO - Event with ID: 0 deleted successfully
+2024-11-25 11:53:33,886 - monitoring.app_monitor - INFO - Event with ID: 0 deleted successfully
+2024-11-25 11:55:53,002 - monitoring.app_monitor - INFO - Creating a new event
+2024-11-25 11:55:53,002 - monitoring.app_monitor - INFO - Creating a new event
+2024-11-25 11:55:53,012 - monitoring.app_monitor - INFO - Event created with ID: 18
+2024-11-25 11:55:53,012 - monitoring.app_monitor - INFO - Event created with ID: 18
+2024-11-25 11:56:13,842 - monitoring.app_monitor - INFO - Fetching event ID for contract ID: 23
+2024-11-25 11:56:13,842 - monitoring.app_monitor - INFO - Fetching event ID for contract ID: 23
+2024-11-25 11:56:13,855 - monitoring.app_monitor - INFO - Event ID found: 12
+2024-11-25 11:56:13,855 - monitoring.app_monitor - INFO - Event ID found: 12
+2024-11-25 11:56:13,877 - monitoring.app_monitor - INFO - Deleting event with ID: 12
+2024-11-25 11:56:13,877 - monitoring.app_monitor - INFO - Deleting event with ID: 12
+2024-11-25 11:56:13,896 - monitoring.app_monitor - INFO - Event with ID: 12 deleted successfully
+2024-11-25 11:56:13,896 - monitoring.app_monitor - INFO - Event with ID: 12 deleted successfully
+2024-11-25 11:56:32,368 - monitoring.app_monitor - INFO - Fetching event ID for contract ID: 30
+2024-11-25 11:56:32,368 - monitoring.app_monitor - INFO - Fetching event ID for contract ID: 30
+2024-11-25 11:56:32,391 - monitoring.app_monitor - INFO - Event ID found: 18
+2024-11-25 11:56:32,391 - monitoring.app_monitor - INFO - Event ID found: 18
+2024-11-25 11:56:38,412 - monitoring.app_monitor - INFO - Fetching event ID for contract ID: 28
+2024-11-25 11:56:38,412 - monitoring.app_monitor - INFO - Fetching event ID for contract ID: 28
+2024-11-25 11:56:38,425 - monitoring.app_monitor - INFO - Event ID found: 17
+2024-11-25 11:56:38,425 - monitoring.app_monitor - INFO - Event ID found: 17
+2024-11-25 11:56:38,447 - monitoring.app_monitor - INFO - Deleting event with ID: 17
+2024-11-25 11:56:38,447 - monitoring.app_monitor - INFO - Deleting event with ID: 17
+2024-11-25 11:56:38,462 - monitoring.app_monitor - INFO - Event with ID: 17 deleted successfully
+2024-11-25 11:56:38,462 - monitoring.app_monitor - INFO - Event with ID: 17 deleted successfully
+2024-11-25 11:56:41,571 - asyncio - ERROR - Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:56:41,571 - asyncio - ERROR - Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 11:56:42,528 - monitoring.app_monitor - INFO - Fetching event ID for contract ID: 27
+2024-11-25 11:56:42,528 - monitoring.app_monitor - INFO - Fetching event ID for contract ID: 27
+2024-11-25 11:56:42,539 - monitoring.app_monitor - INFO - Event ID found: 16
+2024-11-25 11:56:42,539 - monitoring.app_monitor - INFO - Event ID found: 16
+2024-11-25 11:56:42,564 - monitoring.app_monitor - INFO - Deleting event with ID: 16
+2024-11-25 11:56:42,564 - monitoring.app_monitor - INFO - Deleting event with ID: 16
+2024-11-25 11:56:42,582 - monitoring.app_monitor - INFO - Event with ID: 16 deleted successfully
+2024-11-25 11:56:42,582 - monitoring.app_monitor - INFO - Event with ID: 16 deleted successfully
+2024-11-25 11:56:45,847 - monitoring.app_monitor - INFO - Fetching event ID for contract ID: 25
+2024-11-25 11:56:45,847 - monitoring.app_monitor - INFO - Fetching event ID for contract ID: 25
+2024-11-25 11:56:45,864 - monitoring.app_monitor - INFO - Event ID found: 14
+2024-11-25 11:56:45,864 - monitoring.app_monitor - INFO - Event ID found: 14
+2024-11-25 12:04:46,538 - asyncio - ERROR - Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 12:04:46,538 - asyncio - ERROR - Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 12:04:46,596 - asyncio - ERROR - Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+2024-11-25 12:04:46,596 - asyncio - ERROR - Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+Traceback (most recent call last):
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\juan.cruz.aldaya\AppData\Local\Programs\Python\Python313\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host

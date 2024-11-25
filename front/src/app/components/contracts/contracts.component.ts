@@ -170,15 +170,11 @@ processContracts(contracts: IContract[]): void {
               console.log('Evento creado con éxito', response);
               contract.evento_id = response.id;  // Asignar el evento_id al contrato
   
-              
+              console.log(contract)
               // Actualizar solo el evento_id del contrato
               this.contractService.updateContractEventId(contract.id, response.id).subscribe({
                 next: () => {
-
-                  this.sharedService.showSuccess("Contrato aceptado correctamente");
-                  this.router.navigate(['contracts']);
                   console.log('Contract updated with event ID successfully');
-                  
                 },
                 error: (err) => {
                   console.error('Error updating contract with event ID:', err);
@@ -230,10 +226,8 @@ processContracts(contracts: IContract[]): void {
   confirmActionHandler(): void {
     if (this.confirmAction === 'aceptar') {
       this.acceptContract(this.contractToConfirm!.id);
-
     } else if (this.confirmAction === 'rechazar') {
       this.rejectContract(this.contractToConfirm!.id);
-      this.sharedService.showSuccess("Servicio rechazado")
     }
     else if (this.confirmAction === 'finalizar') {
       this.finalizeContract();
@@ -266,18 +260,19 @@ processContracts(contracts: IContract[]): void {
 
 
       if (this.selectedContract.estado != 'cancelado'){
+        console.log(this.selectedContract)
         this.contractService.updateContractStatus(this.selectedContract.id, 'cancelado').subscribe({
           next: () => {
             this.contractService.deleteEventId(this.selectedContract!.evento_id).subscribe({
               next: () => {
-                  this.router.navigate(['contracts']);
-                  this.sharedService.showSuccess("Evento cancelado con éxito")
+                  console.log('Event deleted successfully');
               },
               error: (err) => {
-                this.sharedService.showError();
-                console.error('Error deleting event:', err);
+                  console.error('Error deleting event:', err);
               }
           });
+            
+            console.log('Service canceled successfully');
           },
           error: (err) => {
             console.error('Error canceling service:', err);
@@ -331,13 +326,10 @@ processContracts(contracts: IContract[]): void {
       this.contractService.updateContractStatus(this.selectedContract.id, 'finalizado').subscribe({
         next: () => {
           this.selectedContract!.estado = 'finalizado';
-          this.sharedService.showSuccess("Servicio finalizado")
           console.log('Service finished successfully');
-
         },
         error: (err) => {
           console.error('Error finishing service:', err);
-          this.sharedService.showError();
         }
       });
     }
